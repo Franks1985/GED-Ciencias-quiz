@@ -5,20 +5,27 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>Quiz GED Ciencias NY</title>
   <style>
-    body{font-family:Arial,Helvetica,sans-serif;background:#f2f6ff;margin:0;padding:0;display:flex;justify-content:center;align-items:center;min-height:100vh}
-    .container{background:#fff;border-radius:12px;box-shadow:0 8px 20px rgba(0,0,0,.15);max-width:600px;width:90%;padding:25px 30px}
-    h1{text-align:center;color:#003366;margin-bottom:10px;font-size:1.5em}
-    .progress-bar{height:10px;background:#ddd;border-radius:5px;overflow:hidden;margin-bottom:20px}
-    .progress{height:100%;background:#4caf50;width:0%;transition:width .3s}
-    .question{font-size:1.1em;margin-bottom:15px;color:#222}
-    .btn{width:100%;padding:12px;margin:6px 0;border:none;border-radius:8px;background:#003366;color:#fff;font-size:1em;cursor:pointer;transition:background .25s}
-    .btn:hover{background:#035aa6}
-    .btn.correct{background:#4caf50}
-    .btn.wrong{background:#f44336}
-    .score{text-align:center;font-size:1.3em;margin-top:15px}
-    .restart{display:block;margin:20px auto 0;padding:10px 25px;background:#ff9800;color:#fff;border:none;border-radius:8px;font-size:1em;cursor:pointer}
-    .hide{display:none}
-  </style>
+  /* --- RESET Y CONTENEDOR --- */
+  html,body{margin:0;padding:0;height:100%;font-family:Arial,Helvetica,sans-serif;background:#f2f6ff;color:#222}
+  body{display:flex;justify-content:center;align-items:flex-start;padding-top:20px}
+  .container{background:#fff;border-radius:12px;box-shadow:0 8px 20px rgba(0,0,0,.15);max-width:600px;width:90%;padding:25px 30px;min-height:420px;display:flex;flex-direction:column}
+  h1{text-align:center;color:#003366;margin:0 0 10px;font-size:1.5em}
+  .progress-bar{height:10px;background:#ddd;border-radius:5px;overflow:hidden;margin-bottom:20px}
+  .progress{height:100%;background:#4caf50;width:0%;transition:width .3s}
+  .question{font-size:1.1em;margin-bottom:15px}
+  .btn{width:100%;padding:14px;margin:6px 0;border:none;border-radius:8px;background:#003366;color:#fff;font-size:1em;cursor:pointer;transition:background .25s;-webkit-appearance:none}
+  .btn:hover{background:#035aa6}
+  .btn.correct{background:#4caf50}
+  .btn.wrong{background:#f44336}
+  .score{text-align:center;font-size:1.4em;margin-top:10px}
+  .restart{display:block;margin:25px auto 0;padding:12px 30px;background:#ff9800;color:#fff;border:none;border-radius:8px;font-size:1.05em;cursor:pointer;-webkit-appearance:none}
+  .hide{display:none}
+  /* --- HACE QUE LA PÁGINA SEA SCROLEABLE EN iPHONE --- */
+  @media (max-width:600px){
+    body{align-items:flex-start;padding-top:15px}
+    .container{width:92%;padding:20px;min-height:95vh}
+  }
+</style>
 </head>
 <body>
   <div class="container">
@@ -470,3 +477,4 @@
 </body>
 
 </html>
+
