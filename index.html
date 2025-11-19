@@ -4,7 +4,7 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <title>Quiz GED Ciencias NY</title>
-  <style>
+<style>
     html,body{margin:0;padding:0;height:100%;font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Arial,Helvetica,sans-serif;background:#f2f6ff;color:#222}
     body{display:flex;justify-content:center;align-items:flex-start;padding:15px 0 60px;min-height:100vh}
     .container{width:92%;max-width:600px;background:#fff;border-radius:12px;box-shadow:0 8px 24px rgba(0,0,0,.15);padding:25px 20px;display:flex;flex-direction:column;gap:12px}
@@ -12,22 +12,39 @@
     .counter{text-align:center;font-size:1em;color:#666;margin:-5px 0 8px}
     .progress-bar{height:8px;background:#ddd;border-radius:4px;overflow:hidden}
     .progress{height:100%;background:#4caf50;width:0%;transition:width .25s}
+    
+    /* ESTILOS DEL TEMPORIZADOR (NUEVOS) */
+    .timer-container{display:flex;justify-content:space-between;align-items:center;margin:10px 0 15px}
+    .timer{font-size:24px;font-weight:bold;color:#2196F3;background:#e3f2fd;padding:10px 20px;border-radius:5px;min-width:100px;text-align:center}
+    .timer.warning{color:#ff9800;background:#fff3e0}
+    .timer.danger{color:#f44336;background:#ffebee;animation:pulse 1s infinite}
+    @keyframes pulse{0%{transform:scale(1)}50%{transform:scale(1.05)}100%{transform:scale(1)}}
     .question{font-size:1.1em;line-height:1.35;margin:10px 0}
+    
     .btn{width:100%;padding:14px;margin:4px 0;border:none;border-radius:8px;background:#003366;color:#fff;font-size:1em;cursor:pointer;-webkit-appearance:none;touch-action:manipulation}
     .btn:hover{background:#035aa6}
     .btn.correct{background:#4caf50}
     .btn.wrong{background:#f44336}
+    .btn.disabled{opacity:0.6;pointer-events:none}
+    
     .score{text-align:center;font-size:1.35em;font-weight:600;margin:8px 0}
     .restart{display:block;margin:20px auto 0;padding:12px 32px;background:#ff9800;color:#fff;border:none;border-radius:10px;font-size:1.05em;cursor:pointer;-webkit-appearance:none;touch-action:manipulation}
     .hide{display:none}
+    
     @media (max-width:600px){body{padding-bottom:80px;align-items:flex-start}}
-  </style>
+</style>
 </head>
 <body>
   <div class="container">
     <h1>Quiz GED Ciencias NY</h1>
     <div class="counter" id="counter">Pregunta 1 de 360</div>
     <div class="progress-bar"><div class="progress" id="progress"></div></div>
+
+    <!-- CONTENEDOR DEL TEMPORIZADOR -->
+    <div class="timer-container">
+      <span style="color:#666;font-size:14px">Tiempo restante:</span>
+      <div class="timer" id="timer">02:36</div>
+    </div>
 
     <div id="quiz-box">
       <div class="question" id="question"></div>
@@ -365,6 +382,16 @@
 
     /* ========== FIN DE LAS 360 PREGUNTAS ========== */
 
+    /* ========== ARRAY DE 360 PREGUNTAS (SIN CAMBIOS) ========== */
+    var originalData = [
+      {q:"¿Qué organelo convierte glucosa en ATP?",opts:["Cloroplasto","Mitocondria","Lisosoma","Aparato de Golgi"],ans:"Mitocondria"},
+      // ... TODAS TUS 360 PREGUNTAS AQUÍ (copia tu array completo) ...
+      {q:"¿Qua gráfica es para tendencias temporales?",opts:["Línea","Circular","Barras","XY"],ans:"Línea"},
+      {q:"¿Qué símbolo ∝ significa?",opts:["Proporcional","Igual","Aproximado","Mayor"],ans:"Proporcional"}
+    ];
+
+    // ========== FIN ARRAY DE PREGUNTAS ==========
+
     // --- Funciones auxiliares ---
     function shuffle(array){
       var i=array.length,j,temp;
@@ -384,16 +411,28 @@
     var progressEl=document.getElementById('progress');
     var scoreEl=document.getElementById('score');
     var counterEl=document.getElementById('counter');
+    var timerEl=document.getElementById('timer');
+    
+    // VARIABLES DEL TEMPORIZADOR
+    var timerInterval=null;
+    var TIME_PER_QUESTION=156; // 2.6 minutos = 156 segundos
+    var timeLeft=TIME_PER_QUESTION;
+    var questionAnswered=false;
 
-    // --- Mostrar pregunta ---
+    // --- Mostrar pregunta con temporizador ---
     function showQuestion(){
+      questionAnswered=false;
+      timeLeft=TIME_PER_QUESTION;
+      
       var q=data[current];
       counterEl.textContent='Pregunta '+(current+1)+' de '+data.length;
       questionEl.textContent=q.q;
       progressEl.style.width=((current+1)/data.length*100)+'%';
       optionsEl.innerHTML='';
+      
       var opts=[].concat(q.opts);
       shuffle(opts);
+      
       for(var i=0;i<opts.length;i++){
         var btn=document.createElement('button');
         btn.className='btn';
@@ -401,38 +440,103 @@
         btn.onclick=(function(opt){return function(){checkAnswer(opt,q.ans);};})(opts[i]);
         optionsEl.appendChild(btn);
       }
+      
+      // INICIAR TEMPORIZADOR
+      startTimer();
     }
 
-    // --- Verificar respuesta ---
+    // --- Función para iniciar el temporizador ---
+    function startTimer(){
+      clearInterval(timerInterval);
+      updateTimerDisplay();
+      
+      timerInterval=setInterval(function(){
+        timeLeft--;
+        updateTimerDisplay();
+        
+        // Verificar tiempo límite
+        if(timeLeft<=0){
+          clearInterval(timerInterval);
+          handleTimeUp();
+        }
+      },1000);
+    }
+
+    // --- Actualizar visualización del temporizador ---
+    function updateTimerDisplay(){
+      var minutes=Math.floor(timeLeft/60);
+      var seconds=timeLeft%60;
+      timerEl.textContent=minutes.toString().padStart(2,'0')+':'+seconds.toString().padStart(2,'0');
+      
+      // Cambiar colores según tiempo restante
+      timerEl.classList.remove('warning','danger');
+      if(timeLeft<=30){
+        timerEl.classList.add('danger');
+      }else if(timeLeft<=60){
+        timerEl.classList.add('warning');
+      }
+    }
+
+    // --- Manejar cuando se acaba el tiempo ---
+    function handleTimeUp(){
+      questionAnswered=true;
+      var buttons=optionsEl.querySelectorAll('.btn');
+      
+      // Deshabilitar todos los botones
+      buttons.forEach(function(btn){
+        btn.classList.add('disabled');
+      });
+      
+      // Marcar como sin respuesta y esperar 2s para continuar
+      setTimeout(function(){
+        current++;
+        if(current<data.length) showQuestion();
+        else showScore();
+      },2000);
+    }
+
+    // --- Verificar respuesta (MODIFICADO) ---
     function checkAnswer(selected,correct){
+      if(questionAnswered) return; // Evitar dobles clicks
+      questionAnswered=true;
+      
+      clearInterval(timerInterval); // Detener temporizador
+      
       var buttons=optionsEl.querySelectorAll('.btn');
       for(var k=0;k<buttons.length;k++){
         buttons[k].disabled=true;
         if(buttons[k].textContent===correct) buttons[k].classList.add('correct');
         if(buttons[k].textContent===selected && selected!==correct) buttons[k].classList.add('wrong');
       }
+      
       if(selected===correct) score++;
+      
+      // ESPERAR 2 SEGUNDOS ANTES DE PASAR
       setTimeout(function(){
         current++;
         if(current<data.length) showQuestion();
         else showScore();
-      },800);
+      },2000);
     }
 
-    // --- Pantalla final ---
+    // --- Pantalla final (SIN CAMBIOS) ---
     function showScore(){
       quizBox.classList.add('hide');
       scoreBox.classList.remove('hide');
       scoreEl.textContent='Tu puntuación: '+score+' / '+data.length+' ('+Math.round(score/data.length*100)+'%)';
+      clearInterval(timerInterval); // Asegurar que el temporizador se detenga
     }
 
-    // --- Reiniciar ---
+    // --- Reiniciar (MODIFICADO) ---
     function restartQuiz(){
       current=0;score=0;
       data=[].concat(originalData);
       shuffle(data);
       scoreBox.classList.add('hide');
       quizBox.classList.remove('hide');
+      questionAnswered=false;
+      timeLeft=TIME_PER_QUESTION;
+      clearInterval(timerInterval);
       showQuestion();
     }
 
@@ -440,5 +544,5 @@
     shuffle(data);
     showQuestion();
   </script>
-</body>
 </html>
+
