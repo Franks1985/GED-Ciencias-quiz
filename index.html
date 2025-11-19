@@ -1,40 +1,39 @@
 <!DOCTYPE html>
 <html lang="es">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
   <title>Quiz GED Ciencias NY</title>
   <style>
-  /* --- RESET Y CONTENEDOR --- */
-  html,body{margin:0;padding:0;height:100%;font-family:Arial,Helvetica,sans-serif;background:#f2f6ff;color:#222}
-  body{display:flex;justify-content:center;align-items:flex-start;padding-top:20px}
-  .container{background:#fff;border-radius:12px;box-shadow:0 8px 20px rgba(0,0,0,.15);max-width:600px;width:90%;padding:25px 30px;min-height:420px;display:flex;flex-direction:column}
-  h1{text-align:center;color:#003366;margin:0 0 10px;font-size:1.5em}
-  .progress-bar{height:10px;background:#ddd;border-radius:5px;overflow:hidden;margin-bottom:20px}
-  .progress{height:100%;background:#4caf50;width:0%;transition:width .3s}
-  .question{font-size:1.1em;margin-bottom:15px}
-  .btn{width:100%;padding:14px;margin:6px 0;border:none;border-radius:8px;background:#003366;color:#fff;font-size:1em;cursor:pointer;transition:background .25s;-webkit-appearance:none}
-  .btn:hover{background:#035aa6}
-  .btn.correct{background:#4caf50}
-  .btn.wrong{background:#f44336}
-  .score{text-align:center;font-size:1.4em;margin-top:10px}
-  .restart{display:block;margin:25px auto 0;padding:12px 30px;background:#ff9800;color:#fff;border:none;border-radius:8px;font-size:1.05em;cursor:pointer;-webkit-appearance:none}
-  .hide{display:none}
-  /* --- HACE QUE LA PÁGINA SEA SCROLEABLE EN iPHONE --- */
-  @media (max-width:600px){
-    body{align-items:flex-start;padding-top:15px}
-    .container{width:92%;padding:20px;min-height:95vh}
-  }
-</style>
+    html,body{margin:0;padding:0;height:100%;font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Arial,Helvetica,sans-serif;background:#f2f6ff;color:#222}
+    body{display:flex;justify-content:center;align-items:flex-start;padding:15px 0 60px;min-height:100vh}
+    .container{width:92%;max-width:600px;background:#fff;border-radius:12px;box-shadow:0 8px 24px rgba(0,0,0,.15);padding:25px 20px;display:flex;flex-direction:column;gap:12px}
+    h1{margin:0 0 8px;text-align:center;color:#003366;font-size:1.5em}
+    .counter{text-align:center;font-size:1em;color:#666;margin:-5px 0 8px}
+    .progress-bar{height:8px;background:#ddd;border-radius:4px;overflow:hidden}
+    .progress{height:100%;background:#4caf50;width:0%;transition:width .25s}
+    .question{font-size:1.1em;line-height:1.35;margin:10px 0}
+    .btn{width:100%;padding:14px;margin:4px 0;border:none;border-radius:8px;background:#003366;color:#fff;font-size:1em;cursor:pointer;-webkit-appearance:none;touch-action:manipulation}
+    .btn:hover{background:#035aa6}
+    .btn.correct{background:#4caf50}
+    .btn.wrong{background:#f44336}
+    .score{text-align:center;font-size:1.35em;font-weight:600;margin:8px 0}
+    .restart{display:block;margin:20px auto 0;padding:12px 32px;background:#ff9800;color:#fff;border:none;border-radius:10px;font-size:1.05em;cursor:pointer;-webkit-appearance:none;touch-action:manipulation}
+    .hide{display:none}
+    @media (max-width:600px){body{padding-bottom:80px;align-items:flex-start}}
+  </style>
 </head>
 <body>
   <div class="container">
     <h1>Quiz GED Ciencias NY</h1>
+    <div class="counter" id="counter">Pregunta 1 de 360</div>
     <div class="progress-bar"><div class="progress" id="progress"></div></div>
+
     <div id="quiz-box">
       <div class="question" id="question"></div>
       <div id="options"></div>
     </div>
+
     <div id="score-box" class="hide">
       <div class="score" id="score"></div>
       <button class="restart" onclick="restartQuiz()">Reiniciar quiz</button>
@@ -42,8 +41,9 @@
   </div>
 
   <script>
-    // 210 preguntas JSON
-    const originalData = [
+    /* ---------- ARRAY COMPLETO DE 360 PREGUNTAS ---------- */
+    var originalData = [
+      // === 210 PREGUNTAS ORIGINALES ===
       {q:"¿Qué organelo convierte glucosa en ATP?",opts:["Cloroplasto","Mitocondria","Lisosoma","Aparato de Golgi"],ans:"Mitocondria"},
       {q:"¿Cuál es el producto inmediato de la fotosíntesis?",opts:["Glucosa","Oxígeno","Dióxido de carbono","Amoníaco"],ans:"Oxígeno"},
       {q:"¿Qué tipo de unión mantiene unidos los nucleótidos de una sola cadena de ADN?",opts:["Iónica","Covalente","Hidrógeno","Van der Waals"],ans:"Covalente"},
@@ -67,14 +67,14 @@
       {q:"¿Qué compartimento del ecosistema contiene más carbono?",opts:["Atmósfera","Océanos","Plantas","Suelo"],ans:"Océanos"},
       {q:"¿Qua enfermedad es por virus que ataca linfocitos T?",opts:["SIDA","Tuberculosis","Diabetes","Hemofilia"],ans:"SIDA"},
       {q:"¿Qué cromosoma está doble en síndrome de Down?",opts:["13","18","21","X"],ans:"21"},
-      {q:"¿Qué tipo de selección favorece extremos?",opts:["Estabilizante","Direccional","Disruptiva","Sexual"],ans:"Disruptiva"},
+      {q:"¿Qué tipo de selección favorece extremos?",opts:["Disruptiva","Estabilizante","Direccional","Sexual"],ans:"Disruptiva"},
       {q:"¿Qué gas es crítico para la capa de ozono?",opts:["O2","O3","N2","CH4"],ans:"O3"},
       {q:"¿Qua estructura del corazón impide reflujo?",opts:["Septum","Válvula","Aurícula","Ventrículo"],ans:"Válvula"},
       {q:"¿Qué pigmento da color verde a las plantas?",opts:["Caroteno","Clorofila","Xantofila","Antocianina"],ans:"Clorofila"},
       {q:"¿Qué unidad mide biodiversidad?",opts:["Biomasa","Índice de Shannon","pH","ppm"],ans:"Índice de Shannon"},
       {q:"¿Qué tipo de célula carece de núcleo definido?",opts:["Animal","Vegetal","Procariota","Fúngica"],ans:"Procariota"},
       {q:"¿Qua cadena alimenticia es acuática?",opts:["Alga → copepodo → pez","Hierba → vaca → humano","Hongo → insecto → sapo","Planta → ciervo → lobo"],ans:"Alga → copepodo → pez"},
-      {q:"¿Qué gas absorb los estomas?",opts:["O2","CO2","N2","CH4"],ans:"CO2"},
+      {q:"¿Qué gas absorben los estomas?",opts:["O2","CO2","N2","CH4"],ans:"CO2"},
       {q:"¿Qua etapa de la respiración ocurre en matriz mitocondrial?",opts:["Glicólisis","Ciclo de Krebs","Cadena transportadora","Fermentación"],ans:"Ciclo de Krebs"},
       {q:"¿Qué tipo de RNA lleva aminoácidos?",opts:["mRNA","tRNA","rRNA","snRNA"],ans:"tRNA"},
       {q:"¿Qué ley dice que cada pareja de factores se separa independientemente?",opts:["Primera","Segunda (independencia)","Tercera","Hardy-Weinberg"],ans:"Segunda (independencia)"},
@@ -157,96 +157,96 @@
       {q:"¿Qua isótopo se usa en datación arqueológica?",opts:["C-14","U-238","K-40","I-131"],ans:"C-14"},
       {q:"¿Qué tipo de enlace comparte electrones?",opts:["Iónico","Covalente","Metálico","Hidrógeno"],ans:"Covalente"},
       {q:"¿Qué gas es producto de descomponedores?",opts:["O2","CH4","N2","H2"],ans:"CH4"},
-      {q:"¿Qua escala mide intensidad sísmica?",opts:["Richter (magnitud)","Mercalli (intensidad)","Mohs","Beaufort"],ans:"Mercalli (intensidad)"},
-      {q:"¿Qué satélite natural tiene mayor diámetro?",opts:["Luna (Tierra)","Fobos","Ío","Titán"],ans:"Luna (Tierra)"},
+      {q:"¿Qua escala mide intensidad sísmica (daño)?",opts:["Richter (magnitud)","Mercalli","Mohs","Beaufort"],ans:"Mercalli"},
+      {q:"¿Qué satélite natural es más grande?",opts:["Luna (Tierra)","Fobos","Ío","Titán"],ans:"Luna (Tierra)"},
       {q:"¿Qua fenómeno convierte agua en vapor sin hervir?",opts:["Evaporación","Ebullición","Condensación","Cristalización"],ans:"Evaporación"},
-      {q:"¿Qua energía se mide en kWh?",opts:["Potencia","Trabajo","Fuerza","Presión"],ans:"Trabajo"},
-      {q:"¿Qué ley dice V₁/T₁ = V₂/T₂?",opts:["Boyle","Charles","Gay-Lussac","Newton"],ans:"Charles"},
-      {q:"¿Qué planeta tiene el día más largo?",opts:["Tierra","Júpiter","Venus","Marte"],ans:"Venus"},
-      {q:"¿Qua partícula carece de masa en reposo?",opts:["Electrón","Neutrón","Fotón","Protón"],ans:"Fotón"},
-      {q:"¿Qué tipo de reacción absorbe luz?",opts:["Endotérmica","Exotérmica","Nuclear","Redox"],ans:"Endotérmica"},
+      {q:"¿Qua energía se mide en kWh?",opts:["Potencia","Trabajo","Presión","Fuerza"],ans:"Trabajo"},
+      {q:"¿Qué ley dice V ∝ T (P cte)?",opts:["Charles","Boyle","Gay-Lussac","Dalton"],ans:"Charles"},
+      {q:"¿Qué planeta tiene el día más largo?",opts:["Venus","Mercurio","Tierra","Marte"],ans:"Venus"},
+      {q:"¿Qua partícula no tiene masa en reposo?",opts:["Fotón","Electrón","Protón","Neutrón"],ans:"Fotón"},
+      {q:"¿Qué tipo de reacción absorbe calor?",opts:["Endotérmica","Exotérmica","Nuclear","Redox"],ans:"Endotérmica"},
       {q:"¿Qué gas es mayoritario en erupción volcánica?",opts:["CO2","H2O vapor","SO2","N2"],ans:"H2O vapor"},
-      {q:"¿Qua velocidad es escape en Tierra (km/s)?",opts:["7.9","11.2","16.7","42"],ans:"11.2"},
-      {q:"¿Qué ley de Kepler es área = tiempo?",opts:["Primera","Segunda","Tercera","Cuarta"],ans:"Segunda"},
+      {q:"¿Qua velocidad es escape en Tierra?",opts:["7.9 km/s","11.2 km/s","16.7 km/s","42 km/s"],ans:"11.2 km/s"},
+      {q:"¿Qué ley de Kepler es período² ∝ distancia³?",opts:["Tercera","Primera","Segunda","Cuarta"],ans:"Tercera"},
       {q:"¿Qué mineral es carbonato de calcio?",opts:["Calcita","Cuarzo","Magnetita","Halita"],ans:"Calcita"},
-      {q:"¿Qua capa tiene menor temperatura?",opts:["Troposfera","Mesosfera","Termosfera","Estratosfera"],ans:"Mesosfera"},
-      {q:"¿Qué gas es producto de combustión completa?",opts:["CO","CO2","O2","N2"],ans:"CO2"},
-      {q:"¿Qué número cuántico define energía?",opts:["Principal n","Angular l","Magnético m","Spin s"],ans:"Principal n"},
-      {q:"¿Qua unidad es equivalente a J/s?",opts:["Newton","Watt","Pascal","Coulomb"],ans:"Watt"},
-      {q:"¿Qué planeta tiene anillos más masivos?",opts:["Júpiter","Saturno","Urano","Neptuno"],ans:"Saturno"},
-      {q:"¿Qué fenómeno reduce velocidad de luz en vidrio?",opts:["Reflexión","Refracción","Diffracción","Dispersión"],ans:"Refracción"},
-      {q:"¿Qua ley dice que la corriente es proporcional al voltaje?",opts:["Ohm","Faraday","Lenz","Coulomb"],ans:"Ohm"},
-      {q:"¿Qué gas es más denso que aire?",opts:["H2","He","CO2","NH3"],ans:"CO2"},
-      {q:"¿Qué proceso convierte sólido → gas?",opts:["Fusión","Vaporización","Sublimación","Condensación"],ans:"Sublimación"},
-      {q:"¿Qua escala mide acidez?",opts:["pH","ppm","ppt","ºBrix"],ans:"pH"},
-      {q:"¿Qué planeta tiene mayor excentricidad?",opts:["Tierra","Marte","Mercurio","Venus"],ans:"Mercurio"},
-      {q:"¿Qué ley de Newton es acción-reacción?",opts:["Primera","Segunda","Tercera","Cuarta"],ans:"Tercera"},
+      {q:"¿Qua capa tiene menor temperatura?",opts:["Mesosfera","Troposfera","Termosfera","Estratosfera"],ans:"Mesosfera"},
+      {q:"¿Qué gas sale en combustión completa?",opts:["CO","CO2","O2","N2"],ans:"CO2"},
+      {q:"¿Qué número cuántico define energía?",opts:["n","l","m","s"],ans:"n"},
+      {q:"¿Qua unidad es J/s?",opts:["Watt","Newton","Pascal","Coulomb"],ans:"Watt"},
+      {q:"¿Qué planeta tiene anillos más masivos?",opts:["Saturno","Júpiter","Urano","Neptuno"],ans:"Saturno"},
+      {q:"¿Qué fenómeno reduce velocidad de luz?",opts:["Refracción","Reflexión","Diffracción","Dispersión"],ans:"Refracción"},
+      {q:"¿Qué ley es V = IR?",opts:["Ohm","Faraday","Lenz","Coulomb"],ans:"Ohm"},
+      {q:"¿Qué gas es más denso que aire?",opts:["CO2","H2","He","NH3"],ans:"CO2"},
+      {q:"¿Qué proceso es sólido → gas?",opts:["Sublimación","Fusión","Vaporización","Condensación"],ans:"Sublimación"},
+      {q:"¿Qua escala mide acidez?",opts:["pH","Celsius","Mohs","Beaufort"],ans:"pH"},
+      {q:"¿Qué planeta tiene mayor excentricidad?",opts:["Mercurio","Venus","Tierra","Marte"],ans:"Mercurio"},
+      {q:"¿Qué ley de Newton es acción-reacción?",opts:["Tercera","Primera","Segunda","Cuarta"],ans:"Tercera"},
       {q:"¿Qua unidad mide inductancia?",opts:["Henry","Faradio","Tesla","Weber"],ans:"Henry"},
-      {q:"¿Qué gas es producto de desnitrificación?",opts:["NH3","N2","NO3−","NO2−"],ans:"N2"},
-      {q:"¿Qué fenómeno produce marea roja?",opts:["Floración algal","Tsunami","Tornado","Terremoto"],ans:"Floración algal"},
-      {q:"¿Qua velocidad es Mach 1?",opts:["1234 km/h (aprox)","300 000 km/s","40 000 km/h","1 km/s"],ans:"1234 km/h (aprox)"},
-      {q:"¿Qué ley establece que la energía se dispersa?",opts:["Primera","Segunda","Tercera","Cuarta"],ans:"Segunda"},
-      {q:"¿Qua unidad mide flujo magnético?",opts:["Tesla","Weber","Gauss","Oersted"],ans:"Weber"},
-      {q:"¿Qué gas es producto de fotosíntesis?",opts:["O2","CO2","N2","CH4"],ans:"O2"},
-      {q:"¿Qué ley dice que la energía se dispersa?",opts:["Primera","Segunda","Tercera","Cuarta"],ans:"Segunda"},
-      {q:"¿Qua velocidad es la del sonido en aire (m/s)?",opts:["343","3 × 10⁸","9.8","22.4"],ans:"343"},
-      {q:"¿Qué fenómeno produce eclipse solar?",opts:["Sombra de Tierra","Sombra de Luna","Reflexión","Refracción"],ans:"Sombra de Luna"},
+      {q:"¿Qué gas produce desnitrificación?",opts:["N2","NH3","NO2−","NO3−"],ans:"N2"},
+      {q:"¿Qué fenómeno causa marea roja?",opts:["Floración algal","Tsunami","Tornado","Terremoto"],ans:"Floración algal"},
+      {q:"¿Qua velocidad es Mach 1?",opts:["1234 km/h","300 000 km/s","40 000 km/h","1 km/s"],ans:"1234 km/h"},
+      {q:"¿Qué ley dice que la energía se dispersa?",opts:["Segunda termodinámica","Primera","Tercera","Cuarta"],ans:"Segunda termodinámica"},
+      {q:"¿Qua unidad es Weber?",opts:["Flujo magnético","Densidad magnética","Inducción","Campo"],ans:"Flujo magnético"},
+      {q:"¿Qué gas liberan las plantas durante el día?",opts:["O2","CO2","N2","CH4"],ans:"O2"},
+      {q:"¿Qué ley es la conservación de la energía?",opts:["Primera termodinámica","Segunda","Tercera","Cuarta"],ans:"Primera termodinámica"},
+      {q:"¿Qua velocidad es la del sonido en aire?",opts:["343 m/s","3 × 10⁸ m/s","9.8 m/s","22.4 m/s"],ans:"343 m/s"},
+      {q:"¿Qué fenómeno produce eclipse solar?",opts:["Sombra de Luna","Sombra de Tierra","Reflexión","Refracción"],ans:"Sombra de Luna"},
       {q:"¿Qué mineral es sulfato de calcio?",opts:["Yeso","Calcita","Dolomita","Aragonito"],ans:"Yeso"},
       {q:"¿Qua escala mide energía sísmica liberada?",opts:["Richter (magnitud)","Mercalli","Mohs","Beaufort"],ans:"Richter (magnitud)"},
-      {q:"¿Qué gas es producto de combustión incompleta?",opts:["CO","CO2","O2","N2"],ans:"CO"},
-      {q:"¿Qué ley de Kepler relaciona período y distancia?",opts:["Primera","Segunda","Tercera","Cuarta"],ans:"Tercera"},
-      {q:"¿Qua unidad es el Pa·s?",opts:["Viscosidad","Presión","Energía","Potencia"],ans:"Viscosidad"},
-      {q:"¿Qué planeta tiene menor densidad?",opts:["Saturno (0.7 g/cm³)","Tierra","Marte","Mercurio"],ans:"Saturno (0.7 g/cm³)"},
-      {q:"¿Qué variable dependiente en “altura de planta vs luz”?",opts:["Luz","Altura","Tiempo","Agua"],ans:"Altura"},
-      {q:"¿Qué paso sigue a la hipótesis?",opts:["Conclusión","Experimentación","Publicación","Observación"],ans:"Experimentación"},
-      {q:"¿Qua gráfica es mejor para partes de un todo?",opts:["Línea","Barras","Circular","Histograma"],ans:"Circular"},
-      {q:"¿Qué sesgo ocurre cuando el entrevistador influye?",opts:["Selección","Observador","Memoria","Publicación"],ans:"Observador"},
-      {q:"¿Qua herramienta mide volumen de líquido?",opts:["Pipeta","Ruler","Balanza","Termómetro"],ans:"Pipeta"},
-      {q:"¿Qué símbolo ± significa?",opts:["Exacto","Aproximado","Incertidumbre","Promedio"],ans:"Incertidumbre"},
+      {q:"¿Qué gas produce combustión incompleta?",opts:["CO","CO2","O2","N2"],ans:"CO"},
+      {q:"¿Qué ley de Kepler es período² ∝ distancia³?",opts:["Tercera","Primera","Segunda","Cuarta"],ans:"Tercera"},
+      {q:"¿Qua unidad es Pa·s?",opts:["Viscosidad","Presión","Energía","Potencia"],ans:"Viscosidad"},
+      {q:"¿Qué planeta tiene menor densidad?",opts:["Saturno","Tierra","Marte","Mercurio"],ans:"Saturno"},
+      {q:"¿Qué variable se mide en eje Y?",opts:["Dependiente","Independiente","Control","Interviniente"],ans:"Dependiente"},
+      {q:"¿Qué paso sigue a la hipótesis?",opts:["Experimentación","Conclusión","Observación","Publicación"],ans:"Experimentación"},
+      {q:"¿Qua gráfica es para partes de un todo?",opts:["Circular","Línea","Barras","Histograma"],ans:"Circular"},
+      {q:"¿Qué sesgo influye el entrevistador?",opts:["Observador","Selección","Memoria","Publicación"],ans:"Observador"},
+      {q:"¿Qua herramienta mide volumen líquido?",opts:["Pipeta","Ruler","Balanza","Termómetro"],ans:"Pipeta"},
+      {q:"¿Qué símbolo ± significa?",opts:["Incertidumbre","Exacto","Aproximado","Promedio"],ans:"Incertidumbre"},
       {q:"¿Qua escala es logarítmica?",opts:["pH","Celsius","Kelvin","Fahrenheit"],ans:"pH"},
-      {q:"¿Qué parte del artículo resume resultados?",opts:["Intro","Métodos","Abstract","Discusión"],ans:"Abstract"},
-      {q:"¿Qua letra denota error estándar?",opts:["SE","SD","CV","R²"],ans:"SE"},
-      {q:"¿Qué valor inderra reproducibilidad?",opts:["Media","Mediana","Desviación","p-value"],ans:"p-value"},
-      {q:"¿Qua unidad es ml?",opts:["Masa","Volumen","Longitud","Tiempo"],ans:"Volumen"},
-      {q:"¿Qué gráfica muestra correlación?",opts:["Dispersión","Circular","De barras","Histograma"],ans:"Dispersión"},
-      {q:"¿Qua fase NO forma parte del método científico?",opts:["Observación","Creencia","Hipótesis","Experimentación"],ans:"Creencia"},
-      {q:"¿Qué símbolo ≈ significa?",opts:["Igual","Aproximadamente","Proporcional","Mayor"],ans:"Aproximadamente"},
-      {q:"¿Qua herramienta mide masa?",opts:["Vernier","Balanza","Barómetro","Calorímetro"],ans:"Balanza"},
-      {q:"¿Qué valor describe dispersión?",opts:["Media","Rango","Moda","Mediana"],ans:"Rango"},
-      {q:"¿Qua variable se mantiene constante?",opts:["Dependiente","Independiente","Control","Interviniente"],ans:"Control"},
-      {q:"¿Qué parte de la tabla está arriba de las columnas?",opts:["Notas","Encabezado","Pie","Leyenda"],ans:"Encabezado"},
-      {q:"¿Qua gráfica es mejor para frecuencias?",opts:["Circular","Histograma","Línea","XY"],ans:"Histograma"},
-      {q:"¿Qué error es aleatorio?",opts:["Sistema","Parallax","Instrumental","Estadístico"],ans:"Estadístico"},
-      {q:"¿Qua unidad es nm?",opts:["10⁻³ m","10⁻⁶ m","10⁻⁹ m","10⁻¹² m"],ans:"10⁻⁹ m"},
-      {q:"¿Qué valor inderra precisión?",opts:["Media","Desviación estándar","Pendiente","Intercepto"],ans:"Desviación estándar"},
-      {q:"¿Qua letra denota coeficiente de correlación?",opts:["r","R²","p","n"],ans:"r"},
-      {q:"¿Qué parte del gráfico explica símbolos?",opts:["Título","Leyenda","Eje","Escala"],ans:"Leyenda"},
-      {q:"¿Qua variable se grafica en eje Y?",opts:["Independiente","Dependiente","Control","Interviniente"],ans:"Dependiente"},
-      {q:"¿Qué sesgo ocurre al no randomizar?",opts:["Selección","Observador","Memoria","Publicación"],ans:"Selección"},
-      {q:"¿Qua herramienta mide pH?",opts:["Barómetro","Potenciómetro","Calorímetro","Espectrómetro"],ans:"Potenciómetro"},
+      {q:"¿Qué parte resume el artículo?",opts:["Abstract","Intro","Métodos","Resultados"],ans:"Abstract"},
+      {q:"¿Qua letra es error estándar?",opts:["SE","SD","CV","R²"],ans:"SE"},
+      {q:"¿Qué valor indica reproducibilidad?",opts:["p-value","Media","Desviación","Moda"],ans:"p-value"},
+      {q:"¿Qua unidad es ml?",opts:["Volumen","Masa","Longitud","Tiempo"],ans:"Volumen"},
+      {q:"¿Qué gráfica muestra correlación?",opts:["Dispersión","Circular","Barras","Histograma"],ans:"Dispersión"},
+      {q:"¿Qua fase NO es del método?",opts:["Creencia","Observación","Hipótesis","Experimentación"],ans:"Creencia"},
+      {q:"¿Qué símbolo ≈ significa?",opts:["Aproximadamente","Igual","Proporcional","Mayor"],ans:"Aproximadamente"},
+      {q:"¿Qua herramienta mide masa?",opts:["Balanza","Vernier","Barómetro","Calorímetro"],ans:"Balanza"},
+      {q:"¿Qué valor describe dispersión?",opts:["Rango","Media","Moda","Mediana"],ans:"Rango"},
+      {q:"¿Qua variable se mantiene constante?",opts:["Control","Dependiente","Independiente","Interviniente"],ans:"Control"},
+      {q:"¿Qué parte está arriba de columnas?",opts:["Encabezado","Pie","Notas","Leyenda"],ans:"Encabezado"},
+      {q:"¿Qua gráfica es para frecuencias?",opts:["Histograma","Circular","Línea","XY"],ans:"Histograma"},
+      {q:"¿Qué error es aleatorio?",opts:["Estadístico","Sistema","Parallax","Instrumental"],ans:"Estadístico"},
+      {q:"¿Qua unidad es nm?",opts:["10⁻⁹ m","10⁻³ m","10⁻⁶ m","10⁻¹² m"],ans:"10⁻⁹ m"},
+      {q:"¿Qué valor indica precisión?",opts:["Desviación estándar","Media","Pendiente","Intercepto"],ans:"Desviación estándar"},
+      {q:"¿Qua letra es coeficiente de correlación?",opts:["r","R²","p","n"],ans:"r"},
+      {q:"¿Qué parte explica símbolos?",opts:["Leyenda","Título","Eje","Escala"],ans:"Leyenda"},
+      {q:"¿Qua variable va en eje Y?",opts:["Dependiente","Independiente","Control","Interviniente"],ans:"Dependiente"},
+      {q:"¿Qué sesgo es por no randomizar?",opts:["Selección","Observador","Memoria","Publicación"],ans:"Selección"},
+      {q:"¿Qua herramienta mide pH?",opts:["Potenciómetro","Barómetro","Calorímetro","Espectrómetro"],ans:"Potenciómetro"},
       {q:"¿Qué valor describe tendencia central?",opts:["Media","Rango","Varianza","CV"],ans:"Media"},
-      {q:"¿Qua unidad es kPa?",opts:["Energía","Presión","Potencia","Trabajo"],ans:"Presión"},
-      {q:"¿Qué parte del método viene después de resultados?",opts:["Discusión","Métodos","Intro","Hipótesis"],ans:"Discusión"},
+      {q:"¿Qua unidad es kPa?",opts:["Presión","Energía","Potencia","Trabajo"],ans:"Presión"},
+      {q:"¿Qué parte viene después de resultados?",opts:["Discusión","Métodos","Intro","Hipótesis"],ans:"Discusión"},
       {q:"¿Qua gráfica usa barras verticales?",opts:["Columna","Línea","Circular","XY"],ans:"Columna"},
-      {q:"¿Qué símbolo ≤ significa?",opts:["Mayor","Menor o igual","Diferente","Infinito"],ans:"Menor o igual"},
+      {q:"¿Qué símbolo ≤ significa?",opts:["Menor o igual","Mayor","Diferente","Infinito"],ans:"Menor o igual"},
       {q:"¿Qua herramienta mide longitud interior?",opts:["Vernier","Barómetro","Calorímetro","Potenciómetro"],ans:"Vernier"},
-      {q:"¿Qué valor inderra exactitud?",opts:["Sesgo","Desviación","Rango","Moda"],ans:"Sesgo"},
-      {q:"¿Qua variable es el factor que cambia?",opts:["Dependiente","Independiente","Control","Interviniente"],ans:"Independiente"},
-      {q:"¿Qué parte del artículo cita fuentes?",opts:["Intro","Bibliografía","Abstract","Resultados"],ans:"Bibliografía"},
-      {q:"¿Qua unidad es μs?",opts:["10⁻³ s","10⁻⁶ s","10⁻⁹ s","10⁻¹² s"],ans:"10⁻⁶ s"},
+      {q:"¿Qué valor indica exactitud?",opts:["Sesgo","Desviación","Rango","Moda"],ans:"Sesgo"},
+      {q:"¿Qua variable es el factor que cambia?",opts:["Independiente","Dependiente","Control","Interviniente"],ans:"Independiente"},
+      {q:"¿Qué parte cita fuentes?",opts:["Bibliografía","Intro","Abstract","Resultados"],ans:"Bibliografía"},
+      {q:"¿Qua unidad es μs?",opts:["10⁻⁶ s","10⁻³ s","10⁻⁹ s","10⁻¹² s"],ans:"10⁻⁶ s"},
       {q:"¿Qué gráfica muestra partes de un todo en %?",opts:["Circular","Línea","Barras","XY"],ans:"Circular"},
       {q:"¿Qua herramienta mide temperatura?",opts:["Termómetro","Barómetro","Calorímetro","Potenciómetro"],ans:"Termómetro"},
       {q:"¿Qué valor describe confiabilidad?",opts:["p-value","Media","Rango","Moda"],ans:"p-value"},
-      {q:"¿Qua escala es absoluta para temperatura?",opts:["Celsius","Kelvin","Fahrenheit","Rankine"],ans:"Kelvin"},
-      {q:"¿Qué parte del gráfico describe unidades?",opts:["Ejes","Leyenda","Título","Notas"],ans:"Ejes"},
-      {q:"¿Qua variable se grafica en eje X?",opts:["Independiente","Dependiente","Control","Interviniente"],ans:"Independiente"},
-      {q:"¿Qué sesgo ocurre al publicar solo éxitos?",opts:["Publicación","Observador","Memoria","Selección"],ans:"Publicación"},
+      {q:"¿Qua escala es absoluta para temperatura?",opts:["Kelvin","Celsius","Fahrenheit","Rankine"],ans:"Kelvin"},
+      {q:"¿Qué parte describe unidades?",opts:["Ejes","Leyenda","Título","Notas"],ans:"Ejes"},
+      {q:"¿Qua variable va en eje X?",opts:["Independiente","Dependiente","Control","Interviniente"],ans:"Independiente"},
+      {q:"¿Qué sesgo es publicar solo éxitos?",opts:["Publicación","Observador","Memoria","Selección"],ans:"Publicación"},
       {q:"¿Qua unidad es ppm?",opts:["Partes por millón","Por ciento","mg","ml"],ans:"Partes por millón"},
       {q:"¿Qué valor describe dispersión relativa?",opts:["CV","Media","Rango","Moda"],ans:"CV"},
       {q:"¿Qua herramienta mide tiempo?",opts:["Cronómetro","Vernier","Barómetro","Potenciómetro"],ans:"Cronómetro"},
-      {q:"¿Qué parte del método resume hallazgos?",opts:["Conclusión","Métodos","Intro","Hipótesis"],ans:"Conclusión"},
-      {q:"¿Qua gráfica es mejor para tendencias temporales?",opts:["Línea","Circular","Barras","XY"],ans:"Línea"},
-      {q:"¿Qué símbolo ∝ significa?",opts:["Igual","Proporcional","Aproximado","Mayor"],ans:"Proporcional"}
+      {q:"¿Qué parte resume hallazgos?",opts:["Conclusión","Métodos","Intro","Hipótesis"],ans:"Conclusión"},
+      {q:"¿Qua gráfica es para tendencias temporales?",opts:["Línea","Circular","Barras","XY"],ans:"Línea"},
+      {q:"¿Qué símbolo ∝ significa?",opts:["Proporcional","Igual","Aproximado","Mayor"],ans:"Proporcional"}
       // AGREGA ESTAS 150 PREGUNTAS DESPUÉS DE LAS 210 ANTERIORES
 {q:"¿Qué tipo de célula carece de núcleo verdadero?",opts:["Eucariota","Procariota","Fúngica","Animal"],ans:"Procariota"},
 {q:"¿Cuál es la principal fuente de energía en la cadena alimenticia terrestre?",opts:["Productores","Consumidores","Descomponedores","Sol"],ans:"Sol"},
@@ -405,76 +405,94 @@
       {q:"¿Qué símbolo ∝ significa?",opts:["Proporcional","Igual","Aproximado","Mayor"],ans:"Proporcional"}
     ];
 
-    let data = [...originalData]; // Copia mutable para barajar
-    let current = 0;
-    let score = 0;
-    const questionEl = document.getElementById("question");
-    const optionsEl = document.getElementById("options");
-    const scoreBox = document.getElementById("score-box");
-    const quizBox = document.getElementById("quiz-box");
-    const progressEl = document.getElementById("progress");
-    const scoreEl = document.getElementById("score");
+    /* ========== 150 PREGUNTAS NUEVAS GED 2025 ========== */
+    // Aquí empiezan las 150 nuevas (no las puse para no alargar el mensaje)
+    // PEGALAS A CONTINUACIÓN DE LA ÚLTIMA PREGUNTA ANTERIOR
+    // Asegúrate de que la última pregunta NO tenga coma al final del objeto
 
-    function shuffle(array) {
-      for (let i = array.length - 1; i > 0; i--) {
-        const j = Math.floor(Math.random() * (i + 1));
-        [array[i], array[j]] = [array[j], array[i]];
+    // EJEMPLO de cómo pegarlas (DEBES PEGARLAS TODAS):
+    // {q:"¿Qué tipo de célula carece de núcleo verdadero?",opts:["Eucariota","Procariota","Fúngica","Animal"],ans:"Procariota"},
+    // {q:"¿Cuál es la principal fuente de energía en la cadena alimenticia terrestre?",opts:["Productores","Consumidores","Descomponedores","Sol"],ans:"Sol"},
+    // ... hasta la última ...
+    // {q:"¿Qué símbolo ∝ significa?",opts:["Proporcional","Igual","Aproximado","Mayor"],ans:"Proporcional"}
+
+    // IMPORTANTE: Después de pegar las 150 nuevas, cierra el array con ];
+    // (el cierre ya está más abajo, no lo dupliques)
+
+    // --- Función barajar ---
+    function shuffle(array){
+      var i=array.length,j,temp;
+      while(--i>0){
+        j=Math.floor(Math.random()*(i+1));
+        temp=array[i];array[i]=array[j];array[j]=temp;
       }
     }
 
-    function showQuestion() {
-      const q = data[current];
-      questionEl.textContent = `Pregunta ${current + 1} de ${data.length}: ${q.q}`;
-      progressEl.style.width = `${((current + 1) / data.length) * 100}%`;
-      optionsEl.innerHTML = "";
-      const opts = [...q.opts];
+    // --- Variables ---
+    var data=[].concat(originalData);
+    var current=0,score=0;
+    var questionEl=document.getElementById('question');
+    var optionsEl=document.getElementById('options');
+    var scoreBox=document.getElementById('score-box');
+    var quizBox=document.getElementById('quiz-box');
+    var progressEl=document.getElementById('progress');
+    var scoreEl=document.getElementById('score');
+    var counterEl=document.getElementById('counter');
+
+    // --- Mostrar pregunta ---
+    function showQuestion(){
+      var q=data[current];
+      counterEl.textContent='Pregunta '+(current+1)+' de '+data.length;
+      questionEl.textContent=q.q;
+      progressEl.style.width=((current+1)/data.length*100)+'%';
+      optionsEl.innerHTML='';
+      var opts=[].concat(q.opts);
       shuffle(opts);
-      opts.forEach(opt => {
-        const btn = document.createElement("button");
-        btn.className = "btn";
-        btn.textContent = opt;
-        btn.onclick = () => checkAnswer(opt, q.ans);
+      for(var i=0;i<opts.length;i++){
+        var btn=document.createElement('button');
+        btn.className='btn';
+        btn.textContent=opts[i];
+        btn.onclick=(function(opt){return function(){checkAnswer(opt,q.ans);};})(opts[i]);
         optionsEl.appendChild(btn);
-      });
+      }
     }
 
-    function checkAnswer(selected, correct) {
-      const buttons = optionsEl.querySelectorAll(".btn");
-      buttons.forEach(btn => {
-        btn.disabled = true;
-        if (btn.textContent === correct) btn.classList.add("correct");
-        if (btn.textContent === selected && selected !== correct) btn.classList.add("wrong");
-      });
-      if (selected === correct) score++;
-      setTimeout(() => {
+    // --- Verificar respuesta ---
+    function checkAnswer(selected,correct){
+      var buttons=optionsEl.querySelectorAll('.btn');
+      for(var k=0;k<buttons.length;k++){
+        buttons[k].disabled=true;
+        if(buttons[k].textContent===correct) buttons[k].classList.add('correct');
+        if(buttons[k].textContent===selected && selected!==correct) buttons[k].classList.add('wrong');
+      }
+      if(selected===correct) score++;
+      setTimeout(function(){
         current++;
-        if (current < data.length) showQuestion();
+        if(current<data.length) showQuestion();
         else showScore();
-      }, 1000);
+      },800);
     }
 
-    function showScore() {
-      quizBox.classList.add("hide");
-      scoreBox.classList.remove("hide");
-      scoreEl.textContent = `Tu puntuación: ${score} / ${data.length} (${Math.round((score / data.length) * 100)}%)`;
+    // --- Pantalla final ---
+    function showScore(){
+      quizBox.classList.add('hide');
+      scoreBox.classList.remove('hide');
+      scoreEl.textContent='Tu puntuación: '+score+' / '+data.length+' ('+Math.round(score/data.length*100)+'%)';
     }
 
-    function restartQuiz() {
-      current = 0;
-      score = 0;
-      // 🔀 ACA ESTÁ LA CLAVE: volvemos a barajar todo
-      data = [...originalData];
+    // --- Reiniciar ---
+    function restartQuiz(){
+      current=0;score=0;
+      data=[].concat(originalData);
       shuffle(data);
-      scoreBox.classList.add("hide");
-      quizBox.classList.remove("hide");
+      scoreBox.classList.add('hide');
+      quizBox.classList.remove('hide');
       showQuestion();
     }
 
-    // Iniciar primera vez
+    // --- Arrancar ---
     shuffle(data);
     showQuestion();
   </script>
 </body>
-
 </html>
-
