@@ -50,10 +50,8 @@
   </div>
 
   <script>
-// ========== ARRAY COMPLETO DE 360 PREGUNTAS CORREGIDAS Y LISTAS PARA USAR ==========
-const preguntas = [
-  // BIOLOGÍA (preguntas 1-90 aprox.)
-  {q:"¿Qué organelo convierte la glucosa en ATP?", opts:["Cloroplasto", "Mitocondria", "Lisosoma", "Aparato de Golgi"], ans:"Mitocondria"},
+    const originalData = [
+      {q:"¿Qué organelo convierte la glucosa en ATP?", opts:["Cloroplasto", "Mitocondria", "Lisosoma", "Aparato de Golgi"], ans:"Mitocondria"},
   {q:"¿Cuál es el producto inmediato de la fotosíntesis?", opts:["Glucosa", "Oxígeno", "Dióxido de carbono", "Amoníaco"], ans:"Oxígeno"},
   {q:"¿Qué tipo de unión mantiene unidos los nucleótidos en una sola cadena de ADN?", opts:["Iónica", "Covalente", "Hidrógeno", "Van der Waals"], ans:"Covalente"},
   {q:"¿Cuántos cromosomas hay en una célula humana tras la meiosis I?", opts:["23", "46", "92", "23 pares"], ans:"23"},
@@ -258,7 +256,7 @@ const preguntas = [
   {q:"¿Qué sección resume los principales hallazgos y su importancia?", opts:["Metodología", "Conclusión", "Discusión", "Resumen"], ans:"Conclusión"},
   {q:"¿Qué tipo de gráfico muestra tendencias a lo largo del tiempo?", opts:["Circular", "De barras", "De línea", "De dispersión"], ans:"De línea"},
   {q:"¿Qué símbolo indica proporcionalidad directa?", opts:["=", "≈", "∝", "±"], ans:"∝"}
-];
+    ];
 
     // Código del quiz (perfecto y sin errores)
     let data = [], current = 0, score = 0, timeLeft = 156, timerInterval = null, questionAnswered = false;
@@ -369,4 +367,3 @@ const preguntas = [
   </script>
 </body>
 </html>
-
