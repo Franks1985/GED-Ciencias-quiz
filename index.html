@@ -1,369 +1,381 @@
 <!DOCTYPE html>
 <html lang="es">
 <head>
-  <meta charset="utf-8">
-  <title>Quiz GED Ciencias NY - 360 Preguntas</title>
-  <meta name="viewport" content="width=device-width, initial-scale=1">
-  <style>
-    *{box-sizing:border-box;margin:0;padding:0}
-    body{font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Arial,sans-serif;background:#f0f5ff;color:#222;display:flex;justify-content:center;padding:20px 10px 80px;min-height:100vh}
-    .container{max-width:640px;width:100%;background:#fff;border-radius:18px;box-shadow:0 15px 40px rgba(0,0,0,.18);padding:30px 25px}
-    h1{text-align:center;color:#003366;font-size:1.8em;margin-bottom:10px}
-    .counter{text-align:center;color:#555;font-size:1.1em;margin:10px 0}
-    .progress-bar{height:10px;background:#ddd;border-radius:6px;overflow:hidden;margin:15px 0}
-    .progress{height:100%;background:#4caf50;border-radius:6px;width:0%;transition:width .5s ease}
-    .timer-container{display:flex;justify-content:space-between;align-items:center;margin:20px 0;flex-wrap:wrap;gap:15px}
-    .timer{font-size:30px;font-weight:bold;padding:14px 28px;background:#e3f2fd;color:#1565c0;border-radius:12px;min-width:140px;text-align:center}
-    .timer.warning{background:#fff3e0;color:#ff8f00}
-    .timer.danger{background:#ffebee;color:#d32f2f;animation:pulse 1s infinite}
-    @keyframes pulse{0%,100%{transform:scale(1)}50%{transform:scale(1.1)}}
-    .question{font-size:1.2em;line-height:1.5;margin:25px 0;font-weight:500}
-    .btn{width:100%;padding:18px;margin:10px 0;border:none;border-radius:12px;background:#003366;color:#fff;font-size:1.15em;cursor:pointer;transition:.3s}
-    .btn:hover{background:#035aa6}
-    .btn.correct{background:#43a047 !important}
-    .btn.wrong{background:#e53935 !important}
-    .btn.disabled{opacity:0.6;pointer-events:none}
-    .score{text-align:center;font-size:1.8em;font-weight:700;color:#003366;margin:30px 0}
-    .restart{display:block;margin:40px auto;padding:16px 50px;background:#ff8f00;color:#fff;border:none;border-radius:14px;font-size:1.3em;cursor:pointer}
-    .restart:hover{background:#e65100}
-    .hide{display:none}
-    @media(max-width:600px){.timer{font-size:32px}}
-  </style>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Simulador GED Science 2025 - Nueva York</title>
+    <style>
+        body { font-family: Arial, sans-serif; max-width: 800px; margin: 0 auto; padding: 20px; }
+        #timer { font-size: 24px; color: red; text-align: center; }
+        #pregunta-container { border: 1px solid #ccc; padding: 20px; margin: 10px 0; }
+        .opciones { margin: 10px 0; }
+        label { display: block; margin: 5px 0; }
+        #drag-zone { border: 2px dashed #ccc; min-height: 100px; padding: 10px; }
+        .draggable { cursor: move; background: #f0f0f0; padding: 5px; margin: 5px; display: inline-block; }
+        #hotspot-img { width: 300px; height: 200px; position: relative; border: 1px solid #000; }
+        .hotspot { width: 20px; height: 20px; background: red; position: absolute; cursor: pointer; }
+        textarea { width: 100%; height: 100px; }
+        button { padding: 10px; margin: 5px; background: #007bff; color: white; border: none; cursor: pointer; }
+        #resultados { display: none; }
+        .feedback { color: green; }
+        .error { color: red; }
+    </style>
 </head>
 <body>
-  <div class="container">
-    <h1>Quiz GED Ciencias NY</h1>
-    <div class="counter" id="counter">Pregunta 1 de 360</div>
-    <div class="progress-bar"><div class="progress" id="progress"></div></div>
-    <div class="timer-container">
-      <span style="color:#555;font-size:16px">Tiempo restante:</span>
-      <div class="timer" id="timer">02:36</div>
+    <h1>Simulador GED® Science Test - 2025 (Nueva York)</h1>
+    <p><em>90 minutos • 34 preguntas • Temas: Life (40%), Physical (40%), Earth/Space (20%). Puntaje: 145+ para aprobar.</em></p>
+    <p><a href="https://education.ti.com/en/us/product/ti-30xs-multi-view" target="_blank">Calculadora TI-30XS (abre en nueva pestaña)</a></p>
+    
+    <div id="intro">
+        <button onclick="iniciarExamen()">Iniciar Examen</button>
     </div>
-    <div id="quiz-box">
-      <div class="question" id="question"></div>
-      <div id="options"></div>
+    
+    <div id="quiz" style="display:none;">
+        <div id="timer">Tiempo restante: 90:00</div>
+        <div id="pregunta-container"></div>
+        <button id="siguiente-btn" onclick="siguientePregunta()" style="display:none;">Siguiente</button>
+        <button id="finalizar-btn" onclick="finalizarExamen()" style="display:none;">Finalizar Examen</button>
     </div>
-    <div id="score-box" class="hide">
-      <div class="score" id="score"></div>
-      <button class="restart" onclick="restartQuiz()">Reiniciar Quiz</button>
+    
+    <div id="resultados">
+        <h2>Resultados GED Science</h2>
+        <div id="puntaje-detalle"></div>
     </div>
-  </div>
 
-  <script>
-    const originalData = [
-      {q:"¿Qué organelo convierte la glucosa en ATP?", opts:["Cloroplasto", "Mitocondria", "Lisosoma", "Aparato de Golgi"], ans:"Mitocondria"},
-  {q:"¿Cuál es el producto inmediato de la fotosíntesis?", opts:["Glucosa", "Oxígeno", "Dióxido de carbono", "Amoníaco"], ans:"Oxígeno"},
-  {q:"¿Qué tipo de unión mantiene unidos los nucleótidos en una sola cadena de ADN?", opts:["Iónica", "Covalente", "Hidrógeno", "Van der Waals"], ans:"Covalente"},
-  {q:"¿Cuántos cromosomas hay en una célula humana tras la meiosis I?", opts:["23", "46", "92", "23 pares"], ans:"23"},
-  {q:"¿Qué célula transporta oxígeno?", opts:["Neutrófilo", "Eritrocito", "Linfocito", "Eosinófilo"], ans:"Eritrocito"},
-  {q:"¿Qué organismo se usa por su cloroplasto grande en experimentos de fotosíntesis?", opts:["Elodea", "Trigo", "Maíz", "Hongo"], ans:"Elodea"},
-  {q:"¿Qué base nitrogenada NO se encuentra en el ARN?", opts:["Adenina", "Citosina", "Timina", "Guanina"], ans:"Timina"},
-  {q:"¿Qué organelo modifica y empaca proteínas?", opts:["Ribosoma", "Aparato de Golgi", "Peroxisoma", "Vacuola"], ans:"Aparato de Golgi"},
-  {q:"¿Cuál es el primer paso de la mitosis?", opts:["Anafase", "Profase", "Metafase", "Telofase"], ans:"Profase"},
-  {q:"¿Qué ley de Mendel explica la recuperación del rasgo recesivo en F2?", opts:["Segregación", "Independencia", "Dominancia", "Ligamiento"], ans:"Segregación"},
-  {q:"¿Qué estructura pasa información del núcleo al citoplasma?", opts:["ADN", "ARN mensajero", "ARN ribosomal", "ATP"], ans:"ARN mensajero"},
-  {q:"¿Qué tipo de mutación sustituye un único nucleótido?", opts:["Inserción", "Deleción", "Sustitución puntual", "Duplicación"], ans:"Sustitución puntual"},
-  {q:"¿Qué gas es producto final de la respiración celular aeróbica?", opts:["CO₂", "O₂", "CH₄", "N₂"], ans:"CO₂"},
-  {q:"¿Qué vasos llevan sangre oxigenada al corazón?", opts:["Arterias pulmonares", "Venas pulmonares", "Vena cava", "Aorta"], ans:"Venas pulmonares"},
-  {q:"¿Qué enzima desdobla el almidón?", opts:["Lipasa", "Amilasa", "Peptidasa", "Catalasa"], ans:"Amilasa"},
-  {q:"¿Qué tipo de reproducción produce descendencia genéticamente idéntica?", opts:["Sexual", "Asexual", "Meiótica", "Gamética"], ans:"Asexual"},
-  {q:"¿Qué estructura de la planta absorbe agua y sales minerales?", opts:["Estoma", "Xilema", "Raíz", "Corola"], ans:"Raíz"},
-  {q:"¿Qué hormona vegetal promueve el alargamiento del tallo?", opts:["Auxina", "Etileno", "Ácido abscísico", "Giberelina"], ans:"Auxina"},
-  {q:"¿Qué nivel trófico ocupa un hongo descomponedor?", opts:["Productor", "Consumidor primario", "Consumidor secundario", "Descomponedor"], ans:"Descomponedor"},
-  {q:"¿Qué proceso convierte nitrato en nitrógeno gaseoso?", opts:["Fijación", "Nitrificación", "Desnitrificación", "Asimilación"], ans:"Desnitrificación"},
-  {q:"¿Qué compartimento del ecosistema contiene más carbono?", opts:["Atmósfera", "Océanos", "Plantas", "Suelo"], ans:"Océanos"},
-  {q:"¿Qué enfermedad es causada por un virus que ataca linfocitos T?", opts:["SIDA", "Tuberculosis", "Diabetes", "Hemofilia"], ans:"SIDA"},
-  {q:"¿Qué cromosoma está trisómico en el síndrome de Down?", opts:["13", "18", "21", "X"], ans:"21"},
-  {q:"¿Qué tipo de selección favorece los fenotipos extremos?", opts:["Disruptiva", "Estabilizante", "Direccional", "Sexual"], ans:"Disruptiva"},
-  {q:"¿Qué gas es crítico para la capa de ozono?", opts:["O₂", "O₃", "N₂", "CH₄"], ans:"O₃"},
-  {q:"¿Qué estructura del corazón impide el reflujo sanguíneo?", opts:["Septum", "Válvula", "Aurícula", "Ventrículo"], ans:"Válvula"},
-  {q:"¿Qué pigmento da color verde a las plantas?", opts:["Caroteno", "Clorofila", "Xantofila", "Antocianina"], ans:"Clorofila"},
-  {q:"¿Qué unidad mide la biodiversidad de una comunidad?", opts:["Biomasa", "Índice de Shannon", "pH", "ppm"], ans:"Índice de Shannon"},
-  {q:"¿Qué tipo de célula carece de núcleo definido?", opts:["Animal", "Vegetal", "Procariota", "Fúngica"], ans:"Procariota"},
-  {q:"¿Cuál es un ejemplo de cadena alimenticia acuática?", opts:["Alga → copépodo → pez", "Hierba → vaca → humano", "Hongo → insecto → sapo", "Planta → ciervo → lobo"], ans:"Alga → copépodo → pez"},
-  {q:"¿Qué gas absorben los estomas durante el día?", opts:["O₂", "CO₂", "N₂", "CH₄"], ans:"CO₂"},
-  {q:"¿En qué etapa de la respiración celular ocurre el ciclo de Krebs?", opts:["Glicólisis", "Ciclo de Krebs", "Cadena transportadora de electrones", "Fermentación"], ans:"Ciclo de Krebs"},
-  {q:"¿Qué tipo de ARN lleva los aminoácidos al ribosoma?", opts:["mRNA", "tRNA", "rRNA", "snRNA"], ans:"tRNA"},
-  {q:"¿Qué ley de Mendel se conoce como ley de la segregación independiente?", opts:["Primera ley", "Segunda ley (independencia)", "Tercera ley", "Hardy-Weinberg"], ans:"Segunda ley (independencia)"},
-  {q:"¿Qué estructura une huesos entre sí?", opts:["Tendón", "Ligamento", "Cartílago", "Músculo"], ans:"Ligamento"},
-  {q:"¿Qué glándula regula el metabolismo basal?", opts:["Tiroides", "Hipófisis", "Adrenal", "Páncreas"], ans:"Tiroides"},
-  {q:"¿Qué parte del encéfalo controla la respiración involuntaria?", opts:["Cerebelo", "Bulbo raquídeo", "Hipotálamo", "Lóbulo frontal"], ans:"Bulbo raquíedo"},
-  {q:"¿Qué tipo de sangre es donante universal?", opts:["AB+", "O−", "A+", "B+"], ans:"O−"},
-  {q:"¿De qué compuesto se forma la mayor parte del ATP?", opts:["ADP + P", "Glucosa", "CO₂", "Lactato"], ans:"ADP + P"},
-  {q:"¿Qué vacuna protege contra el virus del papiloma humano?", opts:["BCG", "Gardasil", "Salk", "MMR"], ans:"Gardasil"},
-  {q:"¿Qué organismo introduce nitrógeno atmosférico al suelo?", opts:["Leguminosa + Rhizobium", "Hongo", "Ameba", "Plancton"], ans:"Leguminosa + Rhizobium"},
-  {q:"¿Qué célula produce insulina?", opts:["Célula alfa pancreática", "Célula beta pancreática", "Hepatocito", "Enterocito"], ans:"Célula beta pancreática"},
-  {q:"¿Qué estructura se contrae para generar movimiento muscular?", opts:["Sarcómero", "Neurona", "Osteocito", "Queratinocito"], ans:"Sarcómero"},
-  {q:"¿Qué sustancia transporta oxígeno en mamíferos?", opts:["Hemoglobina", "Clorofila", "Insulina", "Colágeno"], ans:"Hemoglobina"},
-  {q:"¿Qué proceso genera dos células hijas genéticamente iguales?", opts:["Meiosis", "Mitosis", "Gametogénesis", "Fecundación"], ans:"Mitosis"},
-  {q:"¿Qué gas producen los descomponedores anaeróbicos?", opts:["O₂", "CH₄", "N₂O", "CO"], ans:"CH₄"},
-  {q:"¿Qué estructura almacena el material genético?", opts:["Citoplasma", "Núcleo", "Lisosoma", "Membrana"], ans:"Núcleo"},
-  {q:"¿En qué fase de la mitosis se alinean los cromosomas en el ecuador?", opts:["Profase", "Metafase", "Anafase", "Telofase"], ans:"Metafase"},
-  {q:"¿Qué tipo de mutación añade bases al ADN?", opts:["Inserción", "Deleción", "Sustitución", "Inversión"], ans:"Inserción"},
-  {q:"¿Qué hormona aumenta la glucosa sanguínea?", opts:["Insulina", "Glucagón", "Testosterona", "Estrógeno"], ans:"Glucagón"},
-  {q:"¿Qué estructura del ojo regula la entrada de luz?", opts:["Córnea", "Iris", "Retina", "Cristalino"], ans:"Iris"},
-  {q:"¿Qué tipo de reproducción vegetal es el esqueje?", opts:["Sexual", "Asexual", "Gamética", "Por esporas"], ans:"Asexual"},
-  {q:"¿Qué moléculas transportan electrones en la respiración celular?", opts:["Citocromos", "Ribosomas", "Lisosomas", "Centríolos"], ans:"Citocromos"},
-  {q:"¿Qué nivel de organización viene después de órgano?", opts:["Célula", "Tejido", "Sistema", "Orgánulo"], ans:"Sistema"},
-  {q:"¿Qué ley de la termodinámica dice que la energía se conserva?", opts:["Primera", "Segunda", "Tercera", "Ninguna"], ans:"Primera"},
-  {q:"¿Qué sustancia de la saliva inicia la digestión del almidón?", opts:["Amilasa", "Lipasa", "Pepsina", "Insulina"], ans:"Amilasa"},
-  {q:"¿Qué gas se forma en la fermentación láctica?", opts:["CO₂", "CH₄", "No se produce gas", "O₂"], ans:"No se produce gas"},
-  {q:"¿Cuál es el cromosoma humano más grande?", opts:["21", "1", "Y", "22"], ans:"1"},
-  {q:"¿Qué estructura de la flor produce polen?", opts:["Estambre", "Pistilo", "Pétalo", "Sépalo"], ans:"Estambre"},
-  {q:"¿Qué tipo de simbiosis beneficia a ambas especies?", opts:["Mutualismo", "Comensalismo", "Parasitismo", "Competencia"], ans:"Mutualismo"},
-  {q:"¿Qué compuesto almacena energía de alta disponibilidad en el músculo?", opts:["Glucógeno", "ATP", "Fosfocreatina", "Lactato"], ans:"Fosfocreatina"},
-  {q:"¿Qué tipo de ARN forma las subunidades del ribosoma?", opts:["mRNA", "tRNA", "rRNA", "siRNA"], ans:"rRNA"},
-  {q:"¿En qué etapa de la meiosis se reduce a la mitad el número de cromosomas?", opts:["Meiosis I", "Meiosis II", "Profase", "Metafase"], ans:"Meiosis I"},
-  {q:"¿Qué hormona vegetal induce el cierre de estomas y la dormancia?", opts:["Giberelina", "Auxina", "Ácido abscísico", "Citocinina"], ans:"Ácido abscísico"},
-  {q:"¿Qué estructura del espermatozoide contiene enzimas digestivas?", opts:["Cola", "Acrosoma", "Núcleo", "Mitocondria"], ans:"Acrosoma"},
-  {q:"¿Qué proceso genera variabilidad genética durante la meiosis?", opts:["Mitosis", "Crossing-over", "Clonación", "Gemación"], ans:"Crossing-over"},
-  {q:"¿Qué tipo de célula tiene pared celular de quitina?", opts:["Animal", "Vegetal", "Hongo", "Bacteria"], ans:"Hongo"},
-  {q:"¿Qué sustancia da color a la piel humana?", opts:["Melanina", "Hemoglobina", "Clorofila", "Caroteno"], ans:"Melanina"},
-  {q:"¿Qué estructura del corazón bombea sangre hacia los pulmones?", opts:["Aurícula derecha", "Ventrículo derecho", "Aurícula izquierda", "Ventrículo izquierdo"], ans:"Ventrículo derecho"},
-  {q:"¿Qué tipo de mutación NO cambia el aminoácido codificado?", opts:["Silenciosa", "Nonsense", "Missense", "Frameshift"], ans:"Silenciosa"},
-  {q:"¿En qué forma absorben las raíces el nitrógeno del suelo?", opts:["N₂", "NO₃⁻", "NH₃", "N₂O"], ans:"NO₃⁻"},
-  {q:"¿Qué etapa de la respiración celular NO requiere oxígeno?", opts:["Glicólisis", "Ciclo de Krebs", "Cadena transportadora", "Fosforilación oxidativa"], ans:"Glicólisis"},
-  {q:"¿Qué estructura del oído transmite las vibraciones al oído interno?", opts:["Cóclea", "Martillo", "Iris", "Retina"], ans:"Martillo"},
-  {q:"¿Qué hormona regula los ciclos de sueño-vigilia?", opts:["Melatonina", "Adrenalina", "Tiroxina", "Insulina"], ans:"Melatonina"},
+    <script>
+        // ========== TU ARRAY DE PREGUNTAS (usa el de antes, con points:1 y agrega 'type' ==========
+        // Ejemplo con 5; reemplaza con tus 360. Agrega 'type: "mc"' (multiple choice), "drag", "hotspot", "short" aleatoriamente.
+        const todasPreguntas =  [
+      {q:"¿Qué organelo convierte la glucosa en ATP?", opts:["Cloroplasto", "Mitocondria", "Lisosoma", "Aparato de Golgi"], ans:"Mitocondria", points:1, type:"mc"},
+  {q:"¿Cuál es el producto inmediato de la fotosíntesis?", opts:["Glucosa", "Oxígeno", "Dióxido de carbono", "Amoníaco"], ans:"Oxígeno", points:1, type:"mc"},
+  {q:"¿Qué tipo de unión mantiene unidos los nucleótidos en una sola cadena de ADN?", opts:["Iónica", "Covalente", "Hidrógeno", "Van der Waals"], ans:"Covalente", points:1, type:"mc"},
+  {q:"¿Cuántos cromosomas hay en una célula humana tras la meiosis I?", opts:["23", "46", "92", "23 pares"], ans:"23", points:1, type:"mc"},
+  {q:"¿Qué célula transporta oxígeno?", opts:["Neutrófilo", "Eritrocito", "Linfocito", "Eosinófilo"], ans:"Eritrocito", points:1, type:"mc"},
+  {q:"¿Qué organismo se usa por su cloroplasto grande en experimentos de fotosíntesis?", opts:["Elodea", "Trigo", "Maíz", "Hongo"], ans:"Elodea", points:1, type:"mc"},
+  {q:"¿Qué base nitrogenada NO se encuentra en el ARN?", opts:["Adenina", "Citosina", "Timina", "Guanina"], ans:"Timina", points:1, type:"mc"},
+  {q:"¿Qué organelo modifica y empaca proteínas?", opts:["Ribosoma", "Aparato de Golgi", "Peroxisoma", "Vacuola"], ans:"Aparato de Golgi", points:1, type:"mc"},
+  {q:"¿Cuál es el primer paso de la mitosis?", opts:["Anafase", "Profase", "Metafase", "Telofase"], ans:"Profase", points:1, type:"mc"},
+  {q:"¿Qué ley de Mendel explica la recuperación del rasgo recesivo en F2?", opts:["Segregación", "Independencia", "Dominancia", "Ligamiento"], ans:"Segregación", points:1, type:"mc"},
+  {q:"¿Qué estructura pasa información del núcleo al citoplasma?", opts:["ADN", "ARN mensajero", "ARN ribosomal", "ATP"], ans:"ARN mensajero", points:1, type:"mc"},
+  {q:"¿Qué tipo de mutación sustituye un único nucleótido?", opts:["Inserción", "Deleción", "Sustitución puntual", "Duplicación"], ans:"Sustitución puntual", points:1, type:"mc"},
+  {q:"¿Qué gas es producto final de la respiración celular aeróbica?", opts:["CO₂", "O₂", "CH₄", "N₂"], ans:"CO₂", points:1, type:"mc"},
+  {q:"¿Qué vasos llevan sangre oxigenada al corazón?", opts:["Arterias pulmonares", "Venas pulmonares", "Vena cava", "Aorta"], ans:"Venas pulmonares", points:1, type:"mc"},
+  {q:"¿Qué enzima desdobla el almidón?", opts:["Lipasa", "Amilasa", "Peptidasa", "Catalasa"], ans:"Amilasa", points:1, type:"mc"},
+  {q:"¿Qué tipo de reproducción produce descendencia genéticamente idéntica?", opts:["Sexual", "Asexual", "Meiótica", "Gamética"], ans:"Asexual", points:1, type:"mc"},
+  {q:"¿Qué estructura de la planta absorbe agua y sales minerales?", opts:["Estoma", "Xilema", "Raíz", "Corola"], ans:"Raíz", points:1, type:"mc"},
+  {q:"¿Qué hormona vegetal promueve el alargamiento del tallo?", opts:["Auxina", "Etileno", "Ácido abscísico", "Giberelina"], ans:"Auxina", points:1, type:"mc"},
+  {q:"¿Qué nivel trófico ocupa un hongo descomponedor?", opts:["Productor", "Consumidor primario", "Consumidor secundario", "Descomponedor"], ans:"Descomponedor", points:1, type:"mc"},
+  {q:"¿Qué proceso convierte nitrato en nitrógeno gaseoso?", opts:["Fijación", "Nitrificación", "Desnitrificación", "Asimilación"], ans:"Desnitrificación", points:1, type:"mc"},
+  {q:"¿Qué compartimento del ecosistema contiene más carbono?", opts:["Atmósfera", "Océanos", "Plantas", "Suelo"], ans:"Océanos", points:1, type:"mc"},
+  {q:"¿Qué enfermedad es causada por un virus que ataca linfocitos T?", opts:["SIDA", "Tuberculosis", "Diabetes", "Hemofilia"], ans:"SIDA", points:1, type:"mc"},
+  {q:"¿Qué cromosoma está trisómico en el síndrome de Down?", opts:["13", "18", "21", "X"], ans:"21", points:1, type:"mc"},
+  {q:"¿Qué tipo de selección favorece los fenotipos extremos?", opts:["Disruptiva", "Estabilizante", "Direccional", "Sexual"], ans:"Disruptiva", points:1, type:"mc"},
+  {q:"¿Qué gas es crítico para la capa de ozono?", opts:["O₂", "O₃", "N₂", "CH₄"], ans:"O₃", points:1, type:"mc"},
+  {q:"¿Qué estructura del corazón impide el reflujo sanguíneo?", opts:["Septum", "Válvula", "Aurícula", "Ventrículo"], ans:"Válvula", points:1, type:"mc"},
+  {q:"¿Qué pigmento da color verde a las plantas?", opts:["Caroteno", "Clorofila", "Xantofila", "Antocianina"], ans:"Clorofila", points:1, type:"mc"},
+  {q:"¿Qué unidad mide la biodiversidad de una comunidad?", opts:["Biomasa", "Índice de Shannon", "pH", "ppm"], ans:"Índice de Shannon", points:1, type:"mc"},
+  {q:"¿Qué tipo de célula carece de núcleo definido?", opts:["Animal", "Vegetal", "Procariota", "Fúngica"], ans:"Procariota", points:1, type:"mc"},
+  {q:"¿Cuál es un ejemplo de cadena alimenticia acuática?", opts:["Alga → copépodo → pez", "Hierba → vaca → humano", "Hongo → insecto → sapo", "Planta → ciervo → lobo"], ans:"Alga → copépodo → pez", points:1, type:"mc"},
+  {q:"¿Qué gas absorben los estomas durante el día?", opts:["O₂", "CO₂", "N₂", "CH₄"], ans:"CO₂", points:1, type:"mc"},
+  {q:"¿En qué etapa de la respiración celular ocurre el ciclo de Krebs?", opts:["Glicólisis", "Ciclo de Krebs", "Cadena transportadora de electrones", "Fermentación"], ans:"Ciclo de Krebs", points:1, type:"mc"},
+  {q:"¿Qué tipo de ARN lleva los aminoácidos al ribosoma?", opts:["mRNA", "tRNA", "rRNA", "snRNA"], ans:"tRNA", points:1, type:"mc"},
+  {q:"¿Qué ley de Mendel se conoce como ley de la segregación independiente?", opts:["Primera ley", "Segunda ley (independencia)", "Tercera ley", "Hardy-Weinberg"], ans:"Segunda ley (independencia)", points:1, type:"mc"},
+  {q:"¿Qué estructura une huesos entre sí?", opts:["Tendón", "Ligamento", "Cartílago", "Músculo"], ans:"Ligamento", points:1, type:"mc"},
+  {q:"¿Qué glándula regula el metabolismo basal?", opts:["Tiroides", "Hipófisis", "Adrenal", "Páncreas"], ans:"Tiroides", points:1, type:"mc"},
+  {q:"¿Qué parte del encéfalo controla la respiración involuntaria?", opts:["Cerebelo", "Bulbo raquídeo", "Hipotálamo", "Lóbulo frontal"], ans:"Bulbo raquíedo", points:1, type:"mc"},
+  {q:"¿Qué tipo de sangre es donante universal?", opts:["AB+", "O−", "A+", "B+"], ans:"O−", points:1, type:"mc"},
+  {q:"¿De qué compuesto se forma la mayor parte del ATP?", opts:["ADP + P", "Glucosa", "CO₂", "Lactato"], ans:"ADP + P", points:1, type:"mc"},
+  {q:"¿Qué vacuna protege contra el virus del papiloma humano?", opts:["BCG", "Gardasil", "Salk", "MMR"], ans:"Gardasil", points:1, type:"mc"},
+  {q:"¿Qué organismo introduce nitrógeno atmosférico al suelo?", opts:["Leguminosa + Rhizobium", "Hongo", "Ameba", "Plancton"], ans:"Leguminosa + Rhizobium", points:1, type:"mc"},
+  {q:"¿Qué célula produce insulina?", opts:["Célula alfa pancreática", "Célula beta pancreática", "Hepatocito", "Enterocito"], ans:"Célula beta pancreática", points:1, type:"mc"},
+  {q:"¿Qué estructura se contrae para generar movimiento muscular?", opts:["Sarcómero", "Neurona", "Osteocito", "Queratinocito"], ans:"Sarcómero", points:1, type:"mc"},
+  {q:"¿Qué sustancia transporta oxígeno en mamíferos?", opts:["Hemoglobina", "Clorofila", "Insulina", "Colágeno"], ans:"Hemoglobina", points:1, type:"mc"},
+  {q:"¿Qué proceso genera dos células hijas genéticamente iguales?", opts:["Meiosis", "Mitosis", "Gametogénesis", "Fecundación"], ans:"Mitosis", points:1, type:"mc"},
+  {q:"¿Qué gas producen los descomponedores anaeróbicos?", opts:["O₂", "CH₄", "N₂O", "CO"], ans:"CH₄", points:1, type:"mc"},
+  {q:"¿Qué estructura almacena el material genético?", opts:["Citoplasma", "Núcleo", "Lisosoma", "Membrana"], ans:"Núcleo", points:1, type:"mc"},
+  {q:"¿En qué fase de la mitosis se alinean los cromosomas en el ecuador?", opts:["Profase", "Metafase", "Anafase", "Telofase"], ans:"Metafase", points:1, type:"mc"},
+  {q:"¿Qué tipo de mutación añade bases al ADN?", opts:["Inserción", "Deleción", "Sustitución", "Inversión"], ans:"Inserción", points:1, type:"mc"},
+  {q:"¿Qué hormona aumenta la glucosa sanguínea?", opts:["Insulina", "Glucagón", "Testosterona", "Estrógeno"], ans:"Glucagón", points:1, type:"mc"},
+  {q:"¿Qué estructura del ojo regula la entrada de luz?", opts:["Córnea", "Iris", "Retina", "Cristalino"], ans:"Iris", points:1, type:"mc"},
+  {q:"¿Qué tipo de reproducción vegetal es el esqueje?", opts:["Sexual", "Asexual", "Gamética", "Por esporas"], ans:"Asexual", points:1, type:"mc"},
+  {q:"¿Qué moléculas transportan electrones en la respiración celular?", opts:["Citocromos", "Ribosomas", "Lisosomas", "Centríolos"], ans:"Citocromos", points:1, type:"mc"},
+  {q:"¿Qué nivel de organización viene después de órgano?", opts:["Célula", "Tejido", "Sistema", "Orgánulo"], ans:"Sistema", points:1, type:"mc"},
+  {q:"¿Qué ley de la termodinámica dice que la energía se conserva?", opts:["Primera", "Segunda", "Tercera", "Ninguna"], ans:"Primera", points:1, type:"mc"},
+  {q:"¿Qué sustancia de la saliva inicia la digestión del almidón?", opts:["Amilasa", "Lipasa", "Pepsina", "Insulina"], ans:"Amilasa", points:1, type:"mc"},
+  {q:"¿Qué gas se forma en la fermentación láctica?", opts:["CO₂", "CH₄", "No se produce gas", "O₂"], ans:"No se produce gas", points:1, type:"mc"},
+  {q:"¿Cuál es el cromosoma humano más grande?", opts:["21", "1", "Y", "22"], ans:"1", points:1, type:"mc"},
+  {q:"¿Qué estructura de la flor produce polen?", opts:["Estambre", "Pistilo", "Pétalo", "Sépalo"], ans:"Estambre", points:1, type:"mc"},
+  {q:"¿Qué tipo de simbiosis beneficia a ambas especies?", opts:["Mutualismo", "Comensalismo", "Parasitismo", "Competencia"], ans:"Mutualismo", points:1, type:"mc"},
+  {q:"¿Qué compuesto almacena energía de alta disponibilidad en el músculo?", opts:["Glucógeno", "ATP", "Fosfocreatina", "Lactato"], ans:"Fosfocreatina", points:1, type:"mc"},
+  {q:"¿Qué tipo de ARN forma las subunidades del ribosoma?", opts:["mRNA", "tRNA", "rRNA", "siRNA"], ans:"rRNA", points:1, type:"mc"},
+  {q:"¿En qué etapa de la meiosis se reduce a la mitad el número de cromosomas?", opts:["Meiosis I", "Meiosis II", "Profase", "Metafase"], ans:"Meiosis I", points:1, type:"mc"},
+  {q:"¿Qué hormona vegetal induce el cierre de estomas y la dormancia?", opts:["Giberelina", "Auxina", "Ácido abscísico", "Citocinina"], ans:"Ácido abscísico", points:1, type:"mc"},
+  {q:"¿Qué estructura del espermatozoide contiene enzimas digestivas?", opts:["Cola", "Acrosoma", "Núcleo", "Mitocondria"], ans:"Acrosoma", points:1, type:"mc"},
+  {q:"¿Qué proceso genera variabilidad genética durante la meiosis?", opts:["Mitosis", "Crossing-over", "Clonación", "Gemación"], ans:"Crossing-over", points:1, type:"mc"},
+  {q:"¿Qué tipo de célula tiene pared celular de quitina?", opts:["Animal", "Vegetal", "Hongo", "Bacteria"], ans:"Hongo", points:1, type:"mc"},
+  {q:"¿Qué sustancia da color a la piel humana?", opts:["Melanina", "Hemoglobina", "Clorofila", "Caroteno"], ans:"Melanina", points:1, type:"mc"},
+  {q:"¿Qué estructura del corazón bombea sangre hacia los pulmones?", opts:["Aurícula derecha", "Ventrículo derecho", "Aurícula izquierda", "Ventrículo izquierdo"], ans:"Ventrículo derecho", points:1, type:"mc"},
+  {q:"¿Qué tipo de mutación NO cambia el aminoácido codificado?", opts:["Silenciosa", "Nonsense", "Missense", "Frameshift"], ans:"Silenciosa", points:1, type:"mc"},
+  {q:"¿En qué forma absorben las raíces el nitrógeno del suelo?", opts:["N₂", "NO₃⁻", "NH₃", "N₂O"], ans:"NO₃⁻", points:1, type:"mc"},
+  {q:"¿Qué etapa de la respiración celular NO requiere oxígeno?", opts:["Glicólisis", "Ciclo de Krebs", "Cadena transportadora", "Fosforilación oxidativa"], ans:"Glicólisis", points:1, type:"mc"},
+  {q:"¿Qué estructura del oído transmite las vibraciones al oído interno?", opts:["Cóclea", "Martillo", "Iris", "Retina"], ans:"Martillo", points:1, type:"mc"},
+  {q:"¿Qué hormona regula los ciclos de sueño-vigilia?", opts:["Melatonina", "Adrenalina", "Tiroxina", "Insulina"], ans:"Melatonina", points:1, type:"mc"},
   {q:"¿Qué tipo de célula realiza principalmente fagocitosis?", opts:["Neutrófilo", "Eritrocito", "Trombocito", "Melanocito"], ans:"Neutrófilo"},
-  {q:"¿Qué condición debe cumplirse para que una población esté en equilibrio Hardy-Weinberg?", opts:["Ausencia total de mutación", "Población infinita", "Ausencia de selección", "Todas las anteriores"], ans:"Todas las anteriores"},
-  {q:"¿Qué estructura almacena agua y mantiene la turgencia en células vegetales?", opts:["Vacuola", "Núcleo", "Ribosoma", "Centríolo"], ans:"Vacuola"},
-  {q:"¿Qué proceso genera cuatro células haploides?", opts:["Mitosis", "Meiosis", "Citocinesis", "Fermentación"], ans:"Meiosis"},
-  {q:"¿Qué tipo de ARN interfiere con la expresión génica?", opts:["mRNA", "siRNA", "tRNA", "rRNA"], ans:"siRNA"},
-  {q:"¿Qué estructura del sistema nervioso transmite los impulsos nerviosos?", opts:["Neurona", "Célula glial", "Vaina de mielina", "Sinapsis"], ans:"Neurona"},
+  {q:"¿Qué condición debe cumplirse para que una población esté en equilibrio Hardy-Weinberg?", opts:["Ausencia total de mutación", "Población infinita", "Ausencia de selección", "Todas las anteriores"], ans:"Todas las anteriores", points:1, type:"mc"},
+  {q:"¿Qué estructura almacena agua y mantiene la turgencia en células vegetales?", opts:["Vacuola", "Núcleo", "Ribosoma", "Centríolo"], ans:"Vacuola", points:1, type:"mc"},
+  {q:"¿Qué proceso genera cuatro células haploides?", opts:["Mitosis", "Meiosis", "Citocinesis", "Fermentación"], ans:"Meiosis", points:1, type:"mc"},
+  {q:"¿Qué tipo de ARN interfiere con la expresión génica?", opts:["mRNA", "siRNA", "tRNA", "rRNA"], ans:"siRNA", points:1, type:"mc"},
+  {q:"¿Qué estructura del sistema nervioso transmite los impulsos nerviosos?", opts:["Neurona", "Célula glial", "Vaina de mielina", "Sinapsis"], ans:"Neurona", points:1, type:"mc"},
 
   // FÍSICA Y QUÍMICA
-  {q:"¿Qué unidad equivale a un Newton·metro?", opts:["Pascal", "Joule", "Watt", "Coulomb"], ans:"Joule"},
-  {q:"¿Qué ley establece que F = m·a?", opts:["Primera ley de Newton", "Segunda ley de Newton", "Tercera ley de Newton", "Primera ley de Kepler"], ans:"Segunda ley de Newton"},
-  {q:"¿Qué tipo de energía posee un libro sobre una estantería?", opts:["Cinética", "Potencial gravitatoria", "Térmica", "Nuclear"], ans:"Potencial gravitatoria"},
-  {q:"¿Qué transformación de energía ocurre en un altavoz?", opts:["Eléctrica → sonora", "Sonora → eléctrica", "Mecánica → térmica", "Química → eléctrica"], ans:"Eléctrica → sonora"},
-  {q:"¿Qué color de luz visible tiene mayor frecuencia?", opts:["Rojo", "Amarillo", "Azul", "Verde"], ans:"Azul"},
-  {q:"¿Qué partícula subatómica tiene carga positiva?", opts:["Electrón", "Neutrón", "Protón", "Fotón"], ans:"Protón"},
-  {q:"¿Qué tipo de reacción libera calor al medio?", opts:["Endotérmica", "Exotérmica", "Nuclear", "Redox"], ans:"Exotérmica"},
-  {q:"¿Qué ley establece la conservación de la masa?", opts:["Boyle", "Lavoisier", "Charles", "Dalton"], ans:"Lavoisier"},
-  {q:"¿Qué gas constituye aproximadamente el 78 % del aire?", opts:["O₂", "N₂", "CO₂", "Ar"], ans:"N₂"},
-  {q:"¿Qué cambio de estado absorbe energía del entorno?", opts:["Condensación", "Solidificación", "Vaporización", "Deposición"], ans:"Vaporización"},
-  {q:"¿Qué planeta rocoso tiene anillos visibles?", opts:["Tierra", "Marte", "Saturno", "Ninguno"], ans:"Ninguno"},
-  {q:"¿En qué capa atmosférica se encuentra la mayor parte del ozono?", opts:["Troposfera", "Estratosfera", "Mesosfera", "Termosfera"], ans:"Estratosfera"},
-  {q:"¿Qué proceso forma la lluvia ácida?", opts:["Fijación de nitrógeno", "Combustión de SO₂ y NOx", "Evaporación", "Sublimación"], ans:"Combustión de SO₂ y NOx"},
-  {q:"¿Qué tipo de marea ocurre durante luna nueva y llena?", opts:["Marea muerta", "Marea viva", "Marea de cuadratura", "Marea diurna"], ans:"Marea viva"},
-  {q:"¿Qué unidad mide la presión?", opts:["Joule", "Pascal", "Newton", "Kelvin"], ans:"Pascal"},
-  {q:"¿Qué mineral es óxido de silicio (SiO₂)?", opts:["Cuarzo", "Calcita", "Halita", "Pirita"], ans:"Cuarzo"},
-  {q:"¿Qué tipo de roca es el mármol?", opts:["Ígnea", "Sedimentaria", "Metamórfica", "Magmática"], ans:"Metamórfica"},
-  {q:"¿Qué escala mide la dureza de los minerales?", opts:["Richter", "Mercalli", "Mohs", "Celsius"], ans:"Mohs"},
-  {q:"¿Qué gas es el principal contribuyente al efecto invernadero antropogénico?", opts:["N₂", "O₂", "CO₂", "Ar"], ans:"CO₂"},
-  {q:"¿Qué ley establece que P₁V₁ = P₂V₂ a temperatura constante?", opts:["Boyle", "Charles", "Gay-Lussac", "Avogadro"], ans:"Boyle"},
-  {q:"¿Cuál es la velocidad de la luz en el vacío?", opts:["3 × 10⁵ km/s", "3 × 10⁶ km/s", "3 × 10⁴ km/s", "3 × 10³ km/s"], ans:"3 × 10⁵ km/s"},
-  {q:"¿Qué fenómeno explica que el cielo sea azul durante el día?", opts:["Reflexión", "Refracción", "Dispersión de Rayleigh", "Difracción"], ans:"Dispersión de Rayleigh"},
-  {q:"¿En qué galaxia se encuentra nuestro sistema solar?", opts:["Andrómeda", "Vía Láctea", "Sombrero", "Elíptica"], ans:"Vía Láctea"},
-  {q:"¿Qué planeta tiene la mayor temperatura superficial promedio?", opts:["Mercurio", "Venus", "Tierra", "Marte"], ans:"Venus"},
-  {q:"¿Qué unidad mide la capacidad eléctrica?", opts:["Faradio", "Ohmio", "Voltio", "Amperio"], ans:"Faradio"},
-  {q:"¿Qué tipo de frente produce lluvias prolongadas?", opts:["Cálido", "Frío", "Ocluido", "Estacionario"], ans:"Ocluido"},
-  {q:"¿Qué capa de la Tierra es líquida?", opts:["Corteza", "Manto superior", "Núcleo externo", "Núcleo interno"], ans:"Núcleo externo"},
-  {q:"¿Qué proceso libera electrones en una reacción redox?", opts:["Oxidación", "Reducción", "Neutralización", "Sublimación"], ans:"Oxidación"},
-  {q:"¿Qué ley relaciona la presión parcial con la fracción molar?", opts:["Raoult", "Dalton", "Henry", "Avogadro"], ans:"Dalton"},
-  {q:"¿Cuál es el número atómico del carbono?", opts:["4", "6", "12", "14"], ans:"6"},
-  {q:"¿Qué isótopo se usa para datar materiales orgánicos antiguos?", opts:["C-14", "U-238", "K-40", "I-131"], ans:"C-14"},
-  {q:"¿Qué tipo de enlace implica compartir electrones?", opts:["Iónico", "Covalente", "Metálico", "Hidrógeno"], ans:"Covalente"},
-  {q:"¿Qué gas producen los descomponedores anaeróbicos en pantanos?", opts:["O₂", "CH₄", "N₂", "H₂"], ans:"CH₄"},
-  {q:"¿Qué escala mide la intensidad sísmica según el daño observado?", opts:["Richter", "Mercalli", "Mohs", "Beaufort"], ans:"Mercalli"},
-  {q:"¿Cuál es el satélite natural más grande del sistema solar?", opts:["Luna", "Fobos", "Ío", "Titán"], ans:"Luna"},
-  {q:"¿Qué fenómeno convierte directamente agua sólida en vapor?", opts:["Evaporación", "Ebullición", "Condensación", "Sublimación"], ans:"Sublimación"},
-  {q:"¿En qué unidad se mide comúnmente la energía eléctrica consumida?", opts:["Watt", "Joule", "kWh", "Voltio"], ans:"kWh"},
-  {q:"¿Qué ley establece que V/T = constante a presión constante?", opts:["Charles", "Boyle", "Gay-Lussac", "Dalton"], ans:"Charles"},
-  {q:"¿Qué planeta tiene el día más largo (casi 243 días terrestres)?", opts:["Venus", "Mercurio", "Tierra", "Marte"], ans:"Venus"},
-  {q:"¿Qué partícula fundamental no tiene masa en reposo?", opts:["Fotón", "Electrón", "Protón", "Neutrón"], ans:"Fotón"},
-  {q:"¿Qué tipo de reacción absorbe calor del entorno?", opts:["Endotérmica", "Exotérmica", "Nuclear", "Redox"], ans:"Endotérmica"},
-  {q:"¿Qué gas es el principal componente del vapor de agua en erupciones volcánicas?", opts:["CO₂", "H₂O (vapor)", "SO₂", "N₂"], ans:"H₂O (vapor)"},
-  {q:"¿Cuál es la velocidad de escape desde la superficie terrestre?", opts:["7.9 km/s", "11.2 km/s", "16.7 km/s", "42 km/s"], ans:"11.2 km/s"},
-  {q:"¿Qué ley de Kepler relaciona el cuadrado del período con el cubo del radio?", opts:["Primera", "Segunda", "Tercera", "Ninguna"], ans:"Tercera"},
-  {q:"¿Qué mineral es carbonato de calcio (CaCO₃)?", opts:["Calcita", "Cuarzo", "Magnetita", "Halita"], ans:"Calcita"},
-  {q:"¿Qué capa atmosférica tiene la temperatura más baja?", opts:["Mesosfera", "Troposfera", "Termosfera", "Estratosfera"], ans:"Mesosfera"},
-  {q:"¿Qué gas se produce en la combustión completa de hidrocarburos?", opts:["CO", "CO₂", "O₂", "N₂"], ans:"CO₂"},
-  {q:"¿Qué número cuántico principal define el nivel de energía?", opts:["n", "l", "mₗ", "mₛ"], ans:"n"},
-  {q:"¿Qué unidad equivale a joule por segundo?", opts:["Watt", "Newton", "Pascal", "Coulomb"], ans:"Watt"},
-  {q:"¿Qué planeta tiene los anillos más extensos y visibles?", opts:["Saturno", "Júpiter", "Urano", "Neptuno"], ans:"Saturno"},
-  {q:"¿Qué fenómeno hace que la luz cambie de velocidad al pasar entre medios?", opts:["Refracción", "Reflexión", "Difracción", "Dispersión"], ans:"Refracción"},
-  {q:"¿Qué ley establece que V = I·R?", opts:["Ohm", "Faraday", "Lenz", "Coulomb"], ans:"Ohm"},
-  {q:"¿Qué gas común es más denso que el aire?", opts:["CO₂", "H₂", "He", "NH₃"], ans:"CO₂"},
-  {q:"¿Qué cambio de estado es sólido directamente a gas?", opts:["Sublimación", "Fusión", "Vaporización", "Condensación"], ans:"Sublimación"},
-  {q:"¿Qué escala mide la acidez o basicidad de una solución?", opts:["pH", "Celsius", "Kelvin", "Mohs"], ans:"pH"},
-  {q:"¿Qué planeta tiene la órbita más excéntrica?", opts:["Mercurio", "Venus", "Tierra", "Marte"], ans:"Mercurio"},
-  {q:"¿Qué ley de Newton explica acción y reacción?", opts:["Primera", "Segunda", "Tercera", "Ninguna"], ans:"Tercera"},
-  {q:"¿Qué unidad mide la inductancia eléctrica?", opts:["Henry", "Faradio", "Tesla", "Weber"], ans:"Henry"},
-  {q:"¿Qué gas se produce principalmente en la desnitrificación?", opts:["N₂", "NH₃", "NO₂⁻", "NO₃⁻"], ans:"N₂"},
-  {q:"¿Qué fenómeno causa la marea roja?", opts:["Floración de dinoflagelados", "Tsunami", "Tornado", "Terremoto"], ans:"Floración de dinoflagelados"},
-  {q:"¿A qué velocidad aproximada equivale Mach 1 al nivel del mar?", opts:["1234 km/h", "300 000 km/s", "40 000 km/h", "1 km/s"], ans:"1234 km/h"},
-  {q:"¿Qué ley de la termodinámica indica que la entropía tiende a aumentar?", opts:["Primera", "Segunda", "Tercera", "Cero"], ans:"Segunda"},
-  {q:"¿Qué unidad mide el flujo magnético?", opts:["Weber", "Tesla", "Gauss", "Henry"], ans:"Weber"},
-  {q:"¿Qué gas liberan las plantas durante la fotosíntesis diurna?", opts:["O₂", "CO₂", "N₂", "CH₄"], ans:"O₂"},
-  {q:"¿Qué ley establece la conservación de la energía?", opts:["Primera ley de la termodinámica", "Segunda ley", "Tercera ley", "Ley cero"], ans:"Primera ley de la termodinámica"},
-  {q:"¿Cuál es la velocidad del sonido en el aire a 20 °C?", opts:["343 m/s", "3 × 10⁸ m/s", "9.8 m/s", "22.4 L/mol"], ans:"343 m/s"},
-  {q:"¿Qué fenómeno produce un eclipse solar?", opts:["Sombra de la Luna sobre la Tierra", "Sombra de la Tierra sobre la Luna", "Reflexión", "Refracción"], ans:"Sombra de la Luna sobre la Tierra"},
-  {q:"¿Qué mineral es sulfato de calcio dihidratado?", opts:["Yeso", "Calcita", "Dolomita", "Aragonito"], ans:"Yeso"},
-  {q:"¿Qué escala mide la energía liberada por un terremoto?", opts:["Richter", "Mercalli", "Mohs", "Beaufort"], ans:"Richter"},
-  {q:"¿Qué gas tóxico se produce en la combustión incompleta?", opts:["CO", "CO₂", "O₂", "N₂"], ans:"CO"},
-  {q:"¿Qué unidad mide la viscosidad dinámica?", opts:["Pa·s", "Pascal", "Joule", "Watt"], ans:"Pa·s"},
-  {q:"¿Qué planeta tiene la menor densidad promedio?", opts:["Saturno", "Tierra", "Marte", "Mercurio"], ans:"Saturno"},
+  {q:"¿Qué unidad equivale a un Newton·metro?", opts:["Pascal", "Joule", "Watt", "Coulomb"], ans:"Joule", points:1, type:"mc"},
+  {q:"¿Qué ley establece que F = m·a?", opts:["Primera ley de Newton", "Segunda ley de Newton", "Tercera ley de Newton", "Primera ley de Kepler"], ans:"Segunda ley de Newton", points:1, type:"mc"},
+  {q:"¿Qué tipo de energía posee un libro sobre una estantería?", opts:["Cinética", "Potencial gravitatoria", "Térmica", "Nuclear"], ans:"Potencial gravitatoria", points:1, type:"mc"},
+  {q:"¿Qué transformación de energía ocurre en un altavoz?", opts:["Eléctrica → sonora", "Sonora → eléctrica", "Mecánica → térmica", "Química → eléctrica"], ans:"Eléctrica → sonora", points:1, type:"mc"},
+  {q:"¿Qué color de luz visible tiene mayor frecuencia?", opts:["Rojo", "Amarillo", "Azul", "Verde"], ans:"Azul", points:1, type:"mc"},
+  {q:"¿Qué partícula subatómica tiene carga positiva?", opts:["Electrón", "Neutrón", "Protón", "Fotón"], ans:"Protón", points:1, type:"mc"},
+  {q:"¿Qué tipo de reacción libera calor al medio?", opts:["Endotérmica", "Exotérmica", "Nuclear", "Redox"], ans:"Exotérmica", points:1, type:"mc"},
+  {q:"¿Qué ley establece la conservación de la masa?", opts:["Boyle", "Lavoisier", "Charles", "Dalton"], ans:"Lavoisier", points:1, type:"mc"},
+  {q:"¿Qué gas constituye aproximadamente el 78 % del aire?", opts:["O₂", "N₂", "CO₂", "Ar"], ans:"N₂", points:1, type:"mc"},
+  {q:"¿Qué cambio de estado absorbe energía del entorno?", opts:["Condensación", "Solidificación", "Vaporización", "Deposición"], ans:"Vaporización", points:1, type:"mc"},
+  {q:"¿Qué planeta rocoso tiene anillos visibles?", opts:["Tierra", "Marte", "Saturno", "Ninguno"], ans:"Ninguno", points:1, type:"mc"},
+  {q:"¿En qué capa atmosférica se encuentra la mayor parte del ozono?", opts:["Troposfera", "Estratosfera", "Mesosfera", "Termosfera"], ans:"Estratosfera", points:1, type:"mc"},
+  {q:"¿Qué proceso forma la lluvia ácida?", opts:["Fijación de nitrógeno", "Combustión de SO₂ y NOx", "Evaporación", "Sublimación"], ans:"Combustión de SO₂ y NOx", points:1, type:"mc"},
+  {q:"¿Qué tipo de marea ocurre durante luna nueva y llena?", opts:["Marea muerta", "Marea viva", "Marea de cuadratura", "Marea diurna"], ans:"Marea viva", points:1, type:"mc"},
+  {q:"¿Qué unidad mide la presión?", opts:["Joule", "Pascal", "Newton", "Kelvin"], ans:"Pascal", points:1, type:"mc"},
+  {q:"¿Qué mineral es óxido de silicio (SiO₂)?", opts:["Cuarzo", "Calcita", "Halita", "Pirita"], ans:"Cuarzo", points:1, type:"mc"},
+  {q:"¿Qué tipo de roca es el mármol?", opts:["Ígnea", "Sedimentaria", "Metamórfica", "Magmática"], ans:"Metamórfica", points:1, type:"mc"},
+  {q:"¿Qué escala mide la dureza de los minerales?", opts:["Richter", "Mercalli", "Mohs", "Celsius"], ans:"Mohs", points:1, type:"mc"},
+  {q:"¿Qué gas es el principal contribuyente al efecto invernadero antropogénico?", opts:["N₂", "O₂", "CO₂", "Ar"], ans:"CO₂", points:1, type:"mc"},
+  {q:"¿Qué ley establece que P₁V₁ = P₂V₂ a temperatura constante?", opts:["Boyle", "Charles", "Gay-Lussac", "Avogadro"], ans:"Boyle", points:1, type:"mc"},
+  {q:"¿Cuál es la velocidad de la luz en el vacío?", opts:["3 × 10⁵ km/s", "3 × 10⁶ km/s", "3 × 10⁴ km/s", "3 × 10³ km/s"], ans:"3 × 10⁵ km/s", points:1, type:"mc"},
+  {q:"¿Qué fenómeno explica que el cielo sea azul durante el día?", opts:["Reflexión", "Refracción", "Dispersión de Rayleigh", "Difracción"], ans:"Dispersión de Rayleigh", points:1, type:"mc"},
+  {q:"¿En qué galaxia se encuentra nuestro sistema solar?", opts:["Andrómeda", "Vía Láctea", "Sombrero", "Elíptica"], ans:"Vía Láctea", points:1, type:"mc"},
+  {q:"¿Qué planeta tiene la mayor temperatura superficial promedio?", opts:["Mercurio", "Venus", "Tierra", "Marte"], ans:"Venus", points:1, type:"mc"},
+  {q:"¿Qué unidad mide la capacidad eléctrica?", opts:["Faradio", "Ohmio", "Voltio", "Amperio"], ans:"Faradio", points:1, type:"mc"},
+  {q:"¿Qué tipo de frente produce lluvias prolongadas?", opts:["Cálido", "Frío", "Ocluido", "Estacionario"], ans:"Ocluido", points:1, type:"mc"},
+  {q:"¿Qué capa de la Tierra es líquida?", opts:["Corteza", "Manto superior", "Núcleo externo", "Núcleo interno"], ans:"Núcleo externo", points:1, type:"mc"},
+  {q:"¿Qué proceso libera electrones en una reacción redox?", opts:["Oxidación", "Reducción", "Neutralización", "Sublimación"], ans:"Oxidación", points:1, type:"mc"},
+  {q:"¿Qué ley relaciona la presión parcial con la fracción molar?", opts:["Raoult", "Dalton", "Henry", "Avogadro"], ans:"Dalton", points:1, type:"mc"},
+  {q:"¿Cuál es el número atómico del carbono?", opts:["4", "6", "12", "14"], ans:"6", points:1, type:"mc"},
+  {q:"¿Qué isótopo se usa para datar materiales orgánicos antiguos?", opts:["C-14", "U-238", "K-40", "I-131"], ans:"C-14", points:1, type:"mc"},
+  {q:"¿Qué tipo de enlace implica compartir electrones?", opts:["Iónico", "Covalente", "Metálico", "Hidrógeno"], ans:"Covalente", points:1, type:"mc"},
+  {q:"¿Qué gas producen los descomponedores anaeróbicos en pantanos?", opts:["O₂", "CH₄", "N₂", "H₂"], ans:"CH₄", points:1, type:"mc"},
+  {q:"¿Qué escala mide la intensidad sísmica según el daño observado?", opts:["Richter", "Mercalli", "Mohs", "Beaufort"], ans:"Mercalli", points:1, type:"mc"},
+  {q:"¿Cuál es el satélite natural más grande del sistema solar?", opts:["Luna", "Fobos", "Ío", "Titán"], ans:"Luna", points:1, type:"mc"},
+  {q:"¿Qué fenómeno convierte directamente agua sólida en vapor?", opts:["Evaporación", "Ebullición", "Condensación", "Sublimación"], ans:"Sublimación", points:1, type:"mc"},
+  {q:"¿En qué unidad se mide comúnmente la energía eléctrica consumida?", opts:["Watt", "Joule", "kWh", "Voltio"], ans:"kWh", points:1, type:"mc"},
+  {q:"¿Qué ley establece que V/T = constante a presión constante?", opts:["Charles", "Boyle", "Gay-Lussac", "Dalton"], ans:"Charles", points:1, type:"mc"},
+  {q:"¿Qué planeta tiene el día más largo (casi 243 días terrestres)?", opts:["Venus", "Mercurio", "Tierra", "Marte"], ans:"Venus", points:1, type:"mc"},
+  {q:"¿Qué partícula fundamental no tiene masa en reposo?", opts:["Fotón", "Electrón", "Protón", "Neutrón"], ans:"Fotón", points:1, type:"mc"},
+  {q:"¿Qué tipo de reacción absorbe calor del entorno?", opts:["Endotérmica", "Exotérmica", "Nuclear", "Redox"], ans:"Endotérmica", points:1, type:"mc"},
+  {q:"¿Qué gas es el principal componente del vapor de agua en erupciones volcánicas?", opts:["CO₂", "H₂O (vapor)", "SO₂", "N₂"], ans:"H₂O (vapor)", points:1, type:"mc"},
+  {q:"¿Cuál es la velocidad de escape desde la superficie terrestre?", opts:["7.9 km/s", "11.2 km/s", "16.7 km/s", "42 km/s"], ans:"11.2 km/s", points:1, type:"mc"},
+  {q:"¿Qué ley de Kepler relaciona el cuadrado del período con el cubo del radio?", opts:["Primera", "Segunda", "Tercera", "Ninguna"], ans:"Tercera", points:1, type:"mc"},
+  {q:"¿Qué mineral es carbonato de calcio (CaCO₃)?", opts:["Calcita", "Cuarzo", "Magnetita", "Halita"], ans:"Calcita", points:1, type:"mc"},
+  {q:"¿Qué capa atmosférica tiene la temperatura más baja?", opts:["Mesosfera", "Troposfera", "Termosfera", "Estratosfera"], ans:"Mesosfera", points:1, type:"mc"},
+  {q:"¿Qué gas se produce en la combustión completa de hidrocarburos?", opts:["CO", "CO₂", "O₂", "N₂"], ans:"CO₂", points:1, type:"mc"},
+  {q:"¿Qué número cuántico principal define el nivel de energía?", opts:["n", "l", "mₗ", "mₛ"], ans:"n", points:1, type:"mc"},
+  {q:"¿Qué unidad equivale a joule por segundo?", opts:["Watt", "Newton", "Pascal", "Coulomb"], ans:"Watt", points:1, type:"mc"},
+  {q:"¿Qué planeta tiene los anillos más extensos y visibles?", opts:["Saturno", "Júpiter", "Urano", "Neptuno"], ans:"Saturno", points:1, type:"mc"},
+  {q:"¿Qué fenómeno hace que la luz cambie de velocidad al pasar entre medios?", opts:["Refracción", "Reflexión", "Difracción", "Dispersión"], ans:"Refracción", points:1, type:"mc"},
+  {q:"¿Qué ley establece que V = I·R?", opts:["Ohm", "Faraday", "Lenz", "Coulomb"], ans:"Ohm", points:1, type:"mc"},
+  {q:"¿Qué gas común es más denso que el aire?", opts:["CO₂", "H₂", "He", "NH₃"], ans:"CO₂", points:1, type:"mc"},
+  {q:"¿Qué cambio de estado es sólido directamente a gas?", opts:["Sublimación", "Fusión", "Vaporización", "Condensación"], ans:"Sublimación", points:1, type:"mc"},
+  {q:"¿Qué escala mide la acidez o basicidad de una solución?", opts:["pH", "Celsius", "Kelvin", "Mohs"], ans:"pH", points:1, type:"mc"},
+  {q:"¿Qué planeta tiene la órbita más excéntrica?", opts:["Mercurio", "Venus", "Tierra", "Marte"], ans:"Mercurio", points:1, type:"mc"},
+  {q:"¿Qué ley de Newton explica acción y reacción?", opts:["Primera", "Segunda", "Tercera", "Ninguna"], ans:"Tercera", points:1, type:"mc"},
+  {q:"¿Qué unidad mide la inductancia eléctrica?", opts:["Henry", "Faradio", "Tesla", "Weber"], ans:"Henry", points:1, type:"mc"},
+  {q:"¿Qué gas se produce principalmente en la desnitrificación?", opts:["N₂", "NH₃", "NO₂⁻", "NO₃⁻"], ans:"N₂", points:1, type:"mc"},
+  {q:"¿Qué fenómeno causa la marea roja?", opts:["Floración de dinoflagelados", "Tsunami", "Tornado", "Terremoto"], ans:"Floración de dinoflagelados", points:1, type:"mc"},
+  {q:"¿A qué velocidad aproximada equivale Mach 1 al nivel del mar?", opts:["1234 km/h", "300 000 km/s", "40 000 km/h", "1 km/s"], ans:"1234 km/h", points:1, type:"mc"},
+  {q:"¿Qué ley de la termodinámica indica que la entropía tiende a aumentar?", opts:["Primera", "Segunda", "Tercera", "Cero"], ans:"Segunda", points:1, type:"mc"},
+  {q:"¿Qué unidad mide el flujo magnético?", opts:["Weber", "Tesla", "Gauss", "Henry"], ans:"Weber", points:1, type:"mc"},
+  {q:"¿Qué gas liberan las plantas durante la fotosíntesis diurna?", opts:["O₂", "CO₂", "N₂", "CH₄"], ans:"O₂", points:1, type:"mc"},
+  {q:"¿Qué ley establece la conservación de la energía?", opts:["Primera ley de la termodinámica", "Segunda ley", "Tercera ley", "Ley cero"], ans:"Primera ley de la termodinámica", points:1, type:"mc"},
+  {q:"¿Cuál es la velocidad del sonido en el aire a 20 °C?", opts:["343 m/s", "3 × 10⁸ m/s", "9.8 m/s", "22.4 L/mol"], ans:"343 m/s", points:1, type:"mc"},
+  {q:"¿Qué fenómeno produce un eclipse solar?", opts:["Sombra de la Luna sobre la Tierra", "Sombra de la Tierra sobre la Luna", "Reflexión", "Refracción"], ans:"Sombra de la Luna sobre la Tierra", points:1, type:"mc"},
+  {q:"¿Qué mineral es sulfato de calcio dihidratado?", opts:["Yeso", "Calcita", "Dolomita", "Aragonito"], ans:"Yeso", points:1, type:"mc"},
+  {q:"¿Qué escala mide la energía liberada por un terremoto?", opts:["Richter", "Mercalli", "Mohs", "Beaufort"], ans:"Richter", points:1, type:"mc"},
+  {q:"¿Qué gas tóxico se produce en la combustión incompleta?", opts:["CO", "CO₂", "O₂", "N₂"], ans:"CO", points:1, type:"mc"},
+  {q:"¿Qué unidad mide la viscosidad dinámica?", opts:["Pa·s", "Pascal", "Joule", "Watt"], ans:"Pa·s", points:1, type:"mc"},
+  {q:"¿Qué planeta tiene la menor densidad promedio?", opts:["Saturno", "Tierra", "Marte", "Mercurio"], ans:"Saturno", points:1, type:"mc"},
 
   // MÉTODO CIENTÍFICO Y ANÁLISIS DE DATOS
-  {q:"¿Qué variable se representa en el eje Y de un gráfico?", opts:["Independiente", "Dependiente", "Controlada", "Interviniente"], ans:"Dependiente"},
-  {q:"¿Qué paso del método científico sigue inmediatamente a formular la hipótesis?", opts:["Observación", "Experimentación", "Conclusión", "Publicación"], ans:"Experimentación"},
-  {q:"¿Qué tipo de gráfico representa partes de un todo?", opts:["De barras", "Circular", "De línea", "Histograma"], ans:"Circular"},
-  {q:"¿Qué sesgo ocurre cuando el investigador influye en los participantes?", opts:["De selección", "Del observador", "De memoria", "De publicación"], ans:"Del observador"},
-  {q:"¿Qué instrumento mide con precisión el volumen de líquidos?", opts:["Probeta", "Pipeta", "Matraz", "Vaso precipitado"], ans:"Pipeta"},
-  {q:"¿Qué significa el símbolo ± en datos experimentales?", opts:["Error absoluto", "Incertidumbre", "Promedio", "Desviación máxima"], ans:"Incertidumbre"},
-  {q:"¿Qué escala es logarítmica?", opts:["Celsius", "Kelvin", "pH", "Fahrenheit"], ans:"pH"},
-  {q:"¿Qué sección resume los hallazgos principales de un artículo científico?", opts:["Introducción", "Abstract", "Metodología", "Discusión"], ans:"Abstract"},
-  {q:"¿Qué letra representa comúnmente el error estándar?", opts:["SD", "SE", "CV", "R²"], ans:"SE"},
-  {q:"¿Qué valor indica la probabilidad de que los resultados sean por azar?", opts:["Media", "Desviación estándar", "p-value", "R²"], ans:"p-value"},
-  {q:"¿Qué unidad mide volumen en el sistema métrico?", opts:["Gramo", "Metro", "Litro", "Segundo"], ans:"Litro"},
-  {q:"¿Qué gráfico muestra la relación entre dos variables cuantitativas?", opts:["De barras", "Circular", "De dispersión", "Histograma"], ans:"De dispersión"},
-  {q:"¿Qué paso del método científico NO pertenece estrictamente a él?", opts:["Observación", "Hipótesis", "Creencia personal", "Experimentación"], ans:"Creencia personal"},
-  {q:"¿Qué símbolo significa 'aproximadamente igual'?", opts:["=", "≈", "∝", ">"], ans:"≈"},
-  {q:"¿Qué instrumento mide la masa con mayor precisión?", opts:["Balanza analítica", "Dinamómetro", "Termómetro", "Cronómetro"], ans:"Balanza analítica"},
-  {q:"¿Qué medida de dispersión indica el rango de los datos?", opts:["Media", "Mediana", "Rango", "Moda"], ans:"Rango"},
-  {q:"¿Qué tipo de variable se mantiene constante en un experimento?", opts:["Independiente", "Dependiente", "Controlada", "Aleatoria"], ans:"Controlada"},
-  {q:"¿Qué parte de una tabla está en la fila superior?", opts:["Pie de tabla", "Encabezado", "Cuerpo", "Notas"], ans:"Encabezado"},
-  {q:"¿Qué gráfico representa la distribución de frecuencias?", opts:["De línea", "Circular", "Histograma", "De dispersión"], ans:"Histograma"},
-  {q:"¿Qué tipo de error varía de forma aleatoria?", opts:["Sistemático", "Estadístico", "De paralaje", "Instrumental"], ans:"Estadístico"},
-  {q:"¿Qué unidad equivale a 10⁻⁹ metros?", opts:["Micrómetro", "Nanómetro", "Picómetro", "Angstrom"], ans:"Nanómetro"},
-  {q:"¿Qué medida indica la precisión de los datos?", opts:["Media", "Desviación estándar", "Sesgo", "Rango"], ans:"Desviación estándar"},
-  {q:"¿Qué letra representa el coeficiente de correlación de Pearson?", opts:["R²", "r", "p", "n"], ans:"r"},
-  {q:"¿Qué elemento del gráfico explica los símbolos utilizados?", opts:["Título", "Leyenda", "Ejes", "Escala"], ans:"Leyenda"},
-  {q:"¿En qué eje se representa la variable independiente?", opts:["Eje Y", "Eje X", "Eje Z", "Ninguno"], ans:"Eje X"},
-  {q:"¿Qué sesgo ocurre cuando no se selecciona la muestra al azar?", opts:["De publicación", "Del observador", "De selección", "De memoria"], ans:"De selección"},
-  {q:"¿Qué instrumento mide el pH de una solución?", opts:["Termómetro", "pH-metro", "Barómetro", "Higrómetro"], ans:"pH-metro"},
-  {q:"¿Qué medida describe la tendencia central más común?", opts:["Rango", "Media", "Varianza", "Coeficiente de variación"], ans:"Media"},
-  {q:"¿Qué unidad mide la presión en kilopascales?", opts:["Joule", "kPa", "Watt", "Voltio"], ans:"kPa"},
-  {q:"¿Qué sección del artículo interpreta los resultados?", opts:["Metodología", "Resultados", "Discusión", "Conclusión"], ans:"Discusión"},
-  {q:"¿Qué tipo de gráfico usa barras verticales para comparar categorías?", opts:["De línea", "Circular", "De columnas", "De dispersión"], ans:"De columnas"},
-  {q:"¿Qué símbolo significa 'menor o igual que'?", opts:["<", ">", "≤", "≥"], ans:"≤"},
-  {q:"¿Qué instrumento mide dimensiones internas con precisión?", opts:["Micrómetro", "Calibre", "Regla", "Cinta métrica"], ans:"Calibre"},
-  {q:"¿Qué concepto mide la exactitud de una medición?", opts:["Precisión", "Sesgo", "Desviación estándar", "Rango"], ans:"Sesgo"},
-  {q:"¿Qué variable es manipulada por el investigador?", opts:["Dependiente", "Independiente", "Controlada", "Constante"], ans:"Independiente"},
-  {q:"¿Qué parte del artículo cita las fuentes utilizadas?", opts:["Introducción", "Bibliografía", "Abstract", "Resultados"], ans:"Bibliografía"},
-  {q:"¿Qué unidad equivale a 10⁻⁶ segundos?", opts:["Milisegundo", "Microsegundo", "Nanosegundo", "Picosegundo"], ans:"Microsegundo"},
-  {q:"¿Qué gráfico muestra porcentajes de un total?", opts:["De línea", "Circular", "De barras", "Histograma"], ans:"Circular"},
-  {q:"¿Qué instrumento mide la temperatura?", opts:["Barómetro", "Termómetro", "Higrómetro", "Anemómetro"], ans:"Termómetro"},
-  {q:"¿Qué valor estadístico indica la significancia estadística?", opts:["Media", "p-value", "Desviación estándar", "R²"], ans:"p-value"},
-  {q:"¿Qué escala de temperatura es absoluta?", opts:["Celsius", "Fahrenheit", "Kelvin", "Rankine"], ans:"Kelvin"},
-  {q:"¿Qué parte del gráfico indica las unidades de medida?", opts:["Título", "Leyenda", "Ejes", "Notas al pie"], ans:"Ejes"},
-  {q:"¿Qué sesgo ocurre cuando solo se publican resultados positivos?", opts:["De selección", "Del observador", "De memoria", "De publicación"], ans:"De publicación"},
-  {q:"¿Qué unidad expresa concentración en partes por millón?", opts:["Porcentaje", "ppm", "Molaridad", "Molalidad"], ans:"ppm"},
-  {q:"¿Qué medida indica la dispersión relativa?", opts:["Rango", "Media", "Coeficiente de variación", "Desviación estándar"], ans:"Coeficiente de variación"},
-  {q:"¿Qué instrumento mide intervalos de tiempo con precisión?", opts:["Reloj de arena", "Cronómetro", "Calendario", "Reloj atómico"], ans:"Cronómetro"},
-  {q:"¿Qué sección resume los principales hallazgos y su importancia?", opts:["Metodología", "Conclusión", "Discusión", "Resumen"], ans:"Conclusión"},
-  {q:"¿Qué tipo de gráfico muestra tendencias a lo largo del tiempo?", opts:["Circular", "De barras", "De línea", "De dispersión"], ans:"De línea"},
-  {q:"¿Qué símbolo indica proporcionalidad directa?", opts:["=", "≈", "∝", "±"], ans:"∝"}
+  {q:"¿Qué variable se representa en el eje Y de un gráfico?", opts:["Independiente", "Dependiente", "Controlada", "Interviniente"], ans:"Dependiente", points:1, type:"mc"},
+  {q:"¿Qué paso del método científico sigue inmediatamente a formular la hipótesis?", opts:["Observación", "Experimentación", "Conclusión", "Publicación"], ans:"Experimentación", points:1, type:"mc"},
+  {q:"¿Qué tipo de gráfico representa partes de un todo?", opts:["De barras", "Circular", "De línea", "Histograma"], ans:"Circular", points:1, type:"mc"},
+  {q:"¿Qué sesgo ocurre cuando el investigador influye en los participantes?", opts:["De selección", "Del observador", "De memoria", "De publicación"], ans:"Del observador", points:1, type:"mc"},
+  {q:"¿Qué instrumento mide con precisión el volumen de líquidos?", opts:["Probeta", "Pipeta", "Matraz", "Vaso precipitado"], ans:"Pipeta", points:1, type:"mc"},
+  {q:"¿Qué significa el símbolo ± en datos experimentales?", opts:["Error absoluto", "Incertidumbre", "Promedio", "Desviación máxima"], ans:"Incertidumbre", points:1, type:"mc"},
+  {q:"¿Qué escala es logarítmica?", opts:["Celsius", "Kelvin", "pH", "Fahrenheit"], ans:"pH", points:1, type:"mc"},
+  {q:"¿Qué sección resume los hallazgos principales de un artículo científico?", opts:["Introducción", "Abstract", "Metodología", "Discusión"], ans:"Abstract", points:1, type:"mc"},
+  {q:"¿Qué letra representa comúnmente el error estándar?", opts:["SD", "SE", "CV", "R²"], ans:"SE", points:1, type:"mc"},
+  {q:"¿Qué valor indica la probabilidad de que los resultados sean por azar?", opts:["Media", "Desviación estándar", "p-value", "R²"], ans:"p-value", points:1, type:"mc"},
+  {q:"¿Qué unidad mide volumen en el sistema métrico?", opts:["Gramo", "Metro", "Litro", "Segundo"], ans:"Litro", points:1, type:"mc"},
+  {q:"¿Qué gráfico muestra la relación entre dos variables cuantitativas?", opts:["De barras", "Circular", "De dispersión", "Histograma"], ans:"De dispersión", points:1, type:"mc"},
+  {q:"¿Qué paso del método científico NO pertenece estrictamente a él?", opts:["Observación", "Hipótesis", "Creencia personal", "Experimentación"], ans:"Creencia personal", points:1, type:"mc"},
+  {q:"¿Qué símbolo significa 'aproximadamente igual'?", opts:["=", "≈", "∝", ">"], ans:"≈", points:1, type:"mc"},
+  {q:"¿Qué instrumento mide la masa con mayor precisión?", opts:["Balanza analítica", "Dinamómetro", "Termómetro", "Cronómetro"], ans:"Balanza analítica", points:1, type:"mc"},
+  {q:"¿Qué medida de dispersión indica el rango de los datos?", opts:["Media", "Mediana", "Rango", "Moda"], ans:"Rango", points:1, type:"mc"},
+  {q:"¿Qué tipo de variable se mantiene constante en un experimento?", opts:["Independiente", "Dependiente", "Controlada", "Aleatoria"], ans:"Controlada", points:1, type:"mc"},
+  {q:"¿Qué parte de una tabla está en la fila superior?", opts:["Pie de tabla", "Encabezado", "Cuerpo", "Notas"], ans:"Encabezado", points:1, type:"mc"},
+  {q:"¿Qué gráfico representa la distribución de frecuencias?", opts:["De línea", "Circular", "Histograma", "De dispersión"], ans:"Histograma", points:1, type:"mc"},
+  {q:"¿Qué tipo de error varía de forma aleatoria?", opts:["Sistemático", "Estadístico", "De paralaje", "Instrumental"], ans:"Estadístico", points:1, type:"mc"},
+  {q:"¿Qué unidad equivale a 10⁻⁹ metros?", opts:["Micrómetro", "Nanómetro", "Picómetro", "Angstrom"], ans:"Nanómetro", points:1, type:"mc"},
+  {q:"¿Qué medida indica la precisión de los datos?", opts:["Media", "Desviación estándar", "Sesgo", "Rango"], ans:"Desviación estándar", points:1, type:"mc"},
+  {q:"¿Qué letra representa el coeficiente de correlación de Pearson?", opts:["R²", "r", "p", "n"], ans:"r", points:1, type:"mc"},
+  {q:"¿Qué elemento del gráfico explica los símbolos utilizados?", opts:["Título", "Leyenda", "Ejes", "Escala"], ans:"Leyenda", points:1, type:"mc"},
+  {q:"¿En qué eje se representa la variable independiente?", opts:["Eje Y", "Eje X", "Eje Z", "Ninguno"], ans:"Eje X", points:1, type:"mc"},
+  {q:"¿Qué sesgo ocurre cuando no se selecciona la muestra al azar?", opts:["De publicación", "Del observador", "De selección", "De memoria"], ans:"De selección", points:1, type:"mc"},
+  {q:"¿Qué instrumento mide el pH de una solución?", opts:["Termómetro", "pH-metro", "Barómetro", "Higrómetro"], ans:"pH-metro", points:1, type:"mc"},
+  {q:"¿Qué medida describe la tendencia central más común?", opts:["Rango", "Media", "Varianza", "Coeficiente de variación"], ans:"Media", points:1, type:"mc"},
+  {q:"¿Qué unidad mide la presión en kilopascales?", opts:["Joule", "kPa", "Watt", "Voltio"], ans:"kPa", points:1, type:"mc"},
+  {q:"¿Qué sección del artículo interpreta los resultados?", opts:["Metodología", "Resultados", "Discusión", "Conclusión"], ans:"Discusión", points:1, type:"mc"},
+  {q:"¿Qué tipo de gráfico usa barras verticales para comparar categorías?", opts:["De línea", "Circular", "De columnas", "De dispersión"], ans:"De columnas", points:1, type:"mc"},
+  {q:"¿Qué símbolo significa 'menor o igual que'?", opts:["<", ">", "≤", "≥"], ans:"≤", points:1, type:"mc"},
+  {q:"¿Qué instrumento mide dimensiones internas con precisión?", opts:["Micrómetro", "Calibre", "Regla", "Cinta métrica"], ans:"Calibre", points:1, type:"mc"},
+  {q:"¿Qué concepto mide la exactitud de una medición?", opts:["Precisión", "Sesgo", "Desviación estándar", "Rango"], ans:"Sesgo", points:1, type:"mc"},
+  {q:"¿Qué variable es manipulada por el investigador?", opts:["Dependiente", "Independiente", "Controlada", "Constante"], ans:"Independiente", points:1, type:"mc"},
+  {q:"¿Qué parte del artículo cita las fuentes utilizadas?", opts:["Introducción", "Bibliografía", "Abstract", "Resultados"], ans:"Bibliografía", points:1, type:"mc"},
+  {q:"¿Qué unidad equivale a 10⁻⁶ segundos?", opts:["Milisegundo", "Microsegundo", "Nanosegundo", "Picosegundo"], ans:"Microsegundo", points:1, type:"mc"},
+  {q:"¿Qué gráfico muestra porcentajes de un total?", opts:["De línea", "Circular", "De barras", "Histograma"], ans:"Circular", points:1, type:"mc"},
+  {q:"¿Qué instrumento mide la temperatura?", opts:["Barómetro", "Termómetro", "Higrómetro", "Anemómetro"], ans:"Termómetro", points:1, type:"mc"},
+  {q:"¿Qué valor estadístico indica la significancia estadística?", opts:["Media", "p-value", "Desviación estándar", "R²"], ans:"p-value", points:1, type:"mc"},
+  {q:"¿Qué escala de temperatura es absoluta?", opts:["Celsius", "Fahrenheit", "Kelvin", "Rankine"], ans:"Kelvin", points:1, type:"mc"},
+  {q:"¿Qué parte del gráfico indica las unidades de medida?", opts:["Título", "Leyenda", "Ejes", "Notas al pie"], ans:"Ejes", points:1, type:"mc"},
+  {q:"¿Qué sesgo ocurre cuando solo se publican resultados positivos?", opts:["De selección", "Del observador", "De memoria", "De publicación"], ans:"De publicación", points:1, type:"mc"},
+  {q:"¿Qué unidad expresa concentración en partes por millón?", opts:["Porcentaje", "ppm", "Molaridad", "Molalidad"], ans:"ppm", points:1, type:"mc"},
+  {q:"¿Qué medida indica la dispersión relativa?", opts:["Rango", "Media", "Coeficiente de variación", "Desviación estándar"], ans:"Coeficiente de variación", points:1, type:"mc"},
+  {q:"¿Qué instrumento mide intervalos de tiempo con precisión?", opts:["Reloj de arena", "Cronómetro", "Calendario", "Reloj atómico"], ans:"Cronómetro", points:1, type:"mc"},
+  {q:"¿Qué sección resume los principales hallazgos y su importancia?", opts:["Metodología", "Conclusión", "Discusión", "Resumen"], ans:"Conclusión", points:1, type:"mc"},
+  {q:"¿Qué tipo de gráfico muestra tendencias a lo largo del tiempo?", opts:["Circular", "De barras", "De línea", "De dispersión"], ans:"De línea", points:1, type:"mc"},
+  {q:"¿Qué símbolo indica proporcionalidad directa?", opts:["=", "≈", "∝", "±"], ans:"∝", points:1, type:"mc"}
     ];
 
-    // Código del quiz (perfecto y sin errores)
-    let data = [], current = 0, score = 0, timeLeft = 156, timerInterval = null, questionAnswered = false;
-    const TIME_PER_QUESTION = 156;
-    const questionEl = document.getElementById('question');
-    const optionsEl = document.getElementById('options');
-    const progressEl = document.getElementById('progress');
-    const counterEl = document.getElementById('counter');
-    const timerEl = document.getElementById('timer');
-    const quizBox = document.getElementById('quiz-box');
-    const scoreBox = document.getElementById('score-box');
-    const scoreEl = document.getElementById('score');
+        let examenPreguntas = [];  // 34 seleccionadas
+        let indiceActual = 0;
+        let puntajeActual = 0;
+        let respuestasUsuario = {};
+        let tiempoInicio = null;
+        let timerInterval;
 
-    function shuffle(array) {
-      for (let i = array.length - 1; i > 0; i--) {
-        const j = Math.floor(Math.random() * (i + 1));
-        [array[i], array[j]] = [array[j], array[i]];
-      }
-    }
+        // Iniciar: Selecciona 34 random (simula distribución: 14 life, 14 physical, 7 earth; asume indices)
+        function iniciarExamen() {
+            // Filtra/simula temas (ajusta indices: 0-100 life, 101-200 physical, 201-300 earth)
+            const life = todasPreguntas.slice(0,100).sort(() => Math.random() - 0.5).slice(0,14);
+            const physical = todasPreguntas.slice(100,200).sort(() => Math.random() - 0.5).slice(0,14);
+            const earth = todasPreguntas.slice(200,300).sort(() => Math.random() - 0.5).slice(0,6);
+            examenPreguntas = [...life, ...physical, ...earth].sort(() => Math.random() - 0.5);  // Mezcla
+            indiceActual = 0;
+            puntajeActual = 0;
+            respuestasUsuario = {};
+            document.getElementById('intro').style.display = 'none';
+            document.getElementById('quiz').style.display = 'block';
+            tiempoInicio = Date.now();
+            iniciarTimer();
+            mostrarPregunta();
+        }
 
-    function startTimer() {
-      clearInterval(timerInterval);
-      timeLeft = TIME_PER_QUESTION;
-      updateTimer();
-      timerInterval = setInterval(() => {
-        timeLeft--;
-        updateTimer();
-        if (timeLeft <= 0) { clearInterval(timerInterval); handleTimeUp(); }
-      }, 1000);
-    }
+        // Timer 90 min (5400 seg)
+        function iniciarTimer() {
+            let tiempoRestante = 5400;
+            timerInterval = setInterval(() => {
+                const mins = Math.floor(tiempoRestante / 60);
+                const segs = tiempoRestante % 60;
+                document.getElementById('timer').textContent = `Tiempo restante: ${mins}:${segs.toString().padStart(2,'0')}`;
+                tiempoRestante--;
+                if (tiempoRestante < 0) {
+                    clearInterval(timerInterval);
+                    alert('¡Tiempo agotado!');
+                    finalizarExamen();
+                }
+            }, 1000);
+        }
 
-    function updateTimer() {
-      const min = String(Math.floor(timeLeft / 60)).padStart(2, '0');
-      const sec = String(timeLeft % 60).padStart(2, '0');
-      timerEl.textContent = `${min}:${sec}`;
-      timerEl.className = 'timer';
-      if (timeLeft <= 30) timerEl.classList.add('danger');
-      else if (timeLeft <= 60) timerEl.classList.add('warning');
-    }
+        // Mostrar pregunta según type
+        function mostrarPregunta() {
+            if (indiceActual >= examenPreguntas.length) {
+                document.getElementById('siguiente-btn').style.display = 'none';
+                document.getElementById('finalizar-btn').style.display = 'inline';
+                return;
+            }
+            const preg = examenPreguntas[indiceActual];
+            const container = document.getElementById('pregunta-container');
+            let html = `<h3>${indiceActual + 1}/34. ${preg.q}</h3>`;
 
-    function handleTimeUp() {
-      if (questionAnswered) return;
-      questionAnswered = true;
-      document.querySelectorAll('.btn').forEach(b => {
-        b.disabled = true;
-        if (b.textContent === data[current].ans) b.classList.add('correct');
-      });
-      setTimeout(nextQuestion, 2000);
-    }
+            if (preg.type === 'mc') {
+                html += `<div class="opciones">${preg.opts.map((opt, i) => `<label><input type="radio" name="opt${indiceActual}" value="${i}"> ${opt}</label>`).join('')}</div>`;
+            } else if (preg.type === 'drag') {
+                html += `<div id="drag-zone" ondrop="drop(event)" ondragover="allowDrop(event)">Suelta aquí los pasos en orden correcto.</div>`;
+                html += `<div>${preg.opts.map(opt => `<span class="draggable" draggable="true" ondragstart="drag(event)" id="drag${opt}">${opt}</span>`).join('')}</div>`;
+            } else if (preg.type === 'hotspot') {
+                html += `<img id="hotspot-img" src="${preg.img}" alt="Diagrama">`;
+                html += `<div class="hotspot" style="left:${preg.hotspot.x}px; top:${preg.hotspot.y}px;" onclick="selectHotspot(this)"></div>`;  // Placeholder; click para seleccionar
+            } else if (preg.type === 'short') {
+                html += `<textarea id="short${indiceActual}" placeholder="Escribe tu respuesta..."></textarea>`;
+            }
 
-    function showQuestion() {
-      questionAnswered = false;
-      startTimer();
-      const q = data[current];
-      counterEl.textContent = `Pregunta ${current + 1} de ${data.length}`;
-      questionEl.textContent = q.q;
-      progressEl.style.width = `${((current + 1) / data.length) * 100}%`;
-      optionsEl.innerHTML = '';
-      const opts = [...q.opts];
-      shuffle(opts);
-      opts.forEach(opt => {
-        const btn = document.createElement('button');
-        btn.className = 'btn';
-        btn.textContent = opt;
-        btn.onclick = () => checkAnswer(opt, q.ans);
-        optionsEl.appendChild(btn);
-      });
-    }
+            container.innerHTML = html;
+            document.getElementById('siguiente-btn').style.display = 'inline';
+        }
 
-    function checkAnswer(selected, correct) {
-      if (questionAnswered) return;
-      questionAnswered = true;
-      clearInterval(timerInterval);
-      document.querySelectorAll('.btn').forEach(btn => {
-        btn.disabled = true;
-        if (btn.textContent === correct) btn.classList.add('correct');
-        if (btn.textContent === selected && selected !== correct) btn.classList.add('wrong');
-      });
-      if (selected === correct) score++;
-      setTimeout(nextQuestion, 2000);
-    }
+        // Eventos simulados
+        function allowDrop(ev) { ev.preventDefault(); }
+        function drag(ev) { ev.dataTransfer.setData("text", ev.target.id); }
+        function drop(ev) {
+            ev.preventDefault();
+            const data = ev.dataTransfer.getData("text");
+            ev.target.appendChild(document.getElementById(data));
+        }
+        function selectHotspot(el) { el.style.background = 'green'; respuestasUsuario[indiceActual] = 'correct'; }  // Simula click correcto
 
-    function nextQuestion() {
-      current++;
-      if (current < data.length) showQuestion();
-      else showScore();
-    }
+        // Siguiente
+        function siguientePregunta() {
+            const preg = examenPreguntas[indiceActual];
+            let resp = null;
+            if (preg.type === 'mc') {
+                const sel = document.querySelector(`input[name="opt${indiceActual}"]:checked`);
+                resp = sel ? preg.opts[parseInt(sel.value)] : null;
+            } else if (preg.type === 'drag') {
+                // Simula: chequea orden en drag-zone (simplificado)
+                resp = document.getElementById('drag-zone').innerText.trim();
+            } else if (preg.type === 'hotspot') {
+                resp = respuestasUsuario[indiceActual] || 'wrong';
+            } else if (preg.type === 'short') {
+                const text = document.getElementById(`short${indiceActual}`).value.toLowerCase();
+                resp = preg.keywords.every(kw => text.includes(kw)) ? 'correct' : 'wrong';
+            }
+            respuestasUsuario[indiceActual] = resp;
+            if (resp === preg.ans || (Array.isArray(preg.ans) && JSON.stringify(resp.split(' ')) === JSON.stringify(preg.ans))) {
+                puntajeActual += preg.points;
+            }
+            indiceActual++;
+            mostrarPregunta();
+        }
 
-    function showScore() {
-      quizBox.classList.add('hide');
-      scoreBox.classList.remove('hide');
-      const pct = Math.round((score / data.length) * 100);
-      scoreEl.textContent = `¡Finalizado! Tu puntuación: ${score}/${data.length} (${pct}%)`;
-    }
+        // Finalizar
+        function finalizarExamen() {
+            clearInterval(timerInterval);
+            document.getElementById('quiz').style.display = 'none';
+            document.getElementById('resultados').style.display = 'block';
+            const tiempoUsado = Math.round((Date.now() - tiempoInicio) / 60000);  // Minutos
+            const scaled = escalarGED(puntajeActual, 34);  // De respuesta anterior
+            document.getElementById('puntaje-detalle').innerHTML = `
+                <p>Puntaje Raw: ${puntajeActual}/34 (${Math.round(puntajeActual/34*100)}%)</p>
+                <p>Escala GED: ${scaled}/200</p>
+                <p>Tiempo usado: ${tiempoUsado} min</p>
+                ${scaled >= 145 ? '<p class="feedback">¡Aprobado! Estás listo.</p>' : '<p class="error">Practica más para 145+.</p>'}
+                <h3>Feedback por pregunta:</h3>
+                ${examenPreguntas.map((p, i) => `<p>${i+1}. ${respuestasUsuario[i] === p.ans ? '<span class="feedback">✓ Correcta</span>' : '<span class="error">✗ Incorrecta</span>'}: ${p.ans}</p>`).join('')}
+            `;
+        }
 
-    function restartQuiz() {
-      current = 0; score = 0;
-      data = [...originalData];
-      shuffle(data);
-      quizBox.classList.remove('hide');
-      scoreBox.classList.add('hide');
-      showQuestion();
-    }
-
-    data = [...originalData];
-    shuffle(data);
-    showQuestion();
-  </script>
+        // Función escalado GED (de antes)
+        function escalarGED(raw, max) {
+            const minGED = 100, maxGED = 200;
+            return Math.round(minGED + (raw / max) * (maxGED - minGED));
+        }
+    </script>
 </body>
 </html>
