@@ -253,129 +253,140 @@
   {q:"¿Qué símbolo indica proporcionalidad directa?", opts:["=", "≈", "∝", "±"], ans:"∝", points:1, type:"mc"}
     ];
 
-        let examenPreguntas = [];  // 34 seleccionadas
-        let indiceActual = 0;
-        let puntajeActual = 0;
-        let respuestasUsuario = {};
-        let tiempoInicio = null;
-        let timerInterval;
+        let examenPreguntas = [];
+    let indiceActual = 0;
+    let puntajeActual = 0;
+    let respuestasUsuario = {};
+    let timerInterval;
 
-        // Iniciar: Selecciona 34 random (simula distribución: 14 life, 14 physical, 7 earth; asume indices)
-        function iniciarExamen() {
-            // Filtra/simula temas (ajusta indices: 0-100 life, 101-200 physical, 201-300 earth)
-            const life = todasPreguntas.slice(0,100).sort(() => Math.random() - 0.5).slice(0,14);
-            const physical = todasPreguntas.slice(100,200).sort(() => Math.random() - 0.5).slice(0,14);
-            const earth = todasPreguntas.slice(200,300).sort(() => Math.random() - 0.5).slice(0,6);
-            examenPreguntas = [...life, ...physical, ...earth].sort(() => Math.random() - 0.5);  // Mezcla
-            indiceActual = 0;
-            puntajeActual = 0;
-            respuestasUsuario = {};
-            document.getElementById('intro').style.display = 'none';
-            document.getElementById('quiz').style.display = 'block';
-            tiempoInicio = Date.now();
-            iniciarTimer();
+    function iniciarExamen() {
+        examenPreguntas = todasPreguntas.sort(() => Math.random() - 0.5).slice(0, 34);
+        indiceActual = 0;
+        puntajeActual = 0;
+        respuestasUsuario = {};
+        document.getElementById('intro').style.display = 'none';
+        document.getElementById('quiz').style.display = 'block';
+        iniciarTimer();
+        mostrarPregunta();
+    }
+
+    function iniciarTimer() {
+        let tiempo = 5400;
+        timerInterval = setInterval(() => {
+            const min = Math.floor(tiempo / 60).toString().padStart(2, '0');
+            const seg = (tiempo % 60).toString().padStart(2, '0');
+            document.getElementById('timer').textContent = `Tiempo: ${min}:${seg}`;
+            if (--tiempo < 0) {
+                clearInterval(timerInterval);
+                finalizarExamen();
+            }
+        }, 1000);
+    }
+
+    // NUEVA FUNCIÓN: Mostrar feedback inmediato
+    function mostrarFeedback(esCorrecta, respuestaCorrecta = "") {
+        const feedbackDiv = document.getElementById('feedback');
+        if (esCorrecta) {
+            feedbackDiv.innerHTML = `
+                <div style="background:#d4edda; color:#155724; padding:15px; border-radius:8px; 
+                            border:1px solid #c3e6cb; margin:20px 0; box-shadow:0 4px 12px rgba(0,200,0,0.2); font-weight:bold;">
+                    ¡Correcto! 
+                </div>`;
+            if (!respuestasUsuario[indiceActual]) puntajeActual += examenPreguntas[indiceActual].points;
+        } else {
+            feedbackDiv.innerHTML = `
+                <div style="background:#f8d7da; color:#721c24; padding:15px; border-radius:8px; 
+                            border:1px solid #f5c6cb; margin:20px 0; box-shadow:0 4px 12px rgba(200,0,0,0.2);">
+                    Incorrecto. <strong>La respuesta correcta es:</strong> ${respuestaCorrecta}
+                </div>`;
+        }
+        respuestasUsuario[indiceActual] = true; // Marcar como respondida
+    }
+
+    function mostrarPregunta() {
+        const preg = examenPreguntas[indiceActual];
+        const container = document.getElementById('pregunta-container');
+        const feedback = document.getElementById('feedback');
+        feedback.innerHTML = ''; // Limpiar feedback anterior
+
+        let html = `<h3>${indiceActual + 1}/34. ${preg.q}</h3>`;
+
+        if (preg.type === "mc") {
+            html += `<div class="opciones">`;
+            preg.opts.forEach((opt, i) => {
+                html += `
+                    <label style="display:block; margin:10px 0; padding:10px; border:1px solid #ddd; border-radius:6px; cursor:pointer;">
+                        <input type="radio" name="q${indiceActual}" value="${opt}" onchange="verificarMC('${opt}', '${preg.ans}')">
+                        ${opt}
+                    </label>`;
+            });
+            html += `</div>`;
+
+        } else if (preg.type === "fill") {
+            html += `<input type="text" id="fillInput" style="width:200px; padding:8px; font-size:16px;" 
+                          onblur="verificarFill(this.value, '${preg.ans}')">`;
+
+        } else if (preg.type === "short") {
+            html += `<textarea id="shortInput" style="width:100%; height:120px; padding:10px;" 
+                          onblur="verificarShort(this.value, '${preg.keywords}')"></textarea>`;
+        }
+
+        container.innerHTML = html;
+        document.getElementById('siguiente-btn').style.display = respuestasUsuario[indiceActual] ? 'inline' : 'none';
+    }
+
+    // === FUNCIONES DE VERIFICACIÓN INMEDIATA ===
+    function verificarMC(seleccionada, correcta) {
+        const esCorrecta = seleccionada === correcta;
+        mostrarFeedback(esCorrecta, correcta);
+        document.getElementById('siguiente-btn').style.display = 'inline';
+    }
+
+    function verificarFill(escrita, correcta) {
+        const limpia = escrita.trim().toLowerCase();
+        const correctaLimpia = correcta.toLowerCase();
+        const esCorrecta = limpia === correctaLimpia || limpia.includes(correctaLimpia);
+        mostrarFeedback(esCorrecta, correcta);
+        document.getElementById('siguiente-btn').style.display = 'inline';
+    }
+
+    function verificarShort(texto, keywordsJSON) {
+        const keywords = JSON.parse(keywordsJSON.replace(/'/g, '"'));
+        const textoLimpio = texto.toLowerCase();
+        const aciertos = keywords.filter(kw => textoLimpio.includes(kw.toLowerCase()));
+        const esCorrecta = aciertos.length >= keywords.length * 0.7; // 70% de palabras clave
+        mostrarFeedback(esCorrecta, "Respuesta esperada incluye: " + keywords.join(", "));
+        document.getElementById('siguiente-btn').style.display = 'inline';
+    }
+
+    function siguientePregunta() {
+        indiceActual++;
+        if (indiceActual >= examenPreguntas.length) {
+            finalizarExamen();
+        } else {
             mostrarPregunta();
         }
+    }
 
-        // Timer 90 min (5400 seg)
-        function iniciarTimer() {
-            let tiempoRestante = 5400;
-            timerInterval = setInterval(() => {
-                const mins = Math.floor(tiempoRestante / 60);
-                const segs = tiempoRestante % 60;
-                document.getElementById('timer').textContent = `Tiempo restante: ${mins}:${segs.toString().padStart(2,'0')}`;
-                tiempoRestante--;
-                if (tiempoRestante < 0) {
-                    clearInterval(timerInterval);
-                    alert('¡Tiempo agotado!');
-                    finalizarExamen();
-                }
-            }, 1000);
-        }
+    function finalizarExamen() {
+        clearInterval(timerInterval);
+        document.getElementById('quiz').style.display = 'none';
+        document.getElementById('resultados').style.display = 'block';
 
-        // Mostrar pregunta según type
-        function mostrarPregunta() {
-            if (indiceActual >= examenPreguntas.length) {
-                document.getElementById('siguiente-btn').style.display = 'none';
-                document.getElementById('finalizar-btn').style.display = 'inline';
-                return;
+        const porcentaje = Math.round((puntajeActual / examenPreguntas.reduce((a,p)=>a+p.points,0)) * 100);
+        const gedScore = Math.round(100 + (puntajeActual / examenPreguntas.length) * 100);
+
+        document.getElementById('puntaje-detalle').innerHTML = `
+            <h2>¡Examen terminado!</h2>
+            <p>Puntaje: <strong>${puntajeActual} / ${examenPreguntas.length}</strong> (${porcentaje}%)</p>
+            <p>Puntaje estimado GED Science: <strong>${gedScore}/200</strong></p>
+            ${gedScore >= 145 
+                ? '<p style="color:green; font-size:22px;">¡FELICIDADES! Aprobaste el GED Science</p>' 
+                : '<p style="color:red; font-size:22px;">Sigue practicando para llegar a 145+</p>'
             }
-            const preg = examenPreguntas[indiceActual];
-            const container = document.getElementById('pregunta-container');
-            let html = `<h3>${indiceActual + 1}/34. ${preg.q}</h3>`;
-
-            if (preg.type === 'mc') {
-                html += `<div class="opciones">${preg.opts.map((opt, i) => `<label><input type="radio" name="opt${indiceActual}" value="${i}"> ${opt}</label>`).join('')}</div>`;
-            } else if (preg.type === 'drag') {
-                html += `<div id="drag-zone" ondrop="drop(event)" ondragover="allowDrop(event)">Suelta aquí los pasos en orden correcto.</div>`;
-                html += `<div>${preg.opts.map(opt => `<span class="draggable" draggable="true" ondragstart="drag(event)" id="drag${opt}">${opt}</span>`).join('')}</div>`;
-            } else if (preg.type === 'hotspot') {
-                html += `<img id="hotspot-img" src="${preg.img}" alt="Diagrama">`;
-                html += `<div class="hotspot" style="left:${preg.hotspot.x}px; top:${preg.hotspot.y}px;" onclick="selectHotspot(this)"></div>`;  // Placeholder; click para seleccionar
-            } else if (preg.type === 'short') {
-                html += `<textarea id="short${indiceActual}" placeholder="Escribe tu respuesta..."></textarea>`;
-            }
-
-            container.innerHTML = html;
-            document.getElementById('siguiente-btn').style.display = 'inline';
-        }
-
-        // Eventos simulados
-        function allowDrop(ev) { ev.preventDefault(); }
-        function drag(ev) { ev.dataTransfer.setData("text", ev.target.id); }
-        function drop(ev) {
-            ev.preventDefault();
-            const data = ev.dataTransfer.getData("text");
-            ev.target.appendChild(document.getElementById(data));
-        }
-        function selectHotspot(el) { el.style.background = 'green'; respuestasUsuario[indiceActual] = 'correct'; }  // Simula click correcto
-
-        // Siguiente
-        function siguientePregunta() {
-            const preg = examenPreguntas[indiceActual];
-            let resp = null;
-            if (preg.type === 'mc') {
-                const sel = document.querySelector(`input[name="opt${indiceActual}"]:checked`);
-                resp = sel ? preg.opts[parseInt(sel.value)] : null;
-            } else if (preg.type === 'drag') {
-                // Simula: chequea orden en drag-zone (simplificado)
-                resp = document.getElementById('drag-zone').innerText.trim();
-            } else if (preg.type === 'hotspot') {
-                resp = respuestasUsuario[indiceActual] || 'wrong';
-            } else if (preg.type === 'short') {
-                const text = document.getElementById(`short${indiceActual}`).value.toLowerCase();
-                resp = preg.keywords.every(kw => text.includes(kw)) ? 'correct' : 'wrong';
-            }
-            respuestasUsuario[indiceActual] = resp;
-            if (resp === preg.ans || (Array.isArray(preg.ans) && JSON.stringify(resp.split(' ')) === JSON.stringify(preg.ans))) {
-                puntajeActual += preg.points;
-            }
-            indiceActual++;
-            mostrarPregunta();
-        }
-
-        // Finalizar
-        function finalizarExamen() {
-            clearInterval(timerInterval);
-            document.getElementById('quiz').style.display = 'none';
-            document.getElementById('resultados').style.display = 'block';
-            const tiempoUsado = Math.round((Date.now() - tiempoInicio) / 60000);  // Minutos
-            const scaled = escalarGED(puntajeActual, 34);  // De respuesta anterior
-            document.getElementById('puntaje-detalle').innerHTML = `
-                <p>Puntaje Raw: ${puntajeActual}/34 (${Math.round(puntajeActual/34*100)}%)</p>
-                <p>Escala GED: ${scaled}/200</p>
-                <p>Tiempo usado: ${tiempoUsado} min</p>
-                ${scaled >= 145 ? '<p class="feedback">¡Aprobado! Estás listo.</p>' : '<p class="error">Practica más para 145+.</p>'}
-                <h3>Feedback por pregunta:</h3>
-                ${examenPreguntas.map((p, i) => `<p>${i+1}. ${respuestasUsuario[i] === p.ans ? '<span class="feedback">✓ Correcta</span>' : '<span class="error">✗ Incorrecta</span>'}: ${p.ans}</p>`).join('')}
-            `;
-        }
-
-        // Función escalado GED (de antes)
-        function escalarGED(raw, max) {
-            const minGED = 100, maxGED = 200;
-            return Math.round(minGED + (raw / max) * (maxGED - minGED));
-        }
+        `;
+    }
     </script>
 </body>
 </html>
+
