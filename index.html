@@ -5,46 +5,83 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Simulador GED Science 2025 - Nueva York</title>
     <style>
-        body { font-family: Arial, sans-serif; max-width: 800px; margin: 0 auto; padding: 20px; }
-        #timer { font-size: 24px; color: red; text-align: center; }
-        #pregunta-container { border: 1px solid #ccc; padding: 20px; margin: 10px 0; }
-        .opciones { margin: 10px 0; }
-        label { display: block; margin: 5px 0; }
-        #drag-zone { border: 2px dashed #ccc; min-height: 100px; padding: 10px; }
-        .draggable { cursor: move; background: #f0f0f0; padding: 5px; margin: 5px; display: inline-block; }
-        #hotspot-img { width: 300px; height: 200px; position: relative; border: 1px solid #000; }
-        .hotspot { width: 20px; height: 20px; background: red; position: absolute; cursor: pointer; }
-        textarea { width: 100%; height: 100px; }
-        button { padding: 10px; margin: 5px; background: #007bff; color: white; border: none; cursor: pointer; }
-        #resultados { display: none; }
-        .feedback { color: green; }
-        .error { color: red; }
+        body { font-family: Arial, sans-serif; max-width: 800px; margin: 0 auto; padding: 20px; background: #f9f9f9; }
+        #timer { font-size: 26px; color: #d63939; text-align: center; margin: 20px 0; font-weight: bold; }
+        #pregunta-container { background: white; border-radius: 12px; padding: 30px; margin: 20px 0; box-shadow: 0 4px 15px rgba(0,0,0,0.1); }
+        .opciones label { display: block; margin: 15px 0; padding: 14px; border: 2px solid #e0e0e0; border-radius: 10px; cursor: pointer; transition: all 0.3s; font-size: 17px; }
+        .opciones label:hover { background: #f0f8ff; border-color: #007bff; }
+        #feedback { 
+            margin: 25px 0; 
+            padding: 20px; 
+            border-radius: 12px; 
+            font-size: 20px; 
+            font-weight: bold; 
+            text-align: center;
+            min-height: 60px;
+            transition: all 0.4s;
+        }
+        .correcto {
+            background: #d4edda !important;
+            color: #155724 !important;
+            border: 2px solid #c3e6cb;
+            box-shadow: 0 0 15px rgba(40, 167, 69, 0.3);
+        }
+        .incorrecto {
+            background: #f8d7da !important;
+            color: #721c24 !important;
+            border: 2px solid #f5c6cb;
+            box-shadow: 0 0 15px rgba(220, 53, 69, 0.3);
+        }
+        button { 
+            padding: 14px 28px; 
+            margin: 10px 8px; 
+            border: none; 
+            border-radius: 8px; 
+            cursor: pointer; 
+            font-size: 18px; 
+            font-weight: bold;
+            transition: 0.3s;
+        }
+        #siguiente-btn { background: #28a745; color: white; }
+        #siguiente-btn:hover { background: #218838; transform: scale(1.05); }
+        #finalizar-btn { background: #dc3545; color: white; }
+        #finalizar-btn:hover { background: #c82333; }
+        #resultados { background: white; padding: 40px; border-radius: 15px; box-shadow: 0 6px 25px rgba(0,0,0,0.15); text-align: center; }
+        textarea, input[type="text"] { 
+            width: 100%; 
+            padding: 15px; 
+            margin: 15px 0; 
+            border: 2px solid #ddd; 
+            border-radius: 8px; 
+            font-size: 17px; 
+        }
     </style>
 </head>
 <body>
     <h1>Simulador GED® Science Test - 2025 (Nueva York)</h1>
-    <p><em>90 minutos • 34 preguntas • Temas: Life (40%), Physical (40%), Earth/Space (20%). Puntaje: 145+ para aprobar.</em></p>
-    <p><a href="https://education.ti.com/en/us/product/ti-30xs-multi-view" target="_blank">Calculadora TI-30XS (abre en nueva pestaña)</a></p>
-    
+    <p><em>90 minutos • 34 preguntas • Puntaje para aprobar: 145+</em></p>
+    <p><a href="https://education.ti.com/en/us/product/ti-30xs-multi-view" target="_blank">Calculadora TI-30XS</a></p>
+   
     <div id="intro">
         <button onclick="iniciarExamen()">Iniciar Examen</button>
     </div>
-    
+   
     <div id="quiz" style="display:none;">
         <div id="timer">Tiempo restante: 90:00</div>
         <div id="pregunta-container"></div>
-        <button id="siguiente-btn" onclick="siguientePregunta()" style="display:none;">Siguiente</button>
-        <button id="finalizar-btn" onclick="finalizarExamen()" style="display:none;">Finalizar Examen</button>
+
+        <!-- AQUÍ VA EL FEEDBACK JUSTO ANTES DEL BOTÓN -->
+        <div id="feedback"></div>
+
+        <div style="text-align:center; margin-top: 20px;">
+            <button id="siguiente-btn" onclick="siguientePregunta()" style="display:none;">Siguiente →</button>
+            <button id="finalizar-btn" onclick="finalizarExamen()" style="display:none;">Finalizar Examen</button>
+        </div>
     </div>
-    
-    <div id="resultados">
-        <h2>Resultados GED Science</h2>
-        <div id="puntaje-detalle"></div>
-    </div>
+   
+    <div id="resultados" style="display:none;"></div>
 
     <script>
-        // ========== TU ARRAY DE PREGUNTAS (usa el de antes, con points:1 y agrega 'type' ==========
-        // Ejemplo con 5; reemplaza con tus 360. Agrega 'type: "mc"' (multiple choice), "drag", "hotspot", "short" aleatoriamente.
         const todasPreguntas =  [
       {q:"¿Qué organelo convierte la glucosa en ATP?", opts:["Cloroplasto", "Mitocondria", "Lisosoma", "Aparato de Golgi"], ans:"Mitocondria", points:1, type:"mc"},
   {q:"¿Cuál es el producto inmediato de la fotosíntesis?", opts:["Glucosa", "Oxígeno", "Dióxido de carbono", "Amoníaco"], ans:"Oxígeno", points:1, type:"mc"},
@@ -254,139 +291,114 @@
     ];
 
         let examenPreguntas = [];
-    let indiceActual = 0;
-    let puntajeActual = 0;
-    let respuestasUsuario = {};
-    let timerInterval;
+        let indiceActual = 0;
+        let puntajeActual = 0;
+        let respuestasUsuario = {};
+        let timerInterval;
 
-    function iniciarExamen() {
-        examenPreguntas = todasPreguntas.sort(() => Math.random() - 0.5).slice(0, 34);
-        indiceActual = 0;
-        puntajeActual = 0;
-        respuestasUsuario = {};
-        document.getElementById('intro').style.display = 'none';
-        document.getElementById('quiz').style.display = 'block';
-        iniciarTimer();
-        mostrarPregunta();
-    }
-
-    function iniciarTimer() {
-        let tiempo = 5400;
-        timerInterval = setInterval(() => {
-            const min = Math.floor(tiempo / 60).toString().padStart(2, '0');
-            const seg = (tiempo % 60).toString().padStart(2, '0');
-            document.getElementById('timer').textContent = `Tiempo: ${min}:${seg}`;
-            if (--tiempo < 0) {
-                clearInterval(timerInterval);
-                finalizarExamen();
-            }
-        }, 1000);
-    }
-
-    // NUEVA FUNCIÓN: Mostrar feedback inmediato
-    function mostrarFeedback(esCorrecta, respuestaCorrecta = "") {
-        const feedbackDiv = document.getElementById('feedback');
-        if (esCorrecta) {
-            feedbackDiv.innerHTML = `
-                <div style="background:#d4edda; color:#155724; padding:15px; border-radius:8px; 
-                            border:1px solid #c3e6cb; margin:20px 0; box-shadow:0 4px 12px rgba(0,200,0,0.2); font-weight:bold;">
-                    ¡Correcto! 
-                </div>`;
-            if (!respuestasUsuario[indiceActual]) puntajeActual += examenPreguntas[indiceActual].points;
-        } else {
-            feedbackDiv.innerHTML = `
-                <div style="background:#f8d7da; color:#721c24; padding:15px; border-radius:8px; 
-                            border:1px solid #f5c6cb; margin:20px 0; box-shadow:0 4px 12px rgba(200,0,0,0.2);">
-                    Incorrecto. <strong>La respuesta correcta es:</strong> ${respuestaCorrecta}
-                </div>`;
-        }
-        respuestasUsuario[indiceActual] = true; // Marcar como respondida
-    }
-
-    function mostrarPregunta() {
-        const preg = examenPreguntas[indiceActual];
-        const container = document.getElementById('pregunta-container');
-        const feedback = document.getElementById('feedback');
-        feedback.innerHTML = ''; // Limpiar feedback anterior
-
-        let html = `<h3>${indiceActual + 1}/34. ${preg.q}</h3>`;
-
-        if (preg.type === "mc") {
-            html += `<div class="opciones">`;
-            preg.opts.forEach((opt, i) => {
-                html += `
-                    <label style="display:block; margin:10px 0; padding:10px; border:1px solid #ddd; border-radius:6px; cursor:pointer;">
-                        <input type="radio" name="q${indiceActual}" value="${opt}" onchange="verificarMC('${opt}', '${preg.ans}')">
-                        ${opt}
-                    </label>`;
-            });
-            html += `</div>`;
-
-        } else if (preg.type === "fill") {
-            html += `<input type="text" id="fillInput" style="width:200px; padding:8px; font-size:16px;" 
-                          onblur="verificarFill(this.value, '${preg.ans}')">`;
-
-        } else if (preg.type === "short") {
-            html += `<textarea id="shortInput" style="width:100%; height:120px; padding:10px;" 
-                          onblur="verificarShort(this.value, '${preg.keywords}')"></textarea>`;
-        }
-
-        container.innerHTML = html;
-        document.getElementById('siguiente-btn').style.display = respuestasUsuario[indiceActual] ? 'inline' : 'none';
-    }
-
-    // === FUNCIONES DE VERIFICACIÓN INMEDIATA ===
-    function verificarMC(seleccionada, correcta) {
-        const esCorrecta = seleccionada === correcta;
-        mostrarFeedback(esCorrecta, correcta);
-        document.getElementById('siguiente-btn').style.display = 'inline';
-    }
-
-    function verificarFill(escrita, correcta) {
-        const limpia = escrita.trim().toLowerCase();
-        const correctaLimpia = correcta.toLowerCase();
-        const esCorrecta = limpia === correctaLimpia || limpia.includes(correctaLimpia);
-        mostrarFeedback(esCorrecta, correcta);
-        document.getElementById('siguiente-btn').style.display = 'inline';
-    }
-
-    function verificarShort(texto, keywordsJSON) {
-        const keywords = JSON.parse(keywordsJSON.replace(/'/g, '"'));
-        const textoLimpio = texto.toLowerCase();
-        const aciertos = keywords.filter(kw => textoLimpio.includes(kw.toLowerCase()));
-        const esCorrecta = aciertos.length >= keywords.length * 0.7; // 70% de palabras clave
-        mostrarFeedback(esCorrecta, "Respuesta esperada incluye: " + keywords.join(", "));
-        document.getElementById('siguiente-btn').style.display = 'inline';
-    }
-
-    function siguientePregunta() {
-        indiceActual++;
-        if (indiceActual >= examenPreguntas.length) {
-            finalizarExamen();
-        } else {
+        function iniciarExamen() {
+            examenPreguntas = todasPreguntas.sort(() => Math.random() - 0.5).slice(0, 34);
+            indiceActual = 0;
+            puntajeActual = 0;
+            respuestasUsuario = {};
+            document.getElementById('intro').style.display = 'none';
+            document.getElementById('quiz').style.display = 'block';
+            document.getElementById('siguiente-btn').style.display = 'none';
+            document.getElementById('finalizar-btn').style.display = 'none';
+            iniciarTimer();
             mostrarPregunta();
         }
-    }
 
-    function finalizarExamen() {
-        clearInterval(timerInterval);
-        document.getElementById('quiz').style.display = 'none';
-        document.getElementById('resultados').style.display = 'block';
+        function iniciarTimer() {
+            let tiempo = 5400;
+            timerInterval = setInterval(() => {
+                const min = String(Math.floor(tiempo / 60)).padStart(2, '0');
+                const seg = String(tiempo % 60).padStart(2, '0');
+                document.getElementById('timer').textContent = `Tiempo restante: ${min}:${seg}`;
+                if (--tiempo < 0) { clearInterval(timerInterval); finalizarExamen(); }
+            }, 1000);
+        }
 
-        const porcentaje = Math.round((puntajeActual / examenPreguntas.reduce((a,p)=>a+p.points,0)) * 100);
-        const gedScore = Math.round(100 + (puntajeActual / examenPreguntas.length) * 100);
-
-        document.getElementById('puntaje-detalle').innerHTML = `
-            <h2>¡Examen terminado!</h2>
-            <p>Puntaje: <strong>${puntajeActual} / ${examenPreguntas.length}</strong> (${porcentaje}%)</p>
-            <p>Puntaje estimado GED Science: <strong>${gedScore}/200</strong></p>
-            ${gedScore >= 145 
-                ? '<p style="color:green; font-size:22px;">¡FELICIDADES! Aprobaste el GED Science</p>' 
-                : '<p style="color:red; font-size:22px;">Sigue practicando para llegar a 145+</p>'
+        function mostrarFeedback(esCorrecta, respuestaCorrecta = "") {
+            const feedback = document.getElementById('feedback');
+            if (esCorrecta) {
+                feedback.innerHTML = `✓ ¡CORRECTO!`;
+                feedback.className = "correcto";
+                if (!respuestasUsuario[indiceActual]) {
+                    puntajeActual += examenPreguntas[indiceActual].points || 1;
+                }
+            } else {
+                feedback.innerHTML = `✗ Incorrecto<br><strong>Respuesta correcta: ${respuestaCorrecta}</strong>`;
+                feedback.className = "incorrecto";
             }
-        `;
-    }
+            respuestasUsuario[indiceActual] = true;
+            document.getElementById('siguiente-btn').style.display = 'inline-block';
+            if (indiceActual === examenPreguntas.length - 1) {
+                document.getElementById('finalizar-btn').style.display = 'inline-block';
+            }
+        }
+
+        function mostrarPregunta() {
+            const preg = examenPreguntas[indiceActual];
+            const container = document.getElementById('pregunta-container');
+            document.getElementById('feedback').innerHTML = '';
+            document.getElementById('feedback').className = '';
+            document.getElementById('siguiente-btn').style.display = 'none';
+
+            let html = `<h3>Pregunta ${indiceActual + 1} de 34</h3><p><strong>${preg.q}</strong></p>`;
+
+            if (preg.type === "mc") {
+                html += `<div class="opciones">`;
+                preg.opts.forEach(opt => {
+                    html += `
+                        <label>
+                            <input type="radio" name="q${indiceActual}" value="${opt}"
+                                   onchange="verificarMC('${opt.replace(/'/g, "\\'")}', '${preg.ans.replace(/'/g, "\\'")}')">
+                            ${opt}
+                        </label>`;
+                });
+                html += `</div>`;
+            }
+            // (puedes agregar fill y short igual que antes si los usas)
+
+            container.innerHTML = html;
+        }
+
+        function verificarMC(seleccionada, correcta) {
+            const esCorrecta = seleccionada === correcta;
+            mostrarFeedback(esCorrecta, correcta);
+        }
+
+        function siguientePregunta() {
+            if (!respuestasUsuario[indiceActual]) return;
+            indiceActual++;
+            if (indiceActual >= examenPreguntas.length) {
+                finalizarExamen();
+            } else {
+                mostrarPregunta();
+            }
+        }
+
+        function finalizarExamen() {
+            clearInterval(timerInterval);
+            document.getElementById('quiz').style.display = 'none';
+            document.getElementById('resultados').style.display = 'block';
+
+            const total = examenPreguntas.length;
+            const porcentaje = Math.round((puntajeActual / total) * 100);
+            const gedScore = 100 + Math.round((puntajeActual / total) * 100);
+
+            document.getElementById('resultados').innerHTML = `
+                <h2>¡Examen terminado!</h2>
+                <h3>${puntajeActual} / ${total} correctas (${porcentaje}%)</h3>
+                <h1 style="color:#007bff; font-size:42px;">Puntaje GED estimado: ${gedScore}/200</h1>
+                ${gedScore >= 145 
+                    ? '<p style="color:green; font-size:32px;">¡FELICIDADES! Aprobaste GED Science 🎉</p>'
+                    : '<p style="color:red; font-size:28px;">Necesitas 145+. ¡Sigue practicando!</p>'
+                }
+                <button onclick="location.reload()" style="margin-top:30px; padding:18px 40px; font-size:20px;">Volver a intentar</button>
+            `;
+        }
     </script>
 </body>
 </html>
-
