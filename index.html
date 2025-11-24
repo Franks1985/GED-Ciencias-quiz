@@ -83,336 +83,7 @@
 
     <script>
         const todasPreguntas =  [
-            {q:"El gráfico muestra el crecimiento de bacterias:\nHora: 0|1|2|3|4\nCantidad(x1000): 2|4|8|16|32\n¿Qué describe mejor?", img:"Gráfico ascendente doble", opts:["Crecimiento lineal","Crecimiento lento","Crecimiento exponencial","Disminuye luego sube"], ans:"Crecimiento exponencial", points:1, type:"mc"},
-
-{q:"Una tabla muestra eficiencia de tres paneles solares:\n20°C: 22%\n30°C: 19%\n40°C: 15%\n¿Qué se concluye?", img:"Tabla eficiencia vs temperatura", opts:["La eficiencia aumenta","No cambia","Disminuye con la temperatura","Solo baja al final"], ans:"Disminuye con la temperatura", points:1, type:"mc"},
-
-{q:"Un experimento mide crecimiento de plantas con distinta luz:\n2h=1cm, 4h=3cm, 8h=6cm, 12h=7cm\n¿Qué dio más crecimiento?", img:"Tabla horas de luz", opts:["2h","4h","8h","12h"], ans:"8h", points:1, type:"mc"},
-
-{q:"El gráfico de velocidad de un auto muestra:\n0–3s sube, 3–7s constante, 7–10s baja.\n¿Qué pasó al final?", img:"Gráfico velocidad-tiempo", opts:["Aceleró","Frenó","Aumentó velocidad","Detuvo el motor"], ans:"Frenó", points:1, type:"mc"},
-
-{q:"Diagrama de célula:\n[Núcleo][Mitocondria][Ribosomas][Membrana]\n¿Cuál produce energía?", img:"Diagrama textual de organelos", opts:["Núcleo","Ribosomas","Mitocondria","Membrana"], ans:"Mitocondria", points:1, type:"mc"},
-
-{q:"Un experimento produce gas, calor y color nuevo.\n¿Qué indica?", img:"Observaciones químicas", opts:["Cambio físico","No hubo reacción","Cambio químico","Solo calor"], ans:"Cambio químico", points:1, type:"mc"},
-
-{q:"El gráfico muestra temperatura global subiendo 1980–2020.\n¿Qué conclusión es razonable?", img:"Gráfica ascendente", opts:["No cambia","Ha aumentado","Ha bajado","Es irregular"], ans:"Ha aumentado", points:1, type:"mc"},
-
-{q:"Tabla nutricional:\nAvena: 27g carbos\nCarne: 0g carbos\nManzana: 25g carbos\n¿Cuál da energía rápida?", img:"Tabla alimentos", opts:["Carne","Avena","Manzana","Ninguno"], ans:"Manzana", points:1, type:"mc"},
-
-{q:"Un carro recorre más en madera que en alfombra.\n¿Por qué?", img:"Superficies", opts:["Alfombra menos fricción","Alfombra más fricción","Madera más fricción","Igual fricción"], ans:"Alfombra más fricción", points:1, type:"mc"},
-
-{q:"Ciclo del agua:\nEvaporación→Condensación→Precipitación→?\n¿Qué sigue?", img:"Ciclo agua incompleto", opts:["Evaporación","Infiltración","Fusión","Sublimación"], ans:"Infiltración", points:1, type:"mc"},
-
-{q:"Gráfico:\nDía 1=5 aves, Día 5=25 aves\n¿Qué tendencia hay?", img:"Gráfico ascendente rápido", opts:["Disminuye","Aumenta lentamente","Aumenta rápido","Es estable"], ans:"Aumenta rápido", points:1, type:"mc"},
-
-{q:"Tabla de eficiencia:\nA=40%, B=55%, C=70%\n¿Cuál es más eficiente?", img:"Tabla eficiencia", opts:["A","B","C","Todos igual"], ans:"C", points:1, type:"mc"},
-
-{q:"Lluvia mensual:\nEnero=30, Feb=20, Mar=40, Abr=60\nMes más lluvioso:", img:"Barras", opts:["Enero","Marzo","Abril","Febrero"], ans:"Abril", points:1, type:"mc"},
-
-{q:"Glucosa:\n0 min=90, 30=140, 60=130, 90=110\n¿Qué pasa tras 30 min?", img:"Curva glucosa", opts:["Sube más","Baja lentamente","No cambia","Llega a cero"], ans:"Baja lentamente", points:1, type:"mc"},
-
-{q:"Población de peces:\n200→150→100→50\n¿Qué describe mejor?", img:"Gráfica bajando", opts:["Aumenta","Disminuye rápido","Estable","Sube luego baja"], ans:"Disminuye rápido", points:1, type:"mc"},
-
-{q:"pH:\nA=2, B=7, C=10\n¿Cuál es básico?", img:"Tabla pH", opts:["A","B","C","Ninguno"], ans:"C", points:1, type:"mc"},
-
-{q:"Planta:\n3→5→9→14 cm\n¿Qué patrón?", img:"Curva crecimiento acelerado", opts:["Lineal","Acelerado","Irregular","Disminuye"], ans:"Acelerado", points:1, type:"mc"},
-
-{q:"Oxígeno disuelto:\n8, 5, 2 mg/L\nSitio más contaminado:", img:"Contaminación vs O2", opts:["1","2","3","Todos"], ans:"3", points:1, type:"mc"},
-
-{q:"Volumen ↑ → Presión ↓\n¿Qué ley es?", img:"Curva inversa P-V", opts:["Ohm","Boyle","Newton","Kepler"], ans:"Boyle", points:1, type:"mc"},
-
-{q:"Energía eólica:\n0→40→80 kWh\nConclusión:", img:"Viento vs energía", opts:["Más viento más energía","Menos viento más energía","No cambia","Constante"], ans:"Más viento más energía", points:1, type:"mc"},
-
-{q:"Ritmo cardíaco:\n70→140→90 bpm\nPico corresponde a:", img:"Gráfico frecuencia", opts:["Reposo","Ejercicio","Dormir","Relajación"], ans:"Ejercicio", points:1, type:"mc"},
-
-{q:"Densidad:\nCobre 8.9, Al 2.7, Plástico 1.2\nMás denso:", img:"Tabla densidad", opts:["Cobre","Aluminio","Plástico","Iguales"], ans:"Cobre", points:1, type:"mc"},
-
-{q:"Venados:\n50→80→120→70\n¿Por qué baja al final?", img:"Curva baja final", opts:["Más comida","Menos depredadores","Más depredadores","Clima mejoró"], ans:"Más depredadores", points:1, type:"mc"},
-
-{q:"Peso en planetas:\nTierra=10N, Marte=4N, Júpiter=26N\n¿Qué cambia?", img:"Tabla peso planetas", opts:["Masa","Volumen","Gravedad","Forma"], ans:"Gravedad", points:1, type:"mc"},
-
-{q:"Ondas:\nA=10m, B=5m, C=2m\nMayor frecuencia:", img:"Longitud vs frecuencia", opts:["A","B","C","Iguales"], ans:"C", points:1, type:"mc"},
-
-{q:"Temperatura:\n5→18→12°C\n¿Qué ocurrió?", img:"Curva asc-desc", opts:["Se mantuvo","Subió luego bajó","Solo bajó","Solo subió"], ans:"Subió luego bajó", points:1, type:"mc"},
-
-{q:"Máquina con peor eficiencia:\nA=80%, B=60%, C=90%", img:"Tabla eficiencia", opts:["A","B","C","Todas"], ans:"B", points:1, type:"mc"},
-
-{q:"Gráfico bacteriano: se duplica cada hora.\nTipo de crecimiento:", img:"Exponencial", opts:["Lineal","Exponencial","Lento","Variable"], ans:"Exponencial", points:1, type:"mc"},
-
-{q:"Experimento:\nIndependiente=agua\nDependiente=semillas germinadas\n¿Cuál es control?", img:"Variables experimento", opts:["Cantidad de agua","Número de semillas","Tipo de semilla","Altura"], ans:"Tipo de semilla", points:1, type:"mc"},
-
-{q:"Temperatura ↑ → solubilidad ↑\n¿Qué concluye?", img:"Tabla solubilidad", opts:["Baja","Sube","Constante","Inversa"], ans:"Sube", points:1, type:"mc"},
-
-{q:"Plantas con 0h, 4h, 8h luz.\nIndependiente:", img:"Experimento luz", opts:["Luz","Altura","Temperatura","Suelo"], ans:"Luz", points:1, type:"mc"},
-
-{q:"Carro en rampa:\n¿Qué variable cambiarías?", img:"Rampa inclinación", opts:["Carro","Ángulo","Distancia","Cronómetro"], ans:"Ángulo", points:1, type:"mc"},
-
-{q:"Fertilizante A vs B.\nDependiente:", img:"Crecimiento plantas", opts:["Tipo fertilizante","Altura crecimiento","Tamaño maceta","Tiempo"], ans:"Altura crecimiento", points:1, type:"mc"},
-
-{q:"Azúcar se disuelve más rápido en caliente.\n¿Por qué?", img:"Moléculas agitadas", opts:["Moléculas más rápidas","Más lentas","Azúcar cambia forma","No influye"], ans:"Moléculas más rápidas", points:1, type:"mc"},
-
-{q:"Sonido en sólido vs aire.\nVariable control:", img:"Experimento sonido", opts:["Material","Distancia","Velocidad","Tiempo"], ans:"Distancia", points:1, type:"mc"},
-
-{q:"Metal se expande al calentar.\nDependiente:", img:"Dilatación térmica", opts:["Temperatura","Color","Expansión","Tipo de metal"], ans:"Expansión", points:1, type:"mc"},
-
-{q:"Actividad enzimática vs pH.\nIndependiente:", img:"Enzimas", opts:["pH","Temperatura","Tiempo","Cantidad enzima"], ans:"pH", points:1, type:"mc"},
-
-{q:"Botellas con aislamiento.\nDependiente:", img:"Aislamiento térmico", opts:["Aislamiento","Temperatura que baja","Cantidad agua","Material"], ans:"Temperatura que baja", points:1, type:"mc"},
-
-{q:"Gráfico muestra masa vs calor necesario.\nMás masa → más energía.\n¿Por qué?", img:"Calor específico", opts:["Menos moléculas","Más moléculas que calentar","Aumenta densidad","Se evapora"], ans:"Más moléculas que calentar", points:1, type:"mc"},
-
-{q:"Experimento mide si la sal afecta el punto de congelación.\nIndependiente:", img:"Agua con sal", opts:["Temperatura final","Cantidad de sal","Tipo de termómetro","Tipo de agua"], ans:"Cantidad de sal", points:1, type:"mc"},
-
-{q:"Plantas con distinta agua.\nDependiente:", img:"Experimento riego", opts:["Cantidad de agua","Crecimiento planta","Tipo planta","Tamaño maceta"], ans:"Crecimiento planta", points:1, type:"mc"},
-
-{q:"Gráfico muestra CO₂ aumentando.\nConclusión:", img:"Tendencia ascendente CO2", opts:["Disminuye","Aumenta","Oscila","Estable"], ans:"Aumenta", points:1, type:"mc"},
-
-{q:"Tabla de velocidad en distintos suelos:\nHielo=rápido, Pasto=lento.\n¿Por qué?", img:"Fricción superficies", opts:["Más fricción en hielo","Menos fricción en pasto","Más fricción en pasto","Todas iguales"], ans:"Más fricción en pasto", points:1, type:"mc"},
-
-{q:"Experimento de fotosíntesis mide burbujas de oxígeno.\nDependiente:", img:"Fotosíntesis", opts:["Luz","Burbujas","Temperatura","Color"], ans:"Burbujas", points:1, type:"mc"},
-
-{q:"Tabla de densidad del agua a distintas temperaturas.\nTemp ↑ → Densidad ↓\n¿Por qué?", img:"Densidad vs temperatura", opts:["Moléculas se juntan","Moléculas se separan","Se solidifica","Se expande"], ans:"Moléculas se separan", points:1, type:"mc"},
-
-{q:"Gráfico de población de insectos baja después de pesticida.\nConclusión:", img:"Curva descendente", opts:["Más insectos","Efecto del pesticida","Clima mejoró","Subió la comida"], ans:"Efecto del pesticida", points:1, type:"mc"},
-
-{q:"Experimento usa 2 plantas idénticas; 1 recibe luz, otra no.\nVariable independiente:", img:"Luz/no luz", opts:["Tipo planta","Altura","Luz","Agua"], ans:"Luz", points:1, type:"mc"},
-{q:"Un estudiante prueba si la cantidad de agua afecta la germinación.\nVariables:\nIndependiente: cantidad de agua\nDependiente: número de semillas germinadas\n¿Cuál es el control?", img:"Descripción de experimento", opts:["Cantidad de agua","Número de semillas","Tipo de semilla","Altura de planta"], ans:"Tipo de semilla", points:1, type:"mc"},
-
-{q:"Un experimento mide el efecto del calor en la solubilidad.\nMás temperatura → más soluto disuelto.\n¿Qué se concluye?", img:"Tabla solubilidad vs temperatura", opts:["La solubilidad baja","La solubilidad sube","La solubilidad es constante","No se afecta"], ans:"La solubilidad sube", points:1, type:"mc"},
-
-{q:"Un científico expone plantas a 0h, 4h, 8h y 12h de luz.\n¿Qué es la variable independiente?", img:"Experimento luz", opts:["Cantidad de luz","Altura de planta","Color de planta","Temperatura"], ans:"Cantidad de luz", points:1, type:"mc"},
-
-{q:"En un experimento se mide cómo la pendiente afecta la velocidad.\n¿Qué cambiaría el estudiante?", img:"Carrito en rampa", opts:["El tipo de carro","El ángulo de la pendiente","La distancia recorrida","El cronómetro"], ans:"El ángulo de la pendiente", points:1, type:"mc"},
-
-{q:"Un experimento compara crecimiento con fertilizante A y B.\n¿Qué variable dependiente se mide?", img:"Experimento plantas", opts:["Tipo de fertilizante","Cantidad de planta que crece","Tipo de maceta","Tipo de suelo"], ans:"Cantidad de planta que crece", points:1, type:"mc"},
-
-{q:"Un estudiante mide tiempo de disolución de azúcar en agua fría y caliente.\nResultado: el azúcar se disuelve más rápido en agua caliente.\n¿Por qué?", img:"Experimento disolución", opts:["Las moléculas se mueven más rápido","Las moléculas se mueven más lento","El azúcar cambia de estructura","No hay relación"], ans:"Las moléculas se mueven más rápido", points:1, type:"mc"},
-
-{q:"Un científico quiere probar si el sonido viaja más rápido en sólido o aire.\n¿Qué variable debe mantenerse igual?", img:"Experimento de sonido", opts:["El material","La distancia","La velocidad","El tiempo"], ans:"La distancia", points:1, type:"mc"},
-
-{q:"Un estudiante calienta metal a diferentes temperaturas y mide expansión.\n¿Variable dependiente?", img:"Experimento dilatación", opts:["Temperatura","Color del metal","Expansión","Tipo de metal"], ans:"Expansión", points:1, type:"mc"},
-
-{q:"Un experimento prueba cómo el pH afecta actividad enzimática.\n¿Qué variable independiente usa?", img:"Actividad enzimática", opts:["pH","Temperatura","Cantidad de enzima","Tiempo"], ans:"pH", points:1, type:"mc"},
-
-{q:"Un científico prueba dos aislamientos térmicos en botellas.\nMide cuánto baja la temperatura.\n¿Qué variable dependiente observa?", img:"Aislamiento térmico", opts:["Tipo de aislamiento","Temperatura que baja","Material de botella","Cantidad de agua"], ans:"Temperatura que baja", points:1, type:"mc"},
-{q:"El gráfico muestra el número de aves observadas por día:\nDía: 1 | 2 | 3 | 4 | 5\nAves: 5 | 8 | 12 | 17 | 25\n¿Qué describe mejor la tendencia?", img:"Gráfico ascendente rápido", opts:["Crecimiento lento","Crecimiento acelerado","Sin patrón","Disminución"], ans:"Crecimiento acelerado", points:1, type:"mc"},
-
-{q:"Una tabla muestra eficiencia de tres motores:\nMotor A: 40%\nMotor B: 55%\nMotor C: 70%\n¿Cuál es el más eficiente?", img:"Tabla de eficiencia por motor", opts:["A","B","C","Todos iguales"], ans:"C", points:1, type:"mc"},
-
-{q:"El gráfico muestra la cantidad de lluvia por mes:\nEnero 30mm; Febrero 20mm; Marzo 40mm; Abril 60mm\n¿Cuál mes tuvo mayor lluvia?", img:"Gráfico de barras simple", opts:["Enero","Marzo","Febrero","Abril"], ans:"Abril", points:1, type:"mc"},
-
-{q:"Una tabla muestra el nivel de glucosa en sangre después de comer:\n0 min: 90 mg/dL\n30 min: 140 mg/dL\n60 min: 130 mg/dL\n90 min: 110 mg/dL\n¿Qué sucede luego de 30 min?", img:"Tabla glucosa vs tiempo", opts:["El nivel sigue aumentando","El nivel baja lentamente","No cambia","Llega a cero"], ans:"El nivel baja lentamente", points:1, type:"mc"},
-
-{q:"El gráfico de población de una especie muestra:\nAño 1: 200\nAño 2: 300\nAño 3: 450\nAño 4: 700\n¿Qué describe mejor?", img:"Curva exponencial", opts:["Población estable","Disminución gradual","Crecimiento muy rápido","Oscilación"], ans:"Crecimiento muy rápido", points:1, type:"mc"},
-
-{q:"Tabla de combustibles:\nGasolina: 34 MJ/L\nDiesel: 38 MJ/L\nEtanol: 24 MJ/L\n¿Cuál tiene más energía por litro?", img:"Tabla energía de combustibles", opts:["Gasolina","Diesel","Etanol","Todos iguales"], ans:"Diesel", points:1, type:"mc"},
-
-{q:"El gráfico de temperatura corporal muestra:\nMañana: 36.7°C\nTarde: 37.1°C\nNoche: 36.8°C\n¿Qué se concluye?", img:"Gráfico de línea suave", opts:["La temperatura es estable con ligeras variaciones","Sube muchísimo","Baja drásticamente","No cambia"], ans:"La temperatura es estable con ligeras variaciones", points:1, type:"mc"},
-
-{q:"El gráfico muestra la velocidad de un ciclista:\n0–5 s: aumenta\n5–10 s: constante\n10–15 s: disminuye\n¿Qué pasó entre 5 y 10 segundos?", img:"Velocidad vs tiempo", opts:["Aceleró","Frenó","Mantuvo velocidad","Revirtió dirección"], ans:"Mantuvo velocidad", points:1, type:"mc"},
-
-{q:"Tabla de masa de objetos:\nObjeto A: 5 kg\nObjeto B: 10 kg\nObjeto C: 15 kg\n¿Quién requiere más fuerza para acelerar igual?", img:"Masa comparativa", opts:["A","B","C","Ninguno"], ans:"C", points:1, type:"mc"},
-
-{q:"El gráfico muestra población de peces después de contaminar un río:\nSemana 1: 200\nSemana 2: 150\nSemana 3: 100\nSemana 4: 50\n¿Qué describe mejor?", img:"Gráfica descendente", opts:["Aumento gradual","Estabilidad","Disminución rápida","Aumento rápido"], ans:"Disminución rápida", points:1, type:"mc"},
-
-{q:"Una tabla muestra niveles de pH en muestras:\nMuestra A: pH 2\nMuestra B: pH 7\nMuestra C: pH 10\n¿Cuál es básica?", img:"Tabla pH", opts:["A","B","C","Ninguna"], ans:"C", points:1, type:"mc"},
-
-{q:"El gráfico muestra crecimiento de una planta con fertilizante:\nDía 1: 3 cm\nDía 3: 5 cm\nDía 5: 9 cm\nDía 7: 14 cm\n¿Qué patrón hay?", img:"Curva ascendente", opts:["Crecimiento lineal","Crecimiento acelerado","Disminución","Crecimiento irregular"], ans:"Crecimiento acelerado", points:1, type:"mc"},
-
-{q:"Tabla de niveles de oxígeno disuelto:\nSitio 1: 8 mg/L\nSitio 2: 5 mg/L\nSitio 3: 2 mg/L\n¿Cuál sitio está más contaminado?", img:"Oxígeno disuelto baja = contaminación", opts:["Sitio 1","Sitio 2","Sitio 3","Todos"], ans:"Sitio 3", points:1, type:"mc"},
-
-{q:"El gráfico muestra presión vs volumen en un gas:\nVolumen ↑ → Presión ↓\n¿Qué ley se demuestra?", img:"Gráfico inverso P-V", opts:["Ley de Ohm","Ley de Boyle","Ley de Newton","Ley de Kepler"], ans:"Ley de Boyle", points:1, type:"mc"},
-
-{q:"Tabla de energía producida por turbinas eólicas:\nDía sin viento: 0 kWh\nDía viento medio: 40 kWh\nDía viento fuerte: 80 kWh\n¿Qué se concluye?", img:"Tabla energía eólica", opts:["Más viento = más energía","Menos viento = más energía","No hay relación","La energía es constante"], ans:"Más viento = más energía", points:1, type:"mc"},
-
-{q:"El gráfico de ritmo cardíaco muestra:\nReposo: 70 bpm\nEjercicio: 140 bpm\nRecuperación: 90 bpm\n¿Qué sección corresponde al ejercicio?", img:"Gráfico con pico a 140", opts:["La más baja","La intermedia","La más alta","Ninguna"], ans:"La más alta", points:1, type:"mc"},
-
-{q:"Tabla de densidad:\nCobre: 8.9 g/cm3\nAluminio: 2.7 g/cm3\nPlástico: 1.2 g/cm3\n¿Cuál es más denso?", img:"Tabla densidades", opts:["Cobre","Aluminio","Plástico","Todos iguales"], ans:"Cobre", points:1, type:"mc"},
-
-{q:"El gráfico muestra población de venados:\nAño 1: 50\nAño 2: 80\nAño 3: 120\nAño 4: 70\n¿Qué pudo pasar en Año 4?", img:"Gráfica sube y luego baja", opts:["Más alimento","Depredadores aumentaron","Aumentó la reproducción","Mejor clima"], ans:"Depredadores aumentaron", points:1, type:"mc"},
-
-{q:"La tabla muestra la masa de un objeto en diferentes planetas:\nTierra: 10 N\nMarte: 4 N\nJúpiter: 26 N\n¿Qué cambia entre planetas?", img:"Diferencias en peso", opts:["La masa","El volumen","La fuerza gravitacional","La forma"], ans:"La fuerza gravitacional", points:1, type:"mc"},
-
-{q:"Gráfico de velocidad:\nSube → se mantiene → baja\n¿Qué representa la última parte?", img:"Velocidad decreciente", opts:["Acelerar","Frenar","Velocidad constante","Sin movimiento"], ans:"Frenar", points:1, type:"mc"},
-
-{q:"Tabla de longitud de ondas:\nOnda A: 10 m\nOnda B: 5 m\nOnda C: 2 m\n¿Cuál tiene mayor frecuencia?", img:"Frecuencia inversa a longitud", opts:["A","B","C","Todas iguales"], ans:"C", points:1, type:"mc"},
-
-{q:"El gráfico de temperatura muestra:\nTemprano: 5°C\nMediodía: 18°C\nTarde: 12°C\n¿Qué ocurrió?", img:"Gráfico ascenso y descenso", opts:["Se mantuvo igual","Aumentó y luego disminuyó","Solo bajó","Solo subió"], ans:"Aumentó y luego disminuyó", points:1, type:"mc"},
-
-{q:"Tabla de rendimiento de máquinas:\nMáquina A: 80%\nMáquina B: 60%\nMáquina C: 90%\n¿Cuál desperdicia más energía?", img:"Comparación de eficiencia", opts:["A","B","C","Todas"], ans:"B", points:1, type:"mc"},
-
-{q:"Gráfico de crecimiento bacteriano:\nSe duplica cada hora.\n¿Qué tipo de crecimiento es?", img:"Crecimiento exponencial", opts:["Lineal","Acelerado","Exponencial","Irregular"], ans:"Exponencial", points:1, type:"mc"},
-{
-q:"En el diagrama del ciclo del agua aparece:\nEvaporación → Condensación → Precipitación → ?\n¿Qué sigue?",
-img:"Diagrama textual del ciclo del agua incompleto.",
-opts:["Evaporación","Infiltración","Fusión","Sublimación"],
-ans:"Infiltración",
-points:1,
-type:"mc"
-},
-{
-q:"Un carro de juguete recorre más distancia en madera que en alfombra. ¿Cuál es la mejor explicación?",
-img:"Escenario comparando superficies.",
-opts:["La alfombra tiene menos fricción","La madera tiene más fricción","La alfombra tiene más fricción","Las superficies no afectan el movimiento"],
-ans:"La alfombra tiene más fricción",
-points:1,
-type:"mc"
-},
-{
-q:"Un estudiante analiza alimentos:\n\nAlimento | Proteínas | Grasas | Carbohidratos\nAvena    | 5 g       | 3 g    | 27 g\nCarne    | 26 g      | 14 g   | 0 g\nManzana  | 0 g       | 0 g    | 25 g\n\n¿Qué alimento provee más energía rápida?",
-img:"Tabla nutricional.",
-opts:["Carne","Avena","Manzana","Ninguno"],
-ans:"Manzana",
-points:1,
-type:"mc"
-},
-{
-q:"La gráfica muestra un aumento continuo de la temperatura global entre 1980 y 2020.\n¿Qué conclusión es razonable?",
-img:"Gráfico ascendente de temperatura media del planeta.",
-opts:["El clima nunca cambia","La temperatura global ha aumentado en ese periodo","La temperatura global se mantiene igual","No hay datos suficientes"],
-ans:"La temperatura global ha aumentado en ese periodo",
-points:1,
-type:"mc"
-},
-{
-q:"Un estudiante mezcla dos sustancias y observa:\n- Se forma gas\n- Aumenta la temperatura\n- El color cambia\n¿Qué indica esto?",
-img:"Descripción de observaciones de experimento químico.",
-opts:["Cambio físico","No ocurrió ningún cambio","Solo liberación de calor","Cambio químico"],
-ans:"Cambio químico",
-points:1,
-type:"mc"
-},
-{
-q:"En la siguiente célula (diagrama textual):\n\n[ Núcleo ] [ Mitocondria ] [ Ribosomas ] [ Membrana ]\n\n¿Qué estructura produce energía para la célula?",
-img:"Diagrama simple con organelos.",
-opts:["Núcleo","Ribosomas","Mitocondria","Membrana"],
-ans:"Mitocondria",
-points:1,
-type:"mc"
-},
-{
-q:"El gráfico muestra la velocidad de un auto durante 10 segundos.\n\n0–3 s: aumenta\n3–7 s: constante\n7–10 s: disminuye\n¿Qué describe mejor el movimiento?",
-img:"Gráfico de velocidad-tiempo con tres fases.",
-opts:["Acelera todo el tiempo","Mantiene velocidad constante todo el tiempo","Acelera, luego mantiene velocidad y después frena","Frena y después acelera"],
-ans:"Acelera, luego mantiene velocidad y después frena",
-points:1,
-type:"mc"
-},
-{
-q:"Un experimento compara el crecimiento de plantas con diferente cantidad de luz diaria.\n\nHoras de luz: 2h | 4h | 8h | 12h\nAltura (cm): 1 | 3 | 6 | 7\n¿Según los datos, qué cantidad de luz genera el mayor crecimiento?",
-img:"Tabla crecimiento vs horas de luz.",
-opts:["2h","4h","8h","12h"],
-ans:"8h",
-points:1,
-type:"mc"
-},
-{
-q:"Un científico mide la eficiencia de tres paneles solares con diferente temperatura superficial.\n\nTemperatura (°C): 20 | 30 | 40\nEficiencia (%): 22 | 19 | 15\n\n¿Qué patrón describe mejor los datos?",
-img:"Tabla con eficiencia disminuyendo al aumentar la temperatura.",
-opts:["La eficiencia aumenta al subir la temperatura","La eficiencia no cambia","La eficiencia disminuye con la temperatura","La eficiencia cambia solo al inicio"],
-ans:"La eficiencia disminuye con la temperatura",
-points:1,
-type:"mc"
-},
-{
-q:"El siguiente gráfico muestra el crecimiento de una población bacteriana en un laboratorio.\n\nHora: 0 | 1 | 2 | 3 | 4\nBacterias (x1000): 2 | 4 | 8 | 16 | 32\n\n¿Qué conclusión es más probable?",
-img:"Gráfico lineal que se duplica cada hora.",
-opts:["El crecimiento es aleatorio","Las bacterias disminuyen con el tiempo","Las bacterias se duplican cada hora","Las bacterias crecen de forma irregular"],
-ans:"Las bacterias se duplican cada hora",
-points:1,
-type:"mc"
-},
-{q:"Experimento: medir efecto del fertilizante en altura de plantas.\nFertilizante A=12cm, B=15cm, C=10cm\n¿Qué fertilizante fue más efectivo?", img:"Tabla crecimiento", opts:["A","B","C","Todos igual"], ans:"B", points:1, type:"mc"},
-
-{q:"Gráfico de velocidad de una pelota:\n0–2s: 0→4 m/s, 2–5s: constante, 5–7s: disminuye\n¿Qué fase indica frenado?", img:"Velocidad vs tiempo", opts:["0–2s","2–5s","5–7s","Ninguna"], ans:"5–7s", points:1, type:"mc"},
-
-{q:"Tabla de temperatura y solubilidad:\n20°C=30g, 40°C=50g, 60°C=70g\n¿Qué patrón?", img:"Solubilidad creciente", opts:["Sube con temperatura","Baja con temperatura","Constante","Aleatorio"], ans:"Sube con temperatura", points:1, type:"mc"},
-
-{q:"Gráfico de población de ratones:\n100→150→200→160\n¿Qué pasó al final?", img:"Curva descendente ligera", opts:["Más comida","Depredadores aumentaron","Clima mejoró","Mutación"], ans:"Depredadores aumentaron", points:1, type:"mc"},
-
-{q:"Experimento de densidad:\nLíquidos: aceite, agua, jarabe\n¿Cuál flota arriba?", img:"Tabla densidades", opts:["Agua","Aceite","Jarabe","Todos iguales"], ans:"Aceite", points:1, type:"mc"},
-
-{q:"Gráfico de fotosíntesis vs luz:\n0h=0 O₂, 2h=4 O₂, 4h=8 O₂, 6h=9 O₂\n¿Qué patrón?", img:"Curva ascendente", opts:["Lineal","Acelerado","Exponencial","No hay patrón"], ans:"Acelerado", points:1, type:"mc"},
-
-{q:"Tabla: pH de soluciones\nA=1, B=7, C=13\n¿Cuál es ácido fuerte?", img:"Tabla pH", opts:["A","B","C","Ninguno"], ans:"A", points:1, type:"mc"},
-
-{q:"Experimento de calor:\nCalentar agua 50ml vs 100ml\n¿Cuál sube menos rápido?", img:"Tabla calor vs masa", opts:["50ml","100ml","Igual","No aplica"], ans:"100ml", points:1, type:"mc"},
-
-{q:"Gráfico: fuerza vs aceleración\nAcelera más con mayor fuerza\n¿Qué ley?", img:"Ley Newton 2", opts:["1ra Ley","2da Ley","3ra Ley","Gravitación"], ans:"2da Ley", points:1, type:"mc"},
-
-{q:"Tabla: energía producida por paneles solares\nPanel A=30kWh, B=40kWh, C=50kWh\n¿Cuál más eficiente?", img:"Tabla energía", opts:["A","B","C","Todos igual"], ans:"C", points:1, type:"mc"},
-
-{q:"Experimento: plantas con diferente agua\nAltura final A=8cm, B=12cm, C=10cm\n¿Qué variable independiente?", img:"Riego", opts:["Cantidad agua","Altura","Tipo maceta","Temperatura"], ans:"Cantidad agua", points:1, type:"mc"},
-
-{q:"Gráfico: población de peces\nSemana 1=200, 2=180, 3=150, 4=120\n¿Qué describe?", img:"Curva descendente", opts:["Aumenta","Disminuye","Estable","Sube luego baja"], ans:"Disminuye", points:1, type:"mc"},
-
-{q:"Tabla: velocidad de reacción química\nTemp 20°C=2 s, 40°C=1 s, 60°C=0.5 s\n¿Qué patrón?", img:"Velocidad vs temperatura", opts:["Disminuye con temperatura","Aumenta con temperatura","Constante","Aleatorio"], ans:"Aumenta con temperatura", points:1, type:"mc"},
-
-{q:"Experimento: luz y crecimiento de algas\n0h=0cm, 4h=2cm, 8h=5cm, 12h=6cm\nConclusión?", img:"Tabla crecimiento vs luz", opts:["Más luz=menos crecimiento","Más luz=más crecimiento hasta límite","No hay efecto","Crecimiento irregular"], ans:"Más luz=más crecimiento hasta límite", points:1, type:"mc"},
-
-{q:"Gráfico: velocidad vs tiempo\n0–5s: constante 3 m/s\n5–10s: 6 m/s\n¿Qué ocurre 5–10s?", img:"Velocidad aumenta", opts:["Acelera","Frena","Constante","Retrocede"], ans:"Acelera", points:1, type:"mc"},
-
-{q:"Tabla: densidad de metales\nHierro=7.8, Aluminio=2.7, Oro=19.3\nMás denso:", img:"Tabla densidad", opts:["Hierro","Aluminio","Oro","Todos iguales"], ans:"Oro", points:1, type:"mc"},
-
-{q:"Experimento: sonido viaja en aire vs agua\n¿Qué variable mantener igual?", img:"Velocidad sonido", opts:["Distancia","Material","Tiempo","Volumen"], ans:"Distancia", points:1, type:"mc"},
-
-{q:"Gráfico: temperatura vs energía absorbida\nTemperatura sube rápido al inicio y luego lento\nTipo de curva:", img:"Curva concava", opts:["Lineal","Exponencial","Logarítmica","Constante"], ans:"Logarítmica", points:1, type:"mc"},
-
-{q:"Tabla: CO₂ vs tiempo\n2010=380ppm, 2020=410ppm\nConclusión?", img:"Curva ascendente CO2", opts:["Disminuye","Aumenta","Estable","Oscila"], ans:"Aumenta", points:1, type:"mc"},
-
-{q:"Experimento: fotosíntesis mide O₂\nVariable dependiente:", img:"Burbujas oxígeno", opts:["Luz","Oxígeno","Temperatura","Humedad"], ans:"Oxígeno", points:1, type:"mc"},
-
-{q:"Gráfico: presión vs volumen\nVolumen ↑ → Presión ↓\n¿Qué ley?", img:"Ley Boyle", opts:["Boyle","Charles","Newton","Pascal"], ans:"Boyle", points:1, type:"mc"},
-
-{q:"Experimento: masa vs calor necesario\nMás masa → más calor\n¿Por qué?", img:"Calor específico", opts:["Menos moléculas","Más moléculas","Se evapora","Cambia densidad"], ans:"Más moléculas", points:1, type:"mc"},
-
-{q:"Tabla: velocidad de caída de objetos\nObjeto A=3 m/s, B=3 m/s, C=3 m/s\n¿Qué predice?", img:"Gravedad uniforme", opts:["Todos iguales","A más rápido","B más lento","Depende del peso"], ans:"Todos iguales", points:1, type:"mc"},
-
-{q:"Gráfico: crecimiento bacteriano con antibiótico\n0h=2k, 2h=1.5k, 4h=1k, 6h=0.5k\nConclusión?", img:"Curva descendente antibiótico", opts:["Crecen","Disminuyen","Estable","Oscila"], ans:"Disminuyen", points:1, type:"mc"},
-
-{q:"Experimento: sal afecta punto de congelación\nIndependiente:", img:"Tabla agua+salo", opts:["Cantidad de sal","Temperatura","Tiempo","Tipo de vaso"], ans:"Cantidad de sal", points:1, type:"mc"},
-
-{q:"Plantas con distinto suelo\nDependiente:", img:"Crecimiento vs suelo", opts:["Altura","Tipo de suelo","Luz","Agua"], ans:"Altura", points:1, type:"mc"},
-
-{q:"Gráfico: lluvia anual\nEnero=100mm, Julio=200mm\nMes más lluvioso:", img:"Barras", opts:["Enero","Julio","Abril","Octubre"], ans:"Julio", points:1, type:"mc"},
-
-{q:"Tabla: eficiencia paneles A=20%, B=40%, C=60%\nMás eficiente:", img:"Eficiencia", opts:["A","B","C","Todos igual"], ans:"C", points:1, type:"mc"},
-
-{q:"Experimento: temperatura afecta disolución\nResultado: más caliente=rápido\nVariable dependiente?", img:"Disolución azúcar", opts:["Tiempo disolución","Temperatura","Cantidad azúcar","Volumen líquido"], ans:"Tiempo disolución", points:1, type:"mc"},
-
-{q:"Gráfico: velocidad de tren\n0–10s: aumenta lineal, 10–20s: constante\nFase 10–20s indica?", img:"Velocidad constante", opts:["Acelerar","Mantener","Frenar","Retroceder"], ans:"Mantener", points:1, type:"mc"},
-
-{q:"Tabla: energía producida\nDía 1=30kWh, 2=50kWh, 3=80kWh\nConclusión?", img:"Curva ascendente", opts:["Aumenta","Disminuye","Constante","Oscila"], ans:"Aumenta", points:1, type:"mc"},
-
-{q:"Experimento: luz vs fotosíntesis\n0h=0, 4h=3, 8h=6, 12h=6.5\nConclusión?", img:"Crecimiento fotosíntesis", opts:["Más luz=menos oxígeno","Más luz=más oxígeno hasta límite","No hay efecto","Crecimiento irregular"], ans:"Más luz=más oxígeno hasta límite", points:1, type:"mc"},
-
-{q:"Gráfico: presión vs volumen de gas\nP aumenta → V disminuye\nLey:", img:"Ley Boyle", opts:["Boyle","Charles","Newton","Kepler"], ans:"Boyle", points:1, type:"mc"},
-
-{q:"Experimento: calor específico\nMayor masa → más calor necesario\nConclusión:", img:"Calor vs masa", opts:["Más moléculas","Menos moléculas","Se evapora","Se solidifica"], ans:"Más moléculas", points:1, type:"mc"},
-
-{q:"Gráfico: población de insectos\nAntes pesticida=200, después=50\nConclusión:", img:"Curva descendente", opts:["Aumenta","Disminuye","Estable","Oscila"], ans:"Disminuye", points:1, type:"mc"},
-
-{q:"Experimento: plantas idénticas, 1 luz 1 oscuridad\nVariable independiente:", img:"Luz/no luz", opts:["Tipo planta","Altura","Luz","Agua"], ans:"Luz", points:1, type:"mc"},
-
-{q:"Tabla: densidad agua vs temperatura\n0°C=1.0, 40°C=0.992\nConclusión:", img:"Curva descendente", opts:["Moléculas se separan","Se juntan","Se solidifica","No cambia"], ans:"Moléculas se separan", points:1, type:"mc"},
-
-{q:"Gráfico: velocidad vs tiempo\n0–3s aumenta, 3–6s constante, 6–9s baja\nÚltima fase:", img:"Frenado", opts:["Acelerar","Mantener","Frenar","Retroceder"], ans:"Frenar", points:1, type:"mc"},
-
-{q:"Experimento: CO₂ aumenta plantas\nVariable dependiente:", img:"Fotosíntesis CO2", opts:["CO₂ absorbido","Luz","Agua","Tipo de planta"], ans:"CO₂ absorbido", points:1, type:"mc"},
-
-{q:"Tabla: pH soluciones\nA=3, B=7, C=12\nMás básica:", img:"Tabla pH", opts:["A","B","C","Ninguna"], ans:"C", points:1, type:"mc"},
-
-{q:"Gráfico: población de ratones 50→100→80\nQué indica?", img:"Curva sube y baja", opts:["Aumento alimento","Depredadores","Clima","Mutación"], ans:"Depredadores", points:1, type:"mc"},
-
-{q:"Experimento: efecto sal en congelación\nVariable independiente:", img:"Tabla sal", opts:["Cantidad sal","Temperatura","Tipo vaso","Tiempo"], ans:"Cantidad sal", points:1, type:"mc"},
-
-{q:"Gráfico: fotosíntesis vs horas luz\n0h=0, 4h=2, 8h=5, 12h=6\nConclusión?", img:"Crecimiento limitado", opts:["Más luz=menos","Más luz=limite","No efecto","Irregular"], ans:"Más luz=limite", points:1, type:"mc"},
-
-{q:"Experimento: calor vs masa\nMayor masa → más energía\n¿Por qué?", img:"Calor vs masa", opts:["Más moléculas","Menos moléculas","Se evapora","No cambia"], ans:"Más moléculas", points:1, type:"mc"},
-
-{q:"Tabla: velocidad caída objetos iguales\nTodos=3 m/s\nConclusión:", img:"Gravedad uniforme", opts:["Todos iguales","A más rápido","B más lento","Depende peso"], ans:"Todos iguales", points:1, type:"mc"},
-
-{q:"¿Qué unidad mide la presión en kilopascales?", opts:["Joule","kPa","Watt","Voltio"], ans:"kPa", points:1, type:"mc"},
+            {q:"¿Qué unidad mide la presión en kilopascales?", opts:["Joule","kPa","Watt","Voltio"], ans:"kPa", points:1, type:"mc"},
 {q:"¿Qué gas es esencial para la fotosíntesis?", opts:["Oxígeno","Nitrógeno","Dióxido de carbono","Hidrógeno"], ans:"Dióxido de carbono", points:1, type:"mc"},
 {q:"¿Cuál es la función principal del corazón?", opts:["Filtrar toxinas","Producir hormonas","Bombear sangre","Regular temperatura"], ans:"Bombear sangre", points:1, type:"mc"},
 {q:"¿Cómo se llama el proceso por el cual el agua pasa de líquido a gas?", opts:["Condensación","Evaporación","Fusión","Sublimación"], ans:"Evaporación", points:1, type:"mc"},
@@ -635,9 +306,48 @@ type:"mc"
         let puntajeActual = 0;
         let respuestasUsuario = {};
         let timerInterval;
+        
+        // aqui ingrese el nuevo codigo
+        
+        // 🧠 Nombre clave para guardar en el navegador
+const STORAGE_KEY = "preguntas_usadas_GED";
 
+// 🔹 Cargar desde almacenamiento local
+function obtenerPreguntasUsadas() {
+    return JSON.parse(localStorage.getItem(STORAGE_KEY)) || [];
+}
+
+// 🔹 Guardar nuevas preguntas usadas
+function guardarPreguntasUsadas(lista) {
+    localStorage.setItem(STORAGE_KEY, JSON.stringify(lista));
+}
+
+// 🔹 Seleccionar 34 nuevas preguntas sin repetir
+function seleccionarPreguntasSinRepetir() {
+
+    let usadas = obtenerPreguntasUsadas();
+
+    // Si ya se usaron todas, reiniciar
+    if (usadas.length >= todasPreguntas.length) {
+        usadas = [];
+    }
+
+    const disponibles = todasPreguntas
+        .map((_, i) => i)
+        .filter(i => !usadas.includes(i));
+
+    const seleccionadas = disponibles
+        .sort(() => Math.random() - 0.5)
+        .slice(0, 34);
+
+    guardarPreguntasUsadas([...usadas, ...seleccionadas]);
+
+    return seleccionadas.map(i => todasPreguntas[i]);
+}
+
+        
         function iniciarExamen() {
-            examenPreguntas = todasPreguntas.sort(() => Math.random() - 0.5).slice(0, 34);
+           
             indiceActual = 0;
             puntajeActual = 0;
             respuestasUsuario = {};
@@ -649,7 +359,9 @@ type:"mc"
             mostrarPregunta();
         }
 
-        function iniciarTimer() {
+// hasta aqui es el nuevo codigo
+        
+       /* function iniciarTimer() {
             let tiempo = 5400;
             timerInterval = setInterval(() => {
                 const min = String(Math.floor(tiempo / 60)).padStart(2, '0');
@@ -657,7 +369,7 @@ type:"mc"
                 document.getElementById('timer').textContent = `Tiempo restante: ${min}:${seg}`;
                 if (--tiempo < 0) { clearInterval(timerInterval); finalizarExamen(); }
             }, 1000);
-        }
+        } */
 
         function mostrarFeedback(esCorrecta, respuestaCorrecta = "") {
             const feedback = document.getElementById('feedback');
@@ -742,5 +454,6 @@ type:"mc"
     </script>
 </body>
 </html>
+
 
 
