@@ -1,89 +1,123 @@
 <!DOCTYPE html>
 <html lang="es">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Simulador GED Science 2025 - Nueva York</title>
-    <style>
-        body { font-family: Arial, sans-serif; max-width: 800px; margin: 0 auto; padding: 20px; background: #f9f9f9; }
-        #timer { font-size: 26px; color: #d63939; text-align: center; margin: 20px 0; font-weight: bold; }
-        #pregunta-container { background: white; border-radius: 12px; padding: 30px; margin: 20px 0; box-shadow: 0 4px 15px rgba(0,0,0,0.1); }
-        .opciones label { display: block; margin: 15px 0; padding: 14px; border: 2px solid #e0e0e0; border-radius: 10px; cursor: pointer; transition: all 0.3s; font-size: 17px; }
-        .opciones label:hover { background: #f0f8ff; border-color: #007bff; }
-        #feedback { 
-            margin: 25px 0; 
-            padding: 20px; 
-            border-radius: 12px; 
-            font-size: 20px; 
-            font-weight: bold; 
-            text-align: center;
-            min-height: 60px;
-            transition: all 0.4s;
-        }
-        .correcto {
-            background: #d4edda !important;
-            color: #155724 !important;
-            border: 2px solid #c3e6cb;
-            box-shadow: 0 0 15px rgba(40, 167, 69, 0.3);
-        }
-        .incorrecto {
-            background: #f8d7da !important;
-            color: #721c24 !important;
-            border: 2px solid #f5c6cb;
-            box-shadow: 0 0 15px rgba(220, 53, 69, 0.3);
-        }
-        button { 
-            padding: 14px 28px; 
-            margin: 10px 8px; 
-            border: none; 
-            border-radius: 8px; 
-            cursor: pointer; 
-            font-size: 18px; 
-            font-weight: bold;
-            transition: 0.3s;
-        }
-        #siguiente-btn { background: #28a745; color: white; }
-        #siguiente-btn:hover { background: #218838; transform: scale(1.05); }
-        #finalizar-btn { background: #dc3545; color: white; }
-        #finalizar-btn:hover { background: #c82333; }
-        #resultados { background: white; padding: 40px; border-radius: 15px; box-shadow: 0 6px 25px rgba(0,0,0,0.15); text-align: center; }
-        textarea, input[type="text"] { 
-            width: 100%; 
-            padding: 15px; 
-            margin: 15px 0; 
-            border: 2px solid #ddd; 
-            border-radius: 8px; 
-            font-size: 17px; 
-        }
-    </style>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>GED Ciencias - Simulador</title>
+
+<style>
+    body {
+        margin: 0;
+        padding: 0;
+        font-family: Arial, sans-serif;
+        background: #eef2f7;
+    }
+
+    #app {
+        max-width: 700px;
+        margin: auto;
+        margin-top: 40px;
+        background: white;
+        padding: 20px 25px;
+        border-radius: 10px;
+        box-shadow: 0 0 15px rgba(0,0,0,0.1);
+    }
+
+    h1 {
+        text-align: center;
+        color: #0a3a7e;
+    }
+
+    .question {
+        font-size: 20px;
+        font-weight: bold;
+        margin-top: 20px;
+        margin-bottom: 15px;
+    }
+
+    .option {
+        background: #f0f4ff;
+        border: 1px solid #c9d8ff;
+        padding: 12px;
+        border-radius: 6px;
+        margin-bottom: 10px;
+        cursor: pointer;
+        transition: 0.2s;
+    }
+
+    .option:hover {
+        background: #dce7ff;
+    }
+
+    #nextBtn {
+        margin-top: 20px;
+        padding: 12px;
+        background: #0a3a7e;
+        color: white;
+        width: 100%;
+        border: none;
+        border-radius: 6px;
+        font-size: 16px;
+        cursor: pointer;
+        display: none;
+    }
+
+    #progressBar {
+        width: 100%;
+        background: #d7d7d7;
+        border-radius: 10px;
+        height: 12px;
+        margin-top: 15px;
+        overflow: hidden;
+    }
+
+    #progress {
+        height: 100%;
+        background: #0a3a7e;
+        width: 0%;
+        transition: width 0.3s ease;
+    }
+
+    #result {
+        text-align: center;
+        display: none;
+    }
+
+    .resetBtn {
+        padding: 12px;
+        background: #226f00;
+        color: white;
+        border: none;
+        border-radius: 6px;
+        font-size: 16px;
+        margin-top: 20px;
+        cursor: pointer;
+        width: 100%;
+    }
+</style>
 </head>
 <body>
-    <h1>Simulador GED® Science Test - 2025 (Nueva York)</h1>
-    <p><em>90 minutos • 34 preguntas • Puntaje para aprobar: 145+</em></p>
-    <p><a href="https://education.ti.com/en/us/product/ti-30xs-multi-view" target="_blank">Calculadora TI-30XS</a></p>
-   
-    <div id="intro">
-        <button onclick="iniciarExamen()">Iniciar Examen</button>
+
+<div id="app">
+    <h1>Simulador GED - Ciencias</h1>
+
+    <div id="quiz"></div>
+
+    <button id="nextBtn">Siguiente</button>
+
+    <div id="progressBar">
+        <div id="progress"></div>
     </div>
-   
-    <div id="quiz" style="display:none;">
-        <div id="timer">Tiempo restante: 90:00</div>
-        <div id="pregunta-container"></div>
 
-        <!-- AQUÍ VA EL FEEDBACK JUSTO ANTES DEL BOTÓN -->
-        <div id="feedback"></div>
+    <div id="result"></div>
+</div>
 
-        <div style="text-align:center; margin-top: 20px;">
-            <button id="siguiente-btn" onclick="siguientePregunta()" style="display:none;">Siguiente →</button>
-            <button id="finalizar-btn" onclick="finalizarExamen()" style="display:none;">Finalizar Examen</button>
-        </div>
-    </div>
-   
-    <div id="resultados" style="display:none;"></div>
-
-    <script>
-        const todasPreguntas =  [
-            {q:"¿Qué unidad mide la presión en kilopascales?", opts:["Joule","kPa","Watt","Voltio"], ans:"kPa", points:1, type:"mc"},
+<script>
+// ================================
+//   BANCO DE PREGUNTAS
+// ================================
+const questions = [
+    {q:"¿Qué unidad mide la presión en kilopascales?", opts:["Joule","kPa","Watt","Voltio"], ans:"kPa", points:1, type:"mc"},
 {q:"¿Qué gas es esencial para la fotosíntesis?", opts:["Oxígeno","Nitrógeno","Dióxido de carbono","Hidrógeno"], ans:"Dióxido de carbono", points:1, type:"mc"},
 {q:"¿Cuál es la función principal del corazón?", opts:["Filtrar toxinas","Producir hormonas","Bombear sangre","Regular temperatura"], ans:"Bombear sangre", points:1, type:"mc"},
 {q:"¿Cómo se llama el proceso por el cual el agua pasa de líquido a gas?", opts:["Condensación","Evaporación","Fusión","Sublimación"], ans:"Evaporación", points:1, type:"mc"},
@@ -301,159 +335,112 @@
 {q:"¿Qué glándula produce adrenalina?", opts:["Tiroides","Páncreas","Suprarrenales","Paratiroides"], ans:"Suprarrenales", points:1, type:"mc"}
     ];
 
-        let examenPreguntas = [];
-        let indiceActual = 0;
-        let puntajeActual = 0;
-        let respuestasUsuario = {};
-        let timerInterval;
-        
-        // aqui ingrese el nuevo codigo
-        
-        // 🧠 Nombre clave para guardar en el navegador
-const STORAGE_KEY = "preguntas_usadas_GED";
 
-// 🔹 Cargar desde almacenamiento local
-function obtenerPreguntasUsadas() {
-    return JSON.parse(localStorage.getItem(STORAGE_KEY)) || [];
+// ================================
+//   VARIABLES DE CONTROL
+// ================================
+let index = 0;
+let score = 0;
+
+// ================================
+//   ELEMENTOS DEL DOM
+// ================================
+const quiz = document.getElementById("quiz");
+const nextBtn = document.getElementById("nextBtn");
+const result = document.getElementById("result");
+const progress = document.getElementById("progress");
+
+// ================================
+//   MOSTRAR PREGUNTA
+// ================================
+function showQuestion() {
+    const q = questions[index];
+
+    quiz.innerHTML = `
+        <div class="question">${index + 1}. ${q.q}</div>
+        ${q.opts.map(o => `<div class="option" onclick="selectOption(this)">${o}</div>`).join("")}
+    `;
+
+    nextBtn.style.display = "none";
+
+    updateProgress();
 }
 
-// 🔹 Guardar nuevas preguntas usadas
-function guardarPreguntasUsadas(lista) {
-    localStorage.setItem(STORAGE_KEY, JSON.stringify(lista));
-}
+// ================================
+//   SELECCIONAR RESPUESTA
+// ================================
+function selectOption(el) {
+    const q = questions[index];
 
-// 🔹 Seleccionar 34 nuevas preguntas sin repetir
-function seleccionarPreguntasSinRepetir() {
-
-    let usadas = obtenerPreguntasUsadas();
-
-    // Si ya se usaron todas, reiniciar
-    if (usadas.length >= todasPreguntas.length) {
-        usadas = [];
+    if (el.innerText === q.ans) {
+        score += q.points;
+        el.style.background = "#c6ffc6";
+        el.style.borderColor = "#62b200";
+    } else {
+        el.style.background = "#ffc6c6";
+        el.style.borderColor = "#b20000";
     }
 
-    const disponibles = todasPreguntas
-        .map((_, i) => i)
-        .filter(i => !usadas.includes(i));
+    document.querySelectorAll(".option").forEach(opt => opt.style.pointerEvents = "none");
 
-    const seleccionadas = disponibles
-        .sort(() => Math.random() - 0.5)
-        .slice(0, 34);
-
-    guardarPreguntasUsadas([...usadas, ...seleccionadas]);
-
-    return seleccionadas.map(i => todasPreguntas[i]);
+    nextBtn.style.display = "block";
 }
 
-        
-        function iniciarExamen() {
-           
-            indiceActual = 0;
-            puntajeActual = 0;
-            respuestasUsuario = {};
-            document.getElementById('intro').style.display = 'none';
-            document.getElementById('quiz').style.display = 'block';
-            document.getElementById('siguiente-btn').style.display = 'none';
-            document.getElementById('finalizar-btn').style.display = 'none';
-            iniciarTimer();
-            mostrarPregunta();
-        }
+// ================================
+//   SIGUIENTE PREGUNTA
+// ================================
+nextBtn.addEventListener("click", () => {
+    index++;
 
-// hasta aqui es el nuevo codigo
-        
-       /* function iniciarTimer() {
-            let tiempo = 5400;
-            timerInterval = setInterval(() => {
-                const min = String(Math.floor(tiempo / 60)).padStart(2, '0');
-                const seg = String(tiempo % 60).padStart(2, '0');
-                document.getElementById('timer').textContent = `Tiempo restante: ${min}:${seg}`;
-                if (--tiempo < 0) { clearInterval(timerInterval); finalizarExamen(); }
-            }, 1000);
-        } */
+    if (index < questions.length) {
+        showQuestion();
+    } else {
+        showResult();
+    }
+});
 
-        function mostrarFeedback(esCorrecta, respuestaCorrecta = "") {
-            const feedback = document.getElementById('feedback');
-            if (esCorrecta) {
-                feedback.innerHTML = `✓ ¡CORRECTO!`;
-                feedback.className = "correcto";
-                if (!respuestasUsuario[indiceActual]) {
-                    puntajeActual += examenPreguntas[indiceActual].points || 1;
-                }
-            } else {
-                feedback.innerHTML = `✗ Incorrecto<br><strong>Respuesta correcta: ${respuestaCorrecta}</strong>`;
-                feedback.className = "incorrecto";
-            }
-            respuestasUsuario[indiceActual] = true;
-            document.getElementById('siguiente-btn').style.display = 'inline-block';
-            if (indiceActual === examenPreguntas.length - 1) {
-                document.getElementById('finalizar-btn').style.display = 'inline-block';
-            }
-        }
+// ================================
+//   MOSTRAR RESULTADO FINAL
+// ================================
+function showResult() {
+    quiz.style.display = "none";
+    nextBtn.style.display = "none";
+    progress.style.width = "100%";
 
-        function mostrarPregunta() {
-            const preg = examenPreguntas[indiceActual];
-            const container = document.getElementById('pregunta-container');
-            document.getElementById('feedback').innerHTML = '';
-            document.getElementById('feedback').className = '';
-            document.getElementById('siguiente-btn').style.display = 'none';
+    result.innerHTML = `
+        <h2>Resultado Final</h2>
+        <p><strong>Puntuación total:</strong> ${score} / ${questions.length * 10}</p>
+        <button class="resetBtn" onclick="restart()">Volver a empezar</button>
+    `;
 
-            let html = `<h3>Pregunta ${indiceActual + 1} de 34</h3><p><strong>${preg.q}</strong></p>`;
+    result.style.display = "block";
+}
 
-            if (preg.type === "mc") {
-                html += `<div class="opciones">`;
-                preg.opts.forEach(opt => {
-                    html += `
-                        <label>
-                            <input type="radio" name="q${indiceActual}" value="${opt}"
-                                   onchange="verificarMC('${opt.replace(/'/g, "\\'")}', '${preg.ans.replace(/'/g, "\\'")}')">
-                            ${opt}
-                        </label>`;
-                });
-                html += `</div>`;
-            }
-            // (puedes agregar fill y short igual que antes si los usas)
+// ================================
+//   REINICIAR QUIZ
+// ================================
+function restart() {
+    index = 0;
+    score = 0;
+    quiz.style.display = "block";
+    result.style.display = "none";
+    nextBtn.style.display = "none";
+    showQuestion();
+}
 
-            container.innerHTML = html;
-        }
+// ================================
+//   ACTUALIZAR BARRA DE PROGRESO
+// ================================
+function updateProgress() {
+    const percent = ((index) / questions.length) * 100;
+    progress.style.width = percent + "%";
+}
 
-        function verificarMC(seleccionada, correcta) {
-            const esCorrecta = seleccionada === correcta;
-            mostrarFeedback(esCorrecta, correcta);
-        }
+// ================================
+//   INICIAR
+// ================================
+showQuestion();
+</script>
 
-        function siguientePregunta() {
-            if (!respuestasUsuario[indiceActual]) return;
-            indiceActual++;
-            if (indiceActual >= examenPreguntas.length) {
-                finalizarExamen();
-            } else {
-                mostrarPregunta();
-            }
-        }
-
-        function finalizarExamen() {
-            clearInterval(timerInterval);
-            document.getElementById('quiz').style.display = 'none';
-            document.getElementById('resultados').style.display = 'block';
-
-            const total = examenPreguntas.length;
-            const porcentaje = Math.round((puntajeActual / total) * 100);
-            const gedScore = 100 + Math.round((puntajeActual / total) * 100);
-
-            document.getElementById('resultados').innerHTML = `
-                <h2>¡Examen terminado!</h2>
-                <h3>${puntajeActual} / ${total} correctas (${porcentaje}%)</h3>
-                <h1 style="color:#007bff; font-size:42px;">Puntaje GED estimado: ${gedScore}/200</h1>
-                ${gedScore >= 145 
-                    ? '<p style="color:green; font-size:32px;">¡FELICIDADES! Aprobaste GED Science 🎉</p>'
-                    : '<p style="color:red; font-size:28px;">Necesitas 145+. ¡Sigue practicando!</p>'
-                }
-                <button onclick="location.reload()" style="margin-top:30px; padding:18px 40px; font-size:20px;">Volver a intentar</button>
-            `;
-        }
-    </script>
 </body>
 </html>
-
-
-
