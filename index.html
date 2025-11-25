@@ -334,6 +334,96 @@ const questions = [
 {q:"¿Qué fuerza permite flotar a un barco?", opts:["Centrípeta","Fricción","Empuje","Peso"], ans:"Empuje", points:1, type:"mc"},
 {q:"¿Qué glándula produce adrenalina?", opts:["Tiroides","Páncreas","Suprarrenales","Paratiroides"], ans:"Suprarrenales", points:1, type:"mc"}
     ];
+let currentQuestion = 0;
+let score = 0;
+let answered = false;
+
+const quizEl = document.getElementById("quiz");
+const nextBtn = document.getElementById("nextBtn");
+const progressEl = document.getElementById("progress");
+const resultEl = document.getElementById("result");
+
+// Mostrar una pregunta
+function loadQuestion() {
+    let q = questions[currentQuestion];
+    
+    quizEl.innerHTML = `
+        <div class="question">${currentQuestion + 1}. ${q.q}</div>
+    `;
+
+    q.opts.forEach(opt => {
+        let div = document.createElement("div");
+        div.className = "option";
+        div.textContent = opt;
+        div.onclick = () => selectOption(opt);
+        quizEl.appendChild(div);
+    });
+
+    answered = false;
+    nextBtn.style.display = "none";
+
+    progressEl.style.width = ((currentQuestion) / questions.length) * 100 + "%";
+}
+
+// Cuando el usuario selecciona una respuesta
+function selectOption(option) {
+    if (answered) return;
+    answered = true;
+
+    let q = questions[currentQuestion];
+    let optionsDiv = document.querySelectorAll(".option");
+
+    optionsDiv.forEach(o => {
+        if (o.textContent === q.ans) {
+            o.style.background = "#9cff9c"; // Correcta
+        }
+        if (o.textContent === option && option !== q.ans) {
+            o.style.background = "#ff9c9c"; // Incorrecta
+        }
+        o.style.cursor = "default";
+    });
+
+    if (option === q.ans) score += q.points;
+
+    nextBtn.style.display = "block";
+}
+
+// Botón siguiente
+nextBtn.onclick = () => {
+    currentQuestion++;
+    
+    if (currentQuestion >= questions.length) {
+        showResult();
+    } else {
+        loadQuestion();
+    }
+};
+
+// Mostrar resultados
+function showResult() {
+    quizEl.style.display = "none";
+    nextBtn.style.display = "none";
+    progressEl.style.width = "100%";
+
+    resultEl.style.display = "block";
+    resultEl.innerHTML = `
+        <h2>Examen terminado</h2>
+        <p>Puntaje obtenido: <strong>${score}</strong> / ${questions.length}</p>
+        <button class="resetBtn" onclick="restart()">Reiniciar</button>
+    `;
+}
+
+// Reiniciar simulador
+function restart() {
+    currentQuestion = 0;
+    score = 0;
+    quizEl.style.display = "block";
+    resultEl.style.display = "none";
+    loadQuestion();
+}
+
+// Iniciar examen
+loadQuestion();
 
 
 // ================================
@@ -444,3 +534,4 @@ showQuestion();
 
 </body>
 </html>
+
