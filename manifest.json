@@ -1,57 +1,50 @@
 {
-  "name": "GED Ciencias 2025 - Simulador",
-  "short_name": "GED Quiz",
-  "description": "400 preguntas reales del GED Ciencias 2025",
-  "start_url": "/",
-  "display": "standalone",
-  "background_color": "#0a3a7e",
-  "theme_color": "#0a3a7e",
-  "icons": [
-    {
-      "src": "/GED-Ciencias-quiz/icon-192.png",
-      "sizes": "192x192",
-      "type": "image/png"
-    },
-    {
-      "src": "/GED-Ciencias-quiz/icon-512.png",
-      "sizes": "512x512",
-      "type": "image/png"
-    }
-  ]
-  {
   "name": "GED Ciencias 2025 - Simulador Oficial",
   "short_name": "GED Ciencias",
-  "description": "400 preguntas reales del examen GED de Ciencias 2025 con explicaciones y timer oficial",
+  "description": "400 preguntas reales del examen GED Ciencias 2025 con timer oficial, explicaciones y progreso guardado",
   "start_url": "/GED-Ciencias-quiz/",
+  "scope": "/GED-Ciencias-quiz/",
   "display": "standalone",
   "background_color": "#0a3a7e",
   "theme_color": "#0a3a7e",
   "orientation": "portrait-primary",
+  "lang": "es",
+  "categories": ["education", "quiz", "ged"],
   "icons": [
-    // ... tus iconos existentes ...
+    {
+      "src": "/GED-Ciencias-quiz/icon-192.png",
+      "sizes": "192x192",
+      "type": "image/png",
+      "purpose": "maskable any"
+    },
+    {
+      "src": "/GED-Ciencias-quiz/icon-512.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "maskable any"
+    }
   ],
   "screenshots": [
     {
-      "src": "/GED-Ciencias-quiz/screenshots/narrow-login.png",
+      "src": "/GED-Ciencias-quiz/screenshots/narrow-1.png",
       "sizes": "1080x1920",
       "type": "image/png",
       "form_factor": "narrow",
-      "label": "Pantalla de inicio de sesión en móvil"
+      "label": "Pantalla de inicio de sesión"
     },
     {
-      "src": "/GED-Ciencias-quiz/screenshots/narrow-quiz.png",
+      "src": "/GED-Ciencias-quiz/screenshots/narrow-2.png",
       "sizes": "1080x1920",
       "type": "image/png",
       "form_factor": "narrow",
-      "label": "Quiz interactivo en móvil"
+      "label": "Pregunta del simulador en móvil"
     },
     {
-      "src": "/GED-Ciencias-quiz/screenshots/wide-results.png",
-      "sizes": "1280x720",
+      "src": "/GED-Ciencias-quiz/screenshots/wide-1.png",
+      "sizes": "1920x1080",
       "type": "image/png",
       "form_factor": "wide",
-      "label": "Resultados y progreso en tablet"
+      "label": "Resultados finales y progreso global"
     }
   ]
-}
 }
