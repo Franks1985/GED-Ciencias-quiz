@@ -51,5 +51,6 @@
       "label": "Resultados finales y progreso global"
     }
   ],
- "id": "com.franks1985.gedciencias"
+ "id": "com.franks1985.gedciencias",
+  "prefer_related_applications": false
 }
