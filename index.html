@@ -2,6 +2,16 @@
 <html lang="es">
 <head>
     <link rel="manifest" href="manifest.json">
+    <!-- Service Worker -->
+<script>
+  if ('serviceWorker' in navigator) {
+    window.addEventListener('load', () => {
+      navigator.serviceWorker.register('/GED-Ciencias-quiz/sw.js')
+        .then(reg => console.log('SW registrado'))
+        .catch(err => console.log('SW error:', err));
+    });
+  }
+</script>
     <meta name="theme-color" content="#0a3a7e">
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
@@ -406,5 +416,6 @@
 </script>
 </body>
 </html>
+
 
 
