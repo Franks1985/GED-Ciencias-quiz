@@ -26,21 +26,21 @@
   ],
   "screenshots": [
     {
-      "src": "/GED-Ciencias-quiz/screenshots/narrow-1.png",
+      "src": "/GED-Ciencias-quiz/screenshots/narrow-login.png",
       "sizes": "1080x1920",
       "type": "image/png",
       "form_factor": "narrow",
       "label": "Pantalla de inicio de sesión"
     },
     {
-      "src": "/GED-Ciencias-quiz/screenshots/narrow-2.png",
+      "src": "/GED-Ciencias-quiz/screenshots/narrow-quiz.png",
       "sizes": "1080x1920",
       "type": "image/png",
       "form_factor": "narrow",
       "label": "Pregunta del simulador en móvil"
     },
     {
-      "src": "/GED-Ciencias-quiz/screenshots/wide-1.png",
+      "src": "/GED-Ciencias-quiz/screenshots/wide-results.png",
       "sizes": "1920x1080",
       "type": "image/png",
       "form_factor": "wide",
