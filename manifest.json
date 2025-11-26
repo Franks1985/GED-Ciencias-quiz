@@ -18,4 +18,40 @@
       "type": "image/png"
     }
   ]
+  {
+  "name": "GED Ciencias 2025 - Simulador Oficial",
+  "short_name": "GED Ciencias",
+  "description": "400 preguntas reales del examen GED de Ciencias 2025 con explicaciones y timer oficial",
+  "start_url": "/GED-Ciencias-quiz/",
+  "display": "standalone",
+  "background_color": "#0a3a7e",
+  "theme_color": "#0a3a7e",
+  "orientation": "portrait-primary",
+  "icons": [
+    // ... tus iconos existentes ...
+  ],
+  "screenshots": [
+    {
+      "src": "/GED-Ciencias-quiz/screenshots/narrow-login.png",
+      "sizes": "1080x1920",
+      "type": "image/png",
+      "form_factor": "narrow",
+      "label": "Pantalla de inicio de sesión en móvil"
+    },
+    {
+      "src": "/GED-Ciencias-quiz/screenshots/narrow-quiz.png",
+      "sizes": "1080x1920",
+      "type": "image/png",
+      "form_factor": "narrow",
+      "label": "Quiz interactivo en móvil"
+    },
+    {
+      "src": "/GED-Ciencias-quiz/screenshots/wide-results.png",
+      "sizes": "1280x720",
+      "type": "image/png",
+      "form_factor": "wide",
+      "label": "Resultados y progreso en tablet"
+    }
+  ]
+}
 }
