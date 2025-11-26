@@ -1,6 +1,12 @@
 // sw.js – Service Worker para GED Ciencias 2025
 const CACHE_NAME = 'ged-ciencias-v1.2';
 const urlsToCache = [
+  
+  // ... lo que ya tienes ...
+  `${BASE_PATH}/screenshots/narrow-login.png`,
+  `${BASE_PATH}/screenshots/narrow-quiz.png`,
+  `${BASE_PATH}/screenshots/wide-results.png`,
+
   '/',
   '/GED-Ciencias-quiz/',
   '/GED-Ciencias-quiz/index.html',
