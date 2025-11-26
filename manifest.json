@@ -4,13 +4,16 @@
   "description": "400 preguntas reales del examen GED Ciencias 2025 con timer oficial, explicaciones y progreso guardado",
   "start_url": "/GED-Ciencias-quiz/",
   "scope": "/GED-Ciencias-quiz/",
-  "id": "/GED-Ciencias-quiz/",
   "display": "standalone",
   "background_color": "#0a3a7e",
   "theme_color": "#0a3a7e",
   "orientation": "portrait-primary",
   "lang": "es",
-  "categories": ["education", "quiz", "ged"],
+  "categories": [
+    "education",
+    "quiz",
+    "ged"
+  ],
   "icons": [
     {
       "src": "/GED-Ciencias-quiz/icon-192.png",
@@ -47,5 +50,6 @@
       "form_factor": "wide",
       "label": "Resultados finales y progreso global"
     }
-  ]
+  ],
+  "id": "GED Ciencias quiz"
 }
