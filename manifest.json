@@ -6,20 +6,6 @@
   "scope": "/GED-Ciencias-quiz/",
   "id": "com.franks1985.gedciencias",
   "display": "standalone",
-  "display_override": ["window-controls-overlay"],
-  "prefer_related_applications": false,
-  "related_applications": [
-    {
-      "platform": "play",
-      "url": "https://play.google.com/store/apps/details?id=com.franks1985.gedciencias",
-      "id": "com.franks1985.gedciencias"
-    },
-    {
-      "platform": "store",
-      "url": "https://apps.apple.com/us/app/ged-ciencias-simulador/id123456789",
-      "id": "id123456789"
-    }
-  ],
   "background_color": "#0a3a7e",
   "theme_color": "#0a3a7e",
   "orientation": "portrait-primary",
@@ -53,6 +39,13 @@
       "type": "image/png",
       "form_factor": "narrow",
       "label": "Pregunta del simulador en móvil"
+    },
+    {
+      "src": "/GED-Ciencias-quiz/screenshots/wide-tablet.png",
+      "sizes": "2732x2048",
+      "type": "image/png",
+      "form_factor": "wide",
+      "label": "Vista completa en tablet"
     }
   ]
 }
