@@ -6,11 +6,27 @@
   "scope": "/GED-Ciencias-quiz/",
   "id": "com.franks1985.gedciencias",
   "display": "standalone",
+  "display_override": ["window-controls-overlay", "standalone", "minimal-ui"],
+  "prefer_related_applications": false,
+  "related_applications": [
+    {
+      "platform": "play",
+      "url": "https://play.google.com/store/apps/details?id=com.franks1985.gedciencias",
+      "id": "com.franks1985.gedciencias"
+    },
+    {
+      "platform": "store",
+      "url": "https://apps.apple.com/us/app/ged-ciencias-simulador/id1234567890",
+      "id": "id1234567890"
+    }
+  ],
   "background_color": "#0a3a7e",
   "theme_color": "#0a3a7e",
   "orientation": "portrait-primary",
   "lang": "es",
+  "dir": "ltr",
   "categories": ["education", "quiz", "ged"],
+  "iarc_rating_id": "e8d635a5-2c5e-4b7e-9d5f-8b5a2c3d4e6f",
   "icons": [
     {
       "src": "/GED-Ciencias-quiz/icon-192.png",
@@ -46,6 +62,32 @@
       "type": "image/png",
       "form_factor": "wide",
       "label": "Vista completa en tablet"
+    }
+  ],
+  "shortcuts": [
+    {
+      "name": "Nueva Sesión",
+      "short_name": "Nueva Sesión",
+      "description": "Iniciar 34 preguntas nuevas con timer",
+      "url": "/GED-Ciencias-quiz/#start",
+      "icons": [
+        {
+          "src": "/GED-Ciencias-quiz/icon-192.png",
+          "sizes": "192x192"
+        }
+      ]
+    },
+    {
+      "name": "Ver Progreso",
+      "short_name": "Progreso",
+      "description": "Revisar preguntas completadas y puntajes",
+      "url": "/GED-Ciencias-quiz/#progress",
+      "icons": [
+        {
+          "src": "/GED-Ciencias-quiz/icon-192.png",
+          "sizes": "192x192"
+        }
+      ]
     }
   ]
 }
