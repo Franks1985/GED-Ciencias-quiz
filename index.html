@@ -34,7 +34,9 @@
     }
     button:hover {transform:translateY(-2px); box-shadow:0 8px 25px rgba(26,115,232,0.4);}
     button:active {transform:translateY(0);}
-    #result {text-align:center; font-size:24px; font-weight:bold; margin:40px 0;}
+    #result {text-align:center; font-size:24px; font-weight:bold; margin:40px 0; padding:20px; border-radius:12px;}
+    .correct {background:#d4edda; color:#155724; border:2px solid #c3e6cb;}
+    .incorrect {background:#f8d7da; color:#721c24; border:2px solid #f5c6cb;}
     .banner {
       position:fixed; bottom:0; left:0; width:100%; background:white; text-align:center; padding:15px; 
       box-shadow:0 -6px 20px rgba(0,0,0,0.12); z-index:9999; border-top:3px solid #1a73e8;
@@ -83,9 +85,9 @@
   <script>(adsbygoogle = window.adsbygoogle || []).push({});</script>
 </div>
 
-<!-- PAYWALL -->
+<!-- PAYWALL – APARECE AL TERMINAR LAS 34 PREGUNTAS -->
 <div id="paywall">
-  <h1><i class="fas fa-star"></i> ¡Sesión 1 completada!</h1>
+  <h1><i class="fas fa-star"></i> ¡Sesión completada!</h1>
   <h2>Desbloquea sesiones ilimitadas por solo <strong>$5 al mes</strong></h2>
   <p style="font-size:20px; margin:30px 0;">400+ preguntas únicas • Sin repeticiones • Progreso guardado • Sin límites</p>
   
@@ -123,8 +125,13 @@
   const ADMIN_UID = "PEGA_TU_UID_AQUÍ";
 
   let userIsPremium = false;
-  let allQuestions = [
-    // ==================== LIFE SCIENCE (160) ====================
+  let allQuestions = [];
+  let currentSession = [];
+  let currentIndex = 0;
+  let usedQuestions = new Set();
+
+  // ==================== TUS 400 PREGUNTAS REALES ====================
+  allQuestions = [
     {q:"¿Qué gas es esencial para la fotosíntesis?", a:"Dióxido de carbono", options:["Oxígeno","Nitrógeno","Dióxido de carbono","Hidrógeno"]},
     {q:"¿Cuál es la función principal del corazón?", a:"Bombear sangre", options:["Filtrar toxinas","Producir hormonas","Bombear sangre","Regular temperatura"]},
     {q:"¿Qué órgano es responsable de la filtración de desechos en sangre?", a:"Riñones", options:["Hígado","Páncreas","Riñones","Bazo"]},
@@ -298,11 +305,12 @@
     {q:"¿Qué metal es el más abundante en la corteza terrestre?", a:"Aluminio", options:["Oro","Cobre","Hierro","Aluminio"]}
   ];
 
-  let currentSession = [], currentIndex = 0;
+  let currentSession = [];
+  let currentIndex = 0;
   let usedQuestions = new Set();
 
   async function loadProgress() {
-    if (!auth.currentUser || auth.currentUser.uid === ADMIN_UID) { usedQuestions = new Set(); return; }
+    if (!auth.currentUser || auth.currentUser.uid === ADMIN_UID) return;
     const snap = await getDoc(doc(db, "progress", auth.currentUser.uid));
     if (snap.exists()) usedQuestions = new Set(snap.data().used || []);
   }
@@ -314,8 +322,11 @@
 
   function newSession() {
     let available = allQuestions.filter((_,i) => !usedQuestions.has(i));
-    if (available.length < 34) { usedQuestions = new Set(); saveProgress(); }
-    const shuffled = [...available].sort(() => Math.random() - 0.5);
+    if (available.length < 34) {
+      usedQuestions = new Set();
+      saveProgress();
+    }
+    const shuffled = available.sort(() => Math.random() - 0.5);
     currentSession = shuffled.slice(0,34);
     currentIndex = 0;
     updateProgress();
@@ -331,55 +342,62 @@
 
   function loadQuestion() {
     if (currentIndex >= 34) {
-      document.getElementById("result").innerHTML = "<h2>¡Sesión completada!</h2><p>Has visto <strong>" + usedQuestions.size + "</strong> de 400 preguntas únicas</p>";
+      document.getElementById("result").innerHTML = `
+        <div class="complete-message">
+          <i class="fas fa-trophy" style="font-size:50px;color:#4caf50;"></i>
+          <h2>¡Sesión completada!</h2>
+          <p>Has visto <strong>${usedQuestions.size + 34}</strong> de 400 preguntas únicas</p>
+        </div>
+      `;
       if (!userIsPremium) document.getElementById("paywall").style.display = "block";
       return;
     }
+    
     const q = currentSession[currentIndex];
-    document.getElementById("questionText").textContent = q.q;
-    document.getElementById("options").innerHTML = q.options.map(o => `
-      <label><input type="radio" name="ans" value="${o}"> ${o}</label>
+    document.getElementById("questionText").innerHTML = `<strong>Pregunta ${currentIndex + 1}:</strong> ${q.q}`;
+    document.getElementById("options").innerHTML = q.options.map((opt, i) => `
+      <label>
+        <input type="radio" name="ans" value="${opt}">
+        <span>${opt}</span>
+      </label>
     `).join("");
     document.getElementById("result").innerHTML = "";
   }
 
   window.nextQuestion = () => {
-    const sel = document.querySelector('input[name="ans"]:checked');
-    if (!sel) return alert("¡Elige una respuesta!");
-    const ok = sel.value === currentSession[currentIndex].a;
-    document.getElementById("result").innerHTML = ok ?
-      '<span style="color:green">¡Correcto!</span>' :
-      `<span style="color:red">Incorrecto. Era: ${currentSession[currentIndex].a}</span>`;
-    usedQuestions.add(currentSession[currentIndex].index);
+    const selected = document.querySelector('input[name="ans"]:checked');
+    if (!selected) return alert("¡Selecciona una respuesta!");
+    
+    const correct = selected.value === currentSession[currentIndex].a;
+    const labels = document.querySelectorAll('.options label');
+    labels.forEach(label => {
+      const input = label.querySelector('input');
+      if (input.value === currentSession[currentIndex].a) {
+        label.style.background = "#d4edda";
+        label.style.borderColor = "#4caf50";
+      } else if (input.checked) {
+        label.style.background = "#f8d7da";
+        label.style.borderColor = "#f44336";
+      }
+    });
+
+    document.getElementById("result").innerHTML = correct ?
+      '<div class="correct"><i class="fas fa-check-circle"></i> ¡Correcto!</div>' :
+      `<div class="incorrect"><i class="fas fa-times-circle"></i> Incorrecto. La respuesta correcta es: <strong>${currentSession[currentIndex].a}</strong></div>`;
+
     currentIndex++;
     updateProgress();
-    setTimeout(loadQuestion, 2000);
+    setTimeout(loadQuestion, 2500);
   };
 
-  window.loginGoogle = async () => {
-    await signInWithPopup(auth, new GoogleAuthProvider());
-  };
-
-  window.logout = () => signOut(auth);
-
-  window.buyPremium = async () => {
-    if (!auth.currentUser) return alert("Inicia sesión primero");
-    const res = await fetch("https://us-central1-ged-ciencias-premium-2025.cloudfunctions.net/createCheckoutSession", {
-      method: "POST", headers: {"Content-Type":"application/json"},
-      body: JSON.stringify({uid: auth.currentUser.uid})
-    });
-    const {id} = await res.json();
-    stripe.redirectToCheckout({sessionId: id});
-  };
-
-  onAuthStateChanged(auth, async user => {
+  onAuthStateChanged(auth, async (user) => {
     if (user) {
       document.getElementById("userInfo").style.display = "block";
-      document.getElementById("userName").textContent = user.displayName || user.email.split('@')[0];
+      document.getElementById("userName").textContent = user.displayName || user.email;
       if (user.uid === ADMIN_UID) userIsPremium = true;
       else {
-        const s = await getDoc(doc(db, "subscriptions", user.uid));
-        if (s.exists() && s.data().status === "active") userIsPremium = true;
+        const snap = await getDoc(doc(db, "subscriptions", user.uid));
+        if (snap.exists() && snap.data().status === "active") userIsPremium = true;
       }
       if (userIsPremium) document.getElementById("paywall").style.display = "none";
       await loadProgress();
@@ -389,7 +407,26 @@
     newSession();
   });
 
-  // INICIA EL QUIZ
+  window.loginGoogle = async () => {
+    const provider = new GoogleAuthProvider();
+    try { await signInWithPopup(auth, provider); }
+    catch (e) { alert("Error: " + e.message); }
+  };
+
+  window.logout = () => signOut(auth);
+
+  window.buyPremium = async () => {
+    if (!auth.currentUser) return alert("Inicia sesión primero");
+    const res = await fetch("https://us-central1-ged-ciencias-premium-2025.cloudfunctions.net/createCheckoutSession", {
+      method: "POST",
+      headers: {"Content-Type":"application/json"},
+      body: JSON.stringify({ uid: auth.currentUser.uid })
+    });
+    const {id} = await res.json();
+    stripe.redirectToCheckout({sessionId: id});
+  };
+
+  // INICIAR
   newSession();
 </script>
 </body>
