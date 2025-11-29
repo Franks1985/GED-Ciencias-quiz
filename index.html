@@ -1,67 +1,109 @@
 <!DOCTYPE html>
 <html lang="es">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>GED Ciencias 2025 - Simulador Oficial</title>
-  <meta name="description" content="Prepárate para el GED de Ciencias 2025 con el simulador más real. ¡Prueba la primera ronda GRATIS!"/>
-  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css"/>
-  <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-1234567890123456" crossorigin="anonymous"></script>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>GED Ciencias 2025 - 400 Preguntas Oficiales</title>
+  <meta name="description" content="Simulador oficial GED Ciencias 2025 con 400 preguntas reales. ¡Primera sesión GRATIS!">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+  <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-XXXXXXXXXXXXXXXX" crossorigin="anonymous"></script>
   <script src="https://js.stripe.com/v3/"></script>
   <style>
-    body {font-family: 'Segoe UI', sans-serif; margin:0; background:#f4f7fb; color:#333;}
-    header {background:#1a73e8; color:white; text-align:center; padding:20px;}
-    .container {max-width:900px; margin:20px auto; padding:20px; background:white; border-radius:12px; box-shadow:0 4px 20px rgba(0,0,0,0.1);}
-    .question {margin:30px 0; font-size:18px;}
-    .options label {display:block; padding:12px; margin:8px 0; background:#f1f3f5; border-radius:8px; cursor:pointer;}
-    .options input:checked + span {font-weight:bold; color:#1a73e8;}
-    button {background:#1a73e8; color:white; border:none; padding:14px 30px; font-size:18px; border-radius:8px; cursor:pointer; margin:10px;}
-    button:hover {background:#0d47a1;}
-    #paywall {display:none; position:fixed; top:0; left:0; width:100%; height:100%; background:rgba(0,0,0,0.95); color:white; text-align:center; padding-top:10%; z-index:9999;}
-    .banner {position:fixed; bottom:0; left:0; width:100%; background:white; text-align:center; padding:8px; box-shadow:0 -2px 10px rgba(0,0,0,0.1); z-index:9998;}
-    #userInfo {position:absolute; top:15px; right:20px; color:white;}
+    * {box-sizing:border-box; margin:0; padding:0;}
+    body {font-family:'Google Sans',Arial,sans-serif; background:#f0f4f8; padding-bottom:120px;}
+    header {background:#1a73e8; color:white; text-align:center; padding:25px 15px; position:relative;}
+    header h1 {font-size:28px; margin:0;}
+    #userInfo {position:absolute; top:15px; right:15px; font-size:14px;}
+    #userInfo a {color:#fff; text-decoration:underline;}
+    .container {max-width:950px; margin:25px auto; padding:30px; background:white; border-radius:20px; box-shadow:0 12px 40px rgba(0,0,0,0.15);}
+    .progress {height:10px; background:#e8ecf4; border-radius:6px; margin:25px 0; overflow:hidden;}
+    .progress-bar {height:100%; background:linear-gradient(90deg,#1a73e8,#34a853); width:0%; transition:width 0.5s ease;}
+    .session-info {text-align:center; font-size:18px; color:#555; margin:20px 0;}
+    .question {font-size:24px; line-height:1.6; margin:35px 0; color:#333;}
+    .options label {
+      display:block; background:#f8f9fa; border:2px solid #e8ecf4; border-radius:16px; padding:20px; margin:18px 0;
+      cursor:pointer; font-size:20px; transition:all 0.3s; position:relative;
+    }
+    .options label:hover {border-color:#1a73e8; background:#eef4ff; transform:translateY(-2px); box-shadow:0 4px 15px rgba(26,115,232,0.15);}
+    .options input[type="radio"] {margin-right:18px; transform:scale(1.5); accent-color:#1a73e8;}
+    button {
+      background:linear-gradient(135deg,#1a73e8,#0d47a1); color:white; border:none; padding:20px 60px; font-size:22px; 
+      border-radius:16px; cursor:pointer; display:block; margin:35px auto; font-weight:bold; box-shadow:0 6px 20px rgba(26,115,232,0.3);
+      transition:all 0.2s;
+    }
+    button:hover {transform:translateY(-2px); box-shadow:0 8px 25px rgba(26,115,232,0.4);}
+    button:active {transform:translateY(0);}
+    #result {text-align:center; font-size:24px; font-weight:bold; margin:40px 0;}
+    .banner {
+      position:fixed; bottom:0; left:0; width:100%; background:white; text-align:center; padding:15px; 
+      box-shadow:0 -6px 20px rgba(0,0,0,0.12); z-index:9999; border-top:3px solid #1a73e8;
+    }
+    #paywall {
+      display:none; position:fixed; top:0; left:0; width:100%; height:100%; background:linear-gradient(135deg,rgba(0,0,0,0.95),rgba(26,115,232,0.1));
+      color:white; text-align:center; padding-top:12%; z-index:99999; font-size:24px;
+    }
+    #paywall button {font-size:24px; padding:25px 80px; margin:25px; border-radius:16px; font-weight:bold;}
+    #paywall .premium-btn {background:linear-gradient(135deg,#34a853,#2e7d32);}
+    #paywall .login-btn {background:linear-gradient(135deg,#4285f4,#1a73e8);}
+    .admin-note {font-size:16px; margin-top:40px; opacity:0.9;}
+    .complete-message {background:#e8f5e8; border:2px solid #4caf50; border-radius:12px; padding:20px; margin:30px 0; text-align:center; font-size:22px; color:#2e7d32;}
   </style>
 </head>
 <body>
 
 <header>
-  <h1>GED Ciencias 2025</h1>
-  <p id="userInfo"><span id="userName"></span> | <a href="#" onclick="logout()" style="color:#fff;">Cerrar sesión</a></p>
+  <h1><i class="fas fa-flask"></i> GED Ciencias 2025</h1>
+  <div id="userInfo" style="display:none;"><span id="userName"></span> <a href="#" onclick="logout()"><i class="fas fa-sign-out-alt"></i> Cerrar sesión</a></div>
 </header>
 
 <div class="container">
-  <h2 id="questionText"></h2>
-  <div class="options" id="options"></div>
-  <div style="text-align:center; margin:30px 0;">
-    <button onclick="nextQuestion()">Siguiente pregunta</button>
+  <div class="progress"><div class="progress-bar" id="progressBar"></div></div>
+  <div class="session-info">
+    <strong>Sesión de 34 preguntas</strong> | 
+    <span id="currentNum">1</span> de 34 | 
+    <span id="totalProgress">0 de 400 vistas</span>
   </div>
-  <div id="result" style="font-size:20px; text-align:center; margin:40px 0;"></div>
+  
+  <div class="question" id="questionText">Cargando...</div>
+  <div class="options" id="options"></div>
+  <div id="result"></div>
+  <button onclick="nextQuestion()">
+    <i class="fas fa-arrow-right"></i> Siguiente pregunta
+  </button>
 </div>
 
-<!-- BANNER PUBLICITARIO – aparece para TODOS, incluso tú -->
+<!-- PUBLICIDAD FIJA – SIEMPRE VISIBLE (tú también ganas) -->
 <div class="banner">
-  <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-1234567890123456" crossorigin="anonymous"></script>
+  <div style="font-size:14px; color:#666; margin-bottom:8px;">Anuncios que apoyan tu preparación</div>
   <ins class="adsbygoogle"
        style="display:inline-block;width:320px;height:100px"
-       data-ad-client="ca-pub-1234567890123456"
-       data-ad-slot="1111111111"></ins>
+       data-ad-client="ca-pub-XXXXXXXXXXXXXXXX"
+       data-ad-slot="1234567890"></ins>
   <script>(adsbygoogle = window.adsbygoogle || []).push({});</script>
 </div>
 
-<!-- PAYWALL – solo aparece si no es premium -->
+<!-- PAYWALL – SOLO PARA NO-PREMIUM -->
 <div id="paywall">
-  <h1>¡Felicidades por terminar la ronda 1!</h1>
-  <h2>Desbloquea todas las rondas por solo <strong>$5 al mes</strong></h2>
-  <p>Acceso ilimitado • Sin anuncios extra • Progreso guardado</p>
-  <button onclick="loginGoogle()" style="background:#4285f4; font-size:20px; padding:16px 40px;">Iniciar sesión con Google</button>
-  <button onclick="buyPremium()" style="background:#34a853; font-size:20px; padding:16px 40px; margin-left:20px;">Comprar Premium $5/mes</button>
-  <p style="margin-top:50px; font-size:14px;">Tú como administrador tienes acceso total gratis</p>
+  <h1><i class="fas fa-star"></i> ¡Sesión 1 completada con éxito!</h1>
+  <h2>Desbloquea sesiones ilimitadas por solo <strong>$5 al mes</strong></h2>
+  <p style="font-size:20px; margin:30px 0;">400+ preguntas reales • Sin repeticiones • Progreso guardado • Sin límites</p>
+  
+  <button onclick="loginGoogle()" class="login-btn">
+    <i class="fab fa-google"></i> Iniciar sesión con Google
+  </button>
+  <button onclick="buyPremium()" class="premium-btn">
+    <i class="fas fa-credit-card"></i> Comprar Premium $5/mes
+  </button>
+  
+  <div class="admin-note">
+    <p><i class="fas fa-info-circle"></i> <strong>Administradores:</strong> Tienen acceso total gratis automáticamente</p>
+  </div>
 </div>
 
 <script type="module">
   import { initializeApp } from "https://www.gstatic.com/firebasejs/12.6.0/firebase-app.js";
   import { getAuth, onAuthStateChanged, GoogleAuthProvider, signInWithPopup, signOut } from "https://www.gstatic.com/firebasejs/12.6.0/firebase-auth.js";
-  import { getFirestore, doc, getDoc } from "https://www.gstatic.com/firebasejs/12.6.0/firebase-firestore.js";
+  import { getFirestore, doc, getDoc, setDoc } from "https://www.gstatic.com/firebasejs/12.6.0/firebase-firestore.js";
 
   const firebaseConfig = {
     apiKey: "AIzaSyDN8cjfe2DvIgadP0j_B-pCNuTEL6v2Kak",
@@ -75,17 +117,21 @@
   const app = initializeApp(firebaseConfig);
   const auth = getAuth(app);
   const db = getFirestore(app);
+  const stripe = Stripe('pk_live_XXXXXXXXXXXXXXXXXXXXXXXX'); // ← TU CLAVE PÚBLICA DE STRIPE
 
-  // ← TU UID PERSONAL (admin) – después del primer login lo pegas aquí
-  const ADMIN_UID = "PEGA_TU_UID_AQUI";
-
-  const stripe = Stripe('pk_live_51...TU_CLAVE_PUBLICA_STRIPE'); // ← crea cuenta en stripe.com y pones tu clave pública aquí
+  // ← TU UID PERSONAL (admin) – lo obtienes la primera vez que inicies sesión
+  const ADMIN_UID = "PEGA_TU_UID_AQUÍ";
 
   let userIsPremium = false;
-  let currentQuestion = 0;
+  let allQuestions = [];           // Las 400 preguntas completas
+  let currentSession = [];         // Las 34 de esta sesión
+  let currentIndex = 0;
+  let usedQuestions = new Set();   // Las preguntas que ya salieron (hasta 400)
 
-  // TUS PREGUNTAS VAN AQUÍ – solo cambia este array
- const questions = [
+  // ========================================================
+  // AQUÍ VAS TUS 400 PREGUNTAS REALES DEL GED CIENCIAS 2025
+  // ========================================================
+  allQuestions = [
     // ==================== LIFE SCIENCE (160) ====================
     {q:"¿Qué gas es esencial para la fotosíntesis?", opts:["Oxígeno","Nitrógeno","Dióxido de carbono","Hidrógeno"], ans:"Dióxido de carbono"},
     {q:"¿Cuál es la función principal del corazón?", opts:["Filtrar toxinas","Producir hormonas","Bombear sangre","Regular temperatura"], ans:"Bombear sangre"},
@@ -262,71 +308,170 @@
     {q:"¿Qué metal es el más abundante en la corteza terrestre?", opts:["Oro","Cobre","Hierro","Aluminio"], ans:"Aluminio"}
 ];
 
+  // Carga progreso del usuario
+  async function loadUserProgress() {
+    if (!auth.currentUser) {
+      usedQuestions = new Set(); // Anónimo = sin historial
+      return;
+    }
+    if (auth.currentUser.uid === ADMIN_UID) {
+      usedQuestions = new Set(); // Tú siempre ves preguntas nuevas
+      return;
+    }
+    const docRef = doc(db, "userProgress", auth.currentUser.uid);
+    const snap = await getDoc(docRef);
+    if (snap.exists()) {
+      usedQuestions = new Set(snap.data().used || []);
+    }
+  }
+
+  // Guarda progreso
+  async function saveUserProgress() {
+    if (!auth.currentUser || auth.currentUser.uid === ADMIN_UID) return;
+    await setDoc(doc(db, "userProgress", auth.currentUser.uid), {
+      used: Array.from(usedQuestions),
+      totalSessions: (await getDoc(doc(db, "userProgress", auth.currentUser.uid))).data()?.totalSessions || 0 + 1,
+      lastUpdate: Date.now()
+    }, { merge: true });
+  }
+
+  // Genera sesión de 34 preguntas sin repetir (hasta 400)
+  function generateSession() {
+    const remaining = allQuestions.filter((_, i) => !usedQuestions.has(i));
+    
+    // Si ya vio casi todas, reinicia el ciclo
+    if (remaining.length < 34) {
+      usedQuestions = new Set();
+      saveUserProgress();
+    }
+
+    // Selecciona 34 preguntas aleatorias de las restantes
+    const shuffled = [...remaining].sort(() => 0.5 - Math.random());
+    currentSession = shuffled.slice(0, 34).map(q => {
+      const originalIndex = allQuestions.indexOf(q);
+      usedQuestions.add(originalIndex);
+      return { ...q, index: originalIndex };
+    });
+
+    currentIndex = 0;
+    updateProgress();
+    loadQuestion();
+    saveUserProgress();
+  }
+
+  function updateProgress() {
+    const percent = ((currentIndex + 1) / 34) * 100;
+    document.getElementById("progressBar").style.width = percent + "%";
+    document.getElementById("currentNum").textContent = currentIndex + 1;
+    
+    // Muestra progreso total
+    const totalSeen = usedQuestions.size;
+    document.getElementById("totalProgress").textContent = `${totalSeen} de 400 vistas`;
+  }
+
+  function loadQuestion() {
+    if (currentIndex >= 34) {
+      document.getElementById("result").innerHTML = `
+        <div class="complete-message">
+          <i class="fas fa-trophy" style="font-size:30px; color:#4caf50; margin-bottom:15px;"></i>
+          <h2>¡Sesión completada!</h2>
+          <p>Viste <strong>${usedQuestions.size}</strong> de 400 preguntas únicas</p>
+        </div>
+      `;
+      if (!userIsPremium) document.getElementById("paywall").style.display = "block";
+      return;
+    }
+    
+    const q = currentSession[currentIndex];
+    document.getElementById("questionText").innerHTML = `<strong>Pregunta ${currentIndex + 1}:</strong> ${q.q}`;
+    document.getElementById("options").innerHTML = q.options.map(opt => `
+      <label>
+        <input type="radio" name="ans" value="${opt}">
+        <span>${opt}</span>
+      </label>
+    `).join("");
+    document.getElementById("result").innerHTML = "";
+  }
+
+  window.nextQuestion = () => {
+    const selected = document.querySelector('input[name="ans"]:checked');
+    if (!selected) return alert("¡Selecciona una respuesta antes de continuar!");
+    
+    const correct = selected.value === currentSession[currentIndex].a;
+    document.getElementById("result").innerHTML = correct 
+      ? "<div style='color:#4caf50; font-size:22px; text-align:center; margin:25px 0;'><i class='fas fa-check-circle'></i> ¡Correcto!</div>"
+      : `<div style='color:#f44336; font-size:22px; text-align:center; margin:25px 0;'>
+           <i class='fas fa-times-circle'></i> Incorrecto. Respuesta correcta: <strong>${currentSession[currentIndex].a}</strong>
+         </div>`;
+    
+    currentIndex++;
+    updateProgress();
+    setTimeout(loadQuestion, 2000);
+  };
+
+  // Gestión de usuarios
   onAuthStateChanged(auth, async (user) => {
     if (user) {
+      document.getElementById("userInfo").style.display = "block";
       document.getElementById("userName").textContent = user.displayName || user.email;
+      
       if (user.uid === ADMIN_UID) {
         userIsPremium = true;
         document.getElementById("paywall").style.display = "none";
+        await loadUserProgress();
+        generateSession();
         return;
-      } else {
-        const sub = await getDoc(doc(db, "subscriptions", user.uid));
-        if (sub.exists() && sub.data().status === "active") {
-          userIsPremium = true;
-          document.getElementById("paywall").style.display = "none";
-        }
       }
+      
+      const snap = await getDoc(doc(db, "subscriptions", user.uid));
+      if (snap.exists() && snap.data().status === "active") {
+        userIsPremium = true;
+        document.getElementById("paywall").style.display = "none";
+      }
+      
+      await loadUserProgress();
+      generateSession();
+    } else {
+      document.getElementById("userInfo").style.display = "none";
+      usedQuestions = new Set();
+      generateSession();
     }
   });
 
   window.loginGoogle = async () => {
     const provider = new GoogleAuthProvider();
-    try { await signInWithPopup(auth, provider); }
-    catch (e) { alert("Error: " + e.message); }
+    try {
+      await signInWithPopup(auth, provider);
+    } catch (e) {
+      alert("Error al iniciar sesión: " + e.message);
+    }
   };
 
-  window.logout = () => signOut(auth);
+  window.logout = () => {
+    signOut(auth);
+  };
 
   window.buyPremium = async () => {
-    if (!auth.currentUser) return alert("Primero inicia sesión con Google");
-    const uid = auth.currentUser.uid;
-    const res = await fetch("https://us-central1-ged-ciencias-premium-2025.cloudfunctions.net/createCheckoutSession", {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ uid })
-    });
-    const { id } = await res.json();
-    stripe.redirectToCheckout({ sessionId: id });
+    if (!auth.currentUser) return alert("Por favor, inicia sesión primero");
+    try {
+      const res = await fetch("https://us-central1-ged-ciencias-premium-2025.cloudfunctions.net/createCheckoutSession", {
+        method: "POST",
+        headers: {"Content-Type":"application/json"},
+        body: JSON.stringify({ 
+          uid: auth.currentUser.uid,
+          email: auth.currentUser.email,
+          name: auth.currentUser.displayName || auth.currentUser.email
+        })
+      });
+      const {id} = await res.json();
+      await stripe.redirectToCheckout({sessionId: id});
+    } catch (e) {
+      alert("Error al procesar pago: " + e.message);
+    }
   };
 
-  function loadQuestion() {
-    if (currentQuestion >= questions.length) {
-      document.getElementById("result").innerHTML = "<h2>¡Ronda 1 completada!</h2>";
-      if (!userIsPremium) document.getElementById("paywall").style.display = "block";
-      return;
-    }
-    const q = questions[currentQuestion];
-    document.getElementById("questionText").textContent = `Pregunta ${currentQuestion+1}: ${q.q}`;
-    const opts = q.options.map(opt => `
-      <label><input type="radio" name="q" value="${opt}"> <span>${opt}</span></label>
-    `).join("");
-    document.getElementById("options").innerHTML = opts;
-  }
-
-  window.nextQuestion = () => {
-    const selected = document.querySelector('input[name="q"]:checked');
-    if (!selected) return alert("Elige una opción");
-    if (selected.value === questions[currentQuestion].a) {
-      document.getElementById("result").innerHTML = "<span style='color:green'>¡Correcto!</span>";
-    } else {
-      document.getElementById("result").innerHTML = `<span style='color:red'>Incorrecto. La respuesta era: ${questions[currentQuestion].a}</span>`;
-    }
-    currentQuestion++;
-    setTimeout(loadQuestion, 1500);
-  };
-
-  // Inicia el quiz
-  loadQuestion();
+  // INICIAR APLICACIÓN
+  generateSession();
 </script>
 </body>
 </html>
