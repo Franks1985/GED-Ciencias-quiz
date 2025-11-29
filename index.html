@@ -1,93 +1,91 @@
 <!DOCTYPE html>
 <html lang="es">
 <head>
-    <link rel="manifest" href="manifest.json">
-    <!-- Service Worker -->
-<script>
-  if ('serviceWorker' in navigator) {
-    window.addEventListener('load', () => {
-      navigator.serviceWorker.register('/GED-Ciencias-quiz/sw.js')
-        .then(reg => console.log('SW registrado'))
-        .catch(err => console.log('SW error:', err));
-    });
-  }
-</script>
-    <meta name="theme-color" content="#0a3a7e">
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>GED Ciencias 2025 - Simulador Oficial</title>
-    <style>
-        body { margin:0; padding:0; font-family:Arial,sans-serif; background:#eef2f7; height:100vh; display:flex; justify-content:center; align-items:center; }
-        #login, #app { max-width:720px; width:100%; margin:20px; background:white; padding:30px; border-radius:12px; box-shadow:0 0 25px rgba(0,0,0,0.15); text-align:center; }
-        #login { display:block; }
-        #app { display:none; }
-        h1 { color:#0a3a7e; margin-bottom:20px; }
-        button { padding:14px 24px; background:#0a3a7e; color:white; border:none; border-radius:8px; font-size:18px; cursor:pointer; margin:10px; }
-        button:hover { background:#08306b; }
-        .option { background:#f0f4ff; border:2px solid #c9d8ff; padding:16px; border-radius:10px; margin:12px 0; cursor:pointer; transition:all 0.2s; text-align:left; }
-        .option:hover { background:#dce7ff; border-color:#8fb8ff; }
-        .option.correct { background:#9cff9c !important; border-color:#4caf50 !important; }
-        .option.incorrect { background:#ff9c9c !important; border-color:#f44336 !important; }
-        #timer { font-size:28px; font-weight:bold; color:#d32f2f; margin:20px 0; }
-        #progressBar { height:16px; background:#ddd; border-radius:10px; overflow:hidden; margin:25px 0; }
-        #progress { height:100%; background:#0a3a7e; width:0%; transition:width 0.4s ease; }
-        #globalProgress { font-size:15px; color:#555; margin-bottom:15px; }
-        .resetBtn { background:#226f00; }
-        .resetBtn:hover { background:#1b5e00; }
-        #logoutBtn { background:#dc3545; font-size:14px; padding:8px 16px; }
-    </style>
-    <link rel="manifest" href="/GED-Ciencias-quiz/manifest.json">
-<meta name="theme-color" content="#0a3a7e">
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>GED Ciencias 2025 - Simulador Oficial</title>
+  <meta name="description" content="Prepárate para el GED de Ciencias 2025 con el simulador más real. ¡Prueba la primera ronda GRATIS!"/>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css"/>
+  <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-1234567890123456" crossorigin="anonymous"></script>
+  <script src="https://js.stripe.com/v3/"></script>
+  <style>
+    body {font-family: 'Segoe UI', sans-serif; margin:0; background:#f4f7fb; color:#333;}
+    header {background:#1a73e8; color:white; text-align:center; padding:20px;}
+    .container {max-width:900px; margin:20px auto; padding:20px; background:white; border-radius:12px; box-shadow:0 4px 20px rgba(0,0,0,0.1);}
+    .question {margin:30px 0; font-size:18px;}
+    .options label {display:block; padding:12px; margin:8px 0; background:#f1f3f5; border-radius:8px; cursor:pointer;}
+    .options input:checked + span {font-weight:bold; color:#1a73e8;}
+    button {background:#1a73e8; color:white; border:none; padding:14px 30px; font-size:18px; border-radius:8px; cursor:pointer; margin:10px;}
+    button:hover {background:#0d47a1;}
+    #paywall {display:none; position:fixed; top:0; left:0; width:100%; height:100%; background:rgba(0,0,0,0.95); color:white; text-align:center; padding-top:10%; z-index:9999;}
+    .banner {position:fixed; bottom:0; left:0; width:100%; background:white; text-align:center; padding:8px; box-shadow:0 -2px 10px rgba(0,0,0,0.1); z-index:9998;}
+    #userInfo {position:absolute; top:15px; right:20px; color:white;}
+  </style>
 </head>
 <body>
 
-<!-- PANTALLA DE LOGIN -->
-<div id="login">
-    <h1>GED Ciencias 2025</h1>
-    <p>Simulador oficial con 400 preguntas reales</p>
-    <button id="googleSignIn">Iniciar sesión con Google</button>
-    <p style="margin-top:30px; color:#666; font-size:14px;">
-        Solo usuarios autenticados pueden usar el simulador.<br>
-        Tus puntajes y progreso se guardan automáticamente.
-    </p>
+<header>
+  <h1>GED Ciencias 2025</h1>
+  <p id="userInfo"><span id="userName"></span> | <a href="#" onclick="logout()" style="color:#fff;">Cerrar sesión</a></p>
+</header>
+
+<div class="container">
+  <h2 id="questionText"></h2>
+  <div class="options" id="options"></div>
+  <div style="text-align:center; margin:30px 0;">
+    <button onclick="nextQuestion()">Siguiente pregunta</button>
+  </div>
+  <div id="result" style="font-size:20px; text-align:center; margin:40px 0;"></div>
 </div>
 
-<!-- APP PRINCIPAL -->
-<div id="app">
-    <h1>GED Ciencias 2025</h1>
-    <div id="globalProgress">Preguntas completadas: <strong id="usedCount">0</strong> / 400</div>
-    <button id="logoutBtn">Cerrar sesión</button>
-    <div id="timer">Tiempo: <span id="timeDisplay">90:00</span></div>
-    <div id="quiz"></div>
-    <button id="startBtn">Comenzar sesión (34 preguntas)</button>
-    <button id="nextBtn">Siguiente</button>
-    <div id="progressBar"><div id="progress"></div></div>
-    <div id="result"></div>
+<!-- BANNER PUBLICITARIO – aparece para TODOS, incluso tú -->
+<div class="banner">
+  <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-1234567890123456" crossorigin="anonymous"></script>
+  <ins class="adsbygoogle"
+       style="display:inline-block;width:320px;height:100px"
+       data-ad-client="ca-pub-1234567890123456"
+       data-ad-slot="1111111111"></ins>
+  <script>(adsbygoogle = window.adsbygoogle || []).push({});</script>
+</div>
+
+<!-- PAYWALL – solo aparece si no es premium -->
+<div id="paywall">
+  <h1>¡Felicidades por terminar la ronda 1!</h1>
+  <h2>Desbloquea todas las rondas por solo <strong>$5 al mes</strong></h2>
+  <p>Acceso ilimitado • Sin anuncios extra • Progreso guardado</p>
+  <button onclick="loginGoogle()" style="background:#4285f4; font-size:20px; padding:16px 40px;">Iniciar sesión con Google</button>
+  <button onclick="buyPremium()" style="background:#34a853; font-size:20px; padding:16px 40px; margin-left:20px;">Comprar Premium $5/mes</button>
+  <p style="margin-top:50px; font-size:14px;">Tú como administrador tienes acceso total gratis</p>
 </div>
 
 <script type="module">
-    import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
-    import { getAuth, signInWithPopup, GoogleAuthProvider, onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-auth.js";
-    import { getFirestore, collection, addDoc, serverTimestamp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
+  import { initializeApp } from "https://www.gstatic.com/firebasejs/12.6.0/firebase-app.js";
+  import { getAuth, onAuthStateChanged, GoogleAuthProvider, signInWithPopup, signOut } from "https://www.gstatic.com/firebasejs/12.6.0/firebase-auth.js";
+  import { getFirestore, doc, getDoc } from "https://www.gstatic.com/firebasejs/12.6.0/firebase-firestore.js";
 
-    // TU CONFIGURACIÓN REAL
-    const firebaseConfig = {
-        apiKey: "AIzaSyB-FjBBwpW4KjZlDdDrMuHjXWwZwngaYsc",
-        authDomain: "gedcienciasquiz.xyz",
-        projectId: "ged-quiz",
-        storageBucket: "ged-quiz.firebasestorage.app",
-        messagingSenderId: "127066393564",
-        appId: "1:127066393564:web:ff111532c0fe3421dcdd19",
-        measurementId: "G-MQP1FFNMCZ"
-    };
+  const firebaseConfig = {
+    apiKey: "AIzaSyDN8cjfe2DvIgadP0j_B-pCNuTEL6v2Kak",
+    authDomain: "ged-ciencias-premium-2025.firebaseapp.com",
+    projectId: "ged-ciencias-premium-2025",
+    storageBucket: "ged-ciencias-premium-2025.firebasestorage.app",
+    messagingSenderId: "394447234800",
+    appId: "1:394447234800:web:1e58f3a179f821ffbf0435"
+  };
 
-    const app = initializeApp(firebaseConfig);
-    const auth = getAuth(app);
-    const db = getFirestore(app);
-    const provider = new GoogleAuthProvider();
+  const app = initializeApp(firebaseConfig);
+  const auth = getAuth(app);
+  const db = getFirestore(app);
 
-    // ================== 400 PREGUNTAS GED 2025 ==================
-   const questions = [
+  // ← TU UID PERSONAL (admin) – después del primer login lo pegas aquí
+  const ADMIN_UID = "PEGA_TU_UID_AQUI";
+
+  const stripe = Stripe('pk_live_51...TU_CLAVE_PUBLICA_STRIPE'); // ← crea cuenta en stripe.com y pones tu clave pública aquí
+
+  let userIsPremium = false;
+  let currentQuestion = 0;
+
+  // TUS PREGUNTAS VAN AQUÍ – solo cambia este array
+ const questions = [
     // ==================== LIFE SCIENCE (160) ====================
     {q:"¿Qué gas es esencial para la fotosíntesis?", opts:["Oxígeno","Nitrógeno","Dióxido de carbono","Hidrógeno"], ans:"Dióxido de carbono"},
     {q:"¿Cuál es la función principal del corazón?", opts:["Filtrar toxinas","Producir hormonas","Bombear sangre","Regular temperatura"], ans:"Bombear sangre"},
@@ -263,160 +261,72 @@
     {q:"La tectónica de placas explica los...", opts:["Volcanes y terremotos","Ciclo del carbono","Fotosíntesis","Corrientes oceánicas"], ans:"Volcanes y terremotos"},
     {q:"¿Qué metal es el más abundante en la corteza terrestre?", opts:["Oro","Cobre","Hierro","Aluminio"], ans:"Aluminio"}
 ];
-    let user = null;
-    let currentQuestion = 0;
-    let score = 0;
-    let sessionQuestions = [];
-    let timeLeft = 90 * 60;
-    let timerInterval = null;
-    let usedQuestions = [];
 
-    const loginDiv = document.getElementById('login');
-    const appDiv = document.getElementById('app');
-    const quizEl = document.getElementById('quiz');
-    const nextBtn = document.getElementById('nextBtn');
-    const startBtn = document.getElementById('startBtn');
-    const progressEl = document.getElementById('progress');
-    const resultEl = document.getElementById('result');
-    const timeDisplay = document.getElementById('timeDisplay');
-    const usedCountEl = document.getElementById('usedCount');
-
-    // Auth state
-    onAuthStateChanged(auth, (u) => {
-        if (u) {
-            user = u;
-            loginDiv.style.display = 'none';
-            appDiv.style.display = 'block';
-            usedQuestions = JSON.parse(localStorage.getItem(`used_${user.uid}`) || '[]');
-            usedCountEl.textContent = usedQuestions.length;
-            document.getElementById('logoutBtn').onclick = () => signOut(auth);
-        } else {
-            loginDiv.style.display = 'block';
-            appDiv.style.display = 'none';
+  onAuthStateChanged(auth, async (user) => {
+    if (user) {
+      document.getElementById("userName").textContent = user.displayName || user.email;
+      if (user.uid === ADMIN_UID) {
+        userIsPremium = true;
+        document.getElementById("paywall").style.display = "none";
+        return;
+      } else {
+        const sub = await getDoc(doc(db, "subscriptions", user.uid));
+        if (sub.exists() && sub.data().status === "active") {
+          userIsPremium = true;
+          document.getElementById("paywall").style.display = "none";
         }
+      }
+    }
+  });
+
+  window.loginGoogle = async () => {
+    const provider = new GoogleAuthProvider();
+    try { await signInWithPopup(auth, provider); }
+    catch (e) { alert("Error: " + e.message); }
+  };
+
+  window.logout = () => signOut(auth);
+
+  window.buyPremium = async () => {
+    if (!auth.currentUser) return alert("Primero inicia sesión con Google");
+    const uid = auth.currentUser.uid;
+    const res = await fetch("https://us-central1-ged-ciencias-premium-2025.cloudfunctions.net/createCheckoutSession", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ uid })
     });
+    const { id } = await res.json();
+    stripe.redirectToCheckout({ sessionId: id });
+  };
 
-    document.getElementById('googleSignIn').onclick = () => signInWithPopup(auth, provider);
-
-    // Iniciar sesión de 34 preguntas
-    startBtn.onclick = () => {
-        if (usedQuestions.length >= questions.length) {
-            usedQuestions = [];
-            localStorage.setItem(`used_${user.uid}`, '[]');
-            alert("¡Felicidades! Completaste las 400 preguntas. Reiniciando...");
-        }
-
-        const available = questions.map((q, i) => i).filter(i => !usedQuestions.includes(i));
-        if (available.length < 34) {
-            alert("No hay suficientes preguntas nuevas. Reiniciando banco.");
-            usedQuestions = [];
-            localStorage.setItem(`used_${user.uid}`, '[]');
-            location.reload();
-            return;
-        }
-
-        const selected = available.sort(() => 0.5 - Math.random()).slice(0, 34);
-        sessionQuestions = selected.map(idx => ({...questions[idx], originalIndex: idx}));
-        currentQuestion = 0;
-        score = 0;
-        timeLeft = 90 * 60;
-        clearInterval(timerInterval);
-        startTimer();
-        loadQuestion();
-        startBtn.style.display = 'none';
-        nextBtn.style.display = 'none';
-    };
-
-    function startTimer() {
-        timerInterval = setInterval(() => {
-            timeLeft--;
-            const m = String(Math.floor(timeLeft / 60)).padStart(2, '0');
-            const s = String(timeLeft % 60).padStart(2, '0');
-            timeDisplay.textContent = `${m}:${s}`;
-            if (timeLeft <= 0) {
-                clearInterval(timerInterval);
-                showResult();
-            }
-        }, 1000);
+  function loadQuestion() {
+    if (currentQuestion >= questions.length) {
+      document.getElementById("result").innerHTML = "<h2>¡Ronda 1 completada!</h2>";
+      if (!userIsPremium) document.getElementById("paywall").style.display = "block";
+      return;
     }
+    const q = questions[currentQuestion];
+    document.getElementById("questionText").textContent = `Pregunta ${currentQuestion+1}: ${q.q}`;
+    const opts = q.options.map(opt => `
+      <label><input type="radio" name="q" value="${opt}"> <span>${opt}</span></label>
+    `).join("");
+    document.getElementById("options").innerHTML = opts;
+  }
 
-    function loadQuestion() {
-        const q = sessionQuestions[currentQuestion];
-        quizEl.innerHTML = `
-            <div style="font-size:20px; font-weight:bold; margin:20px 0;">
-                Pregunta ${currentQuestion + 1} de 34
-            </div>
-            <div style="font-size:18px; margin:20px 0; line-height:1.5;">
-                ${q.q}
-            </div>
-            ${q.opts.map(opt => `
-                <div class="option" onclick="selectOption('${opt.replace(/'/g, "\\'")}')">${opt}</div>
-            `).join('')}
-        `;
-        progressEl.style.width = ((currentQuestion + 1) / 34 * 100) + '%';
+  window.nextQuestion = () => {
+    const selected = document.querySelector('input[name="q"]:checked');
+    if (!selected) return alert("Elige una opción");
+    if (selected.value === questions[currentQuestion].a) {
+      document.getElementById("result").innerHTML = "<span style='color:green'>¡Correcto!</span>";
+    } else {
+      document.getElementById("result").innerHTML = `<span style='color:red'>Incorrecto. La respuesta era: ${questions[currentQuestion].a}</span>`;
     }
+    currentQuestion++;
+    setTimeout(loadQuestion, 1500);
+  };
 
-    window.selectOption = (chosen) => {
-        if (nextBtn.style.display === 'block') return;
-        const q = sessionQuestions[currentQuestion];
-        document.querySelectorAll('.option').forEach(div => {
-            if (div.textContent === q.ans) div.classList.add('correct');
-            if (div.textContent === chosen && chosen !== q.ans) div.classList.add('incorrect');
-            div.style.pointerEvents = 'none';
-        });
-        if (chosen === q.ans) score++;
-        nextBtn.style.display = 'block';
-    };
-
-    nextBtn.onclick = () => {
-        currentQuestion++;
-        if (currentQuestion >= 34) {
-            showResult();
-        } else {
-            loadQuestion();
-            nextBtn.style.display = 'none';
-        }
-    };
-
-    function showResult() {
-        clearInterval(timerInterval);
-        quizEl.innerHTML = '';
-        nextBtn.style.display = 'none';
-        progressEl.style.width = '100%';
-        const percent = Math.round((score / 34) * 100);
-
-        // Guardar preguntas usadas
-        sessionQuestions.forEach(q => {
-            if (!usedQuestions.includes(q.originalIndex)) {
-                usedQuestions.push(q.originalIndex);
-            }
-        });
-        localStorage.setItem(`used_${user.uid}`, JSON.stringify(usedQuestions));
-        usedCountEl.textContent = usedQuestions.length;
-
-        // Guardar puntaje en Firestore
-        addDoc(collection(db, "scores"), {
-            userId: user.uid,
-            userEmail: user.email,
-            score: score,
-            total: 34,
-            percentage: percent,
-            date: serverTimestamp()
-        });
-
-        resultEl.innerHTML = `
-            <h2>¡Sesión completada!</h2>
-            <p>Puntaje: <strong>${score} / 34</strong> (${percent}%)</p>
-            ${percent >= 65 ? '<p style="color:green; font-size:22px;">¡Aprobado! (GED-like)</p>' : '<p style="color:#d32f2f;">Sigue practicando</p>'}
-            <p>Preguntas completadas en total: <strong>${usedQuestions.length}/400</strong></p>
-            <button class="resetBtn" onclick="location.reload()">Nueva sesión</button>
-        `;
-        resultEl.style.display = 'block';
-    }
+  // Inicia el quiz
+  loadQuestion();
 </script>
 </body>
 </html>
-
-
-
-
