@@ -13,13 +13,14 @@
     body {font-family:'Google Sans',Arial,sans-serif; background:#f0f4f8; padding-bottom:120px;}
     header {background:#1a73e8; color:white; text-align:center; padding:25px 15px; position:relative;}
     header h1 {font-size:28px; margin:0;}
-    #userInfo {position:absolute; top:15px; right:15px; font-size:14px;}
+    #userInfo {position:absolute; top:15px; right:15px; font-size:14px; display:none;}
     #userInfo a {color:#fff; text-decoration:underline;}
     .container {max-width:950px; margin:25px auto; padding:30px; background:white; border-radius:20px; box-shadow:0 12px 40px rgba(0,0,0,0.15);}
     .progress {height:10px; background:#e8ecf4; border-radius:6px; margin:25px 0; overflow:hidden;}
     .progress-bar {height:100%; background:linear-gradient(90deg,#1a73e8,#34a853); width:0%; transition:width 0.5s ease;}
     .session-info {text-align:center; font-size:18px; color:#555; margin:20px 0;}
     .question {font-size:24px; line-height:1.6; margin:35px 0; color:#333;}
+    .options {margin:20px 0;}
     .options label {
       display:block; background:#f8f9fa; border:2px solid #e8ecf4; border-radius:16px; padding:20px; margin:18px 0;
       cursor:pointer; font-size:20px; transition:all 0.3s; position:relative;
@@ -53,7 +54,7 @@
 
 <header>
   <h1><i class="fas fa-flask"></i> GED Ciencias 2025</h1>
-  <div id="userInfo" style="display:none;"><span id="userName"></span> <a href="#" onclick="logout()"><i class="fas fa-sign-out-alt"></i> Cerrar sesión</a></div>
+  <div id="userInfo"><span id="userName"></span> <a href="#" onclick="logout()">Cerrar sesión</a></div>
 </header>
 
 <div class="container">
@@ -64,7 +65,7 @@
     <span id="totalProgress">0 de 400 vistas</span>
   </div>
   
-  <div class="question" id="questionText">Cargando...</div>
+  <div class="question" id="questionText">Cargando pregunta...</div>
   <div class="options" id="options"></div>
   <div id="result"></div>
   <button onclick="nextQuestion()">
@@ -72,7 +73,7 @@
   </button>
 </div>
 
-<!-- PUBLICIDAD FIJA – SIEMPRE VISIBLE (tú también ganas) -->
+<!-- PUBLICIDAD FIJA – SIEMPRE VISIBLE -->
 <div class="banner">
   <div style="font-size:14px; color:#666; margin-bottom:8px;">Anuncios que apoyan tu preparación</div>
   <ins class="adsbygoogle"
@@ -82,11 +83,11 @@
   <script>(adsbygoogle = window.adsbygoogle || []).push({});</script>
 </div>
 
-<!-- PAYWALL – SOLO PARA NO-PREMIUM -->
+<!-- PAYWALL -->
 <div id="paywall">
-  <h1><i class="fas fa-star"></i> ¡Sesión 1 completada con éxito!</h1>
+  <h1><i class="fas fa-star"></i> ¡Sesión 1 completada!</h1>
   <h2>Desbloquea sesiones ilimitadas por solo <strong>$5 al mes</strong></h2>
-  <p style="font-size:20px; margin:30px 0;">400+ preguntas reales • Sin repeticiones • Progreso guardado • Sin límites</p>
+  <p style="font-size:20px; margin:30px 0;">400+ preguntas únicas • Sin repeticiones • Progreso guardado • Sin límites</p>
   
   <button onclick="loginGoogle()" class="login-btn">
     <i class="fab fa-google"></i> Iniciar sesión con Google
@@ -96,7 +97,7 @@
   </button>
   
   <div class="admin-note">
-    <p><i class="fas fa-info-circle"></i> <strong>Administradores:</strong> Tienen acceso total gratis automáticamente</p>
+    <p><i class="fas fa-info-circle"></i> <strong>Administradores:</strong> Acceso total gratis automáticamente</p>
   </div>
 </div>
 
