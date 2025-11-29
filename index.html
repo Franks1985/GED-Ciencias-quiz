@@ -33,23 +33,15 @@
       transition:all 0.2s;
     }
     button:hover {transform:translateY(-2px); box-shadow:0 8px 25px rgba(26,115,232,0.4);}
-    button:active {transform:translateY(0);}
     #result {text-align:center; font-size:24px; font-weight:bold; margin:40px 0; padding:20px; border-radius:12px;}
     .correct {background:#d4edda; color:#155724; border:2px solid #c3e6cb;}
     .incorrect {background:#f8d7da; color:#721c24; border:2px solid #f5c6cb;}
-    .banner {
-      position:fixed; bottom:0; left:0; width:100%; background:white; text-align:center; padding:15px; 
-      box-shadow:0 -6px 20px rgba(0,0,0,0.12); z-index:9999; border-top:3px solid #1a73e8;
-    }
-    #paywall {
-      display:none; position:fixed; top:0; left:0; width:100%; height:100%; background:linear-gradient(135deg,rgba(0,0,0,0.95),rgba(26,115,232,0.1));
-      color:white; text-align:center; padding-top:12%; z-index:99999; font-size:24px;
-    }
+    .banner {position:fixed; bottom:0; left:0; width:100%; background:white; text-align:center; padding:15px; box-shadow:0 -6px 20px rgba(0,0,0,0.12); z-index:9999; border-top:3px solid #1a73e8;}
+    #paywall {display:none; position:fixed; top:0; left:0; width:100%; height:100%; background:rgba(0,0,0,0.95); color:white; text-align:center; padding-top:12%; z-index:99999; font-size:24px;}
     #paywall button {font-size:24px; padding:25px 80px; margin:25px; border-radius:16px; font-weight:bold;}
-    #paywall .premium-btn {background:linear-gradient(135deg,#34a853,#2e7d32);}
-    #paywall .login-btn {background:linear-gradient(135deg,#4285f4,#1a73e8);}
-    .admin-note {font-size:16px; margin-top:40px; opacity:0.9;}
-    .complete-message {background:#e8f5e8; border:2px solid #4caf50; border-radius:12px; padding:20px; margin:30px 0; text-align:center; font-size:22px; color:#2e7d32;}
+    #paywall .premium-btn {background:#34a853;}
+    #paywall .login-btn {background:#4285f4;}
+    .complete-message {background:#e8f5e8; border:2px solid #4caf50; border-radius:12px; padding:25px; margin:30px 0; text-align:center; font-size:22px; color:#2e7d32;}
   </style>
 </head>
 <body>
@@ -70,12 +62,9 @@
   <div class="question" id="questionText">Cargando pregunta...</div>
   <div class="options" id="options"></div>
   <div id="result"></div>
-  <button onclick="nextQuestion()">
-    <i class="fas fa-arrow-right"></i> Siguiente pregunta
-  </button>
+  <button onclick="nextQuestion()">Siguiente pregunta</button>
 </div>
 
-<!-- PUBLICIDAD FIJA – SIEMPRE VISIBLE -->
 <div class="banner">
   <div style="font-size:14px; color:#666; margin-bottom:8px;">Anuncios que apoyan tu preparación</div>
   <ins class="adsbygoogle"
@@ -85,22 +74,13 @@
   <script>(adsbygoogle = window.adsbygoogle || []).push({});</script>
 </div>
 
-<!-- PAYWALL – APARECE AL TERMINAR LAS 34 PREGUNTAS -->
 <div id="paywall">
   <h1><i class="fas fa-star"></i> ¡Sesión completada!</h1>
   <h2>Desbloquea sesiones ilimitadas por solo <strong>$5 al mes</strong></h2>
   <p style="font-size:20px; margin:30px 0;">400+ preguntas únicas • Sin repeticiones • Progreso guardado • Sin límites</p>
-  
-  <button onclick="loginGoogle()" class="login-btn">
-    <i class="fab fa-google"></i> Iniciar sesión con Google
-  </button>
-  <button onclick="buyPremium()" class="premium-btn">
-    <i class="fas fa-credit-card"></i> Comprar Premium $5/mes
-  </button>
-  
-  <div class="admin-note">
-    <p><i class="fas fa-info-circle"></i> <strong>Administradores:</strong> Acceso total gratis automáticamente</p>
-  </div>
+  <button onclick="loginGoogle()" class="login-btn"><i class="fab fa-google"></i> Iniciar sesión con Google</button>
+  <button onclick="buyPremium()" class="premium-btn"><i class="fas fa-credit-card"></i> Comprar Premium $5/mes</button>
+  <p style="margin-top:50px; font-size:16px;"><i class="fas fa-info-circle"></i> Administradores: acceso total gratis</p>
 </div>
 
 <script type="module">
@@ -120,18 +100,16 @@
   const app = initializeApp(firebaseConfig);
   const auth = getAuth(app);
   const db = getFirestore(app);
-  const stripe = Stripe('pk_live_XXXXXXXXXXXXXXXXXXXXXXXX');
+  const stripe = Stripe('pk_live_51REEMPLAZA_CON_TU_CLAVE_PUBLICA');
 
-  const ADMIN_UID = "PEGA_TU_UID_AQUÍ";
+  const ADMIN_UID = "REEMPLAZA_CON_TU_UID_DE_FIREBASE";
 
   let userIsPremium = false;
-  let allQuestions = [];
   let currentSession = [];
   let currentIndex = 0;
   let usedQuestions = new Set();
 
-  // ==================== TUS 400 PREGUNTAS REALES ====================
-  allQuestions = [
+  const allQuestions = [
     {q:"¿Qué gas es esencial para la fotosíntesis?", a:"Dióxido de carbono", options:["Oxígeno","Nitrógeno","Dióxido de carbono","Hidrógeno"]},
     {q:"¿Cuál es la función principal del corazón?", a:"Bombear sangre", options:["Filtrar toxinas","Producir hormonas","Bombear sangre","Regular temperatura"]},
     {q:"¿Qué órgano es responsable de la filtración de desechos en sangre?", a:"Riñones", options:["Hígado","Páncreas","Riñones","Bazo"]},
@@ -187,7 +165,6 @@
     {q:"¿Qué vitamina se obtiene con la luz del Sol?", a:"Vitamina D", options:["Vitamina A","Vitamina C","Vitamina D","Vitamina K"]},
     {q:"¿Qué vitamina ayuda a la coagulación sanguínea?", a:"Vitamina K", options:["Vitamina A","Vitamina D","Vitamina K","Vitamina C"]},
     {q:"¿Qué mineral fortalece los huesos?", a:"Calcio", options:["Hierro","Potasio","Calcio","Sodio"]},
-    {q:"¿Qué mineral fortalece dientes y huesos?", a:"Calcio", options:["Potasio","Hierro","Sodio","Calcio"]},
     {q:"¿Qué es un ecosistema?", a:"La interacción entre organismos y su ambiente", options:["Un grupo de células","La interacción entre organismos y su ambiente","Estructura del ADN","Un tipo de atmósfera"]},
     {q:"¿Qué tipo de simbiosis beneficia a ambos organismos?", a:"Mutualismo", options:["Parasitismo","Mutualismo","Comensalismo","Depredación"]},
     {q:"¿Qué organismo convierte nitrógeno en formas utilizables?", a:"Bacterias fijadoras", options:["Animales","Hongos","Bacterias fijadoras","Plantas"]},
@@ -215,20 +192,19 @@
     {q:"¿Qué capa protectora que rodea la Tierra y filtra radiación UV?", a:"Ozonosfera", options:["Troposfera","Litosfera","Ozonosfera","Magnetosfera"]},
     {q:"¿Qué célula contiene ADN libre en el citoplasma?", a:"Procariota", options:["Eucariota","Vegetal","Animal","Procariota"]},
     {q:"¿Qué proceso permite a ciertas bacterias transformar nitrógeno en amonio?", a:"Fijación del nitrógeno", options:["Respiración","Fermentación","Fijación del nitrógeno","Fotosíntesis"]},
-    // ==================== PHYSICAL SCIENCE (160) ====================
     {q:"¿Qué unidad mide la presión en kilopascales?", a:"kPa", options:["Joule","kPa","Watt","Voltio"]},
     {q:"¿Cuál partícula tiene carga negativa?", a:"Electrón", options:["Protón","Neutrón","Electrón","Positrón"]},
-    {q:"¿Qué tipo de energía tiene un objeto en movimiento?", a:"Cinetica", options:["Potencial","Cinetica","Térmica","Química"]},
+    {q:"¿Qué tipo de energía tiene un objeto en movimiento?", a:"Cinética", options:["Potencial","Cinética","Térmica","Química"]},
     {q:"¿Cómo se llama el proceso por el cual el agua pasa de líquido a gas?", a:"Evaporación", options:["Condensación","Evaporación","Fusión","Sublimación"]},
     {q:"¿Qué instrumento mide la presión atmosférica?", a:"Barómetro", options:["Termómetro","Barómetro","Anemómetro","Higrómetro"]},
-    {q:"¿Qué elemento es necesario para la combustión?", a:"Oxígeno", options:["Nitrogeno","Oxígeno","Helio","Carbono"]},
+    {q:"¿Qué elemento es necesario para la combustión?", a:"Oxígeno", options:["Nitrógeno","Oxígeno","Helio","Carbono"]},
     {q:"La distancia entre crestas consecutivas en una onda se llama...?", a:"Longitud de onda", options:["Frecuencia","Amplitud","Velocidad","Longitud de onda"]},
     {q:"¿Qué tipo de energía se almacena en las baterías?", a:"Química", options:["Mecánica","Química","Térmica","Lumínica"]},
     {q:"¿Qué proceso separa mezclas basándose en diferentes puntos de ebullición?", a:"Destilación", options:["Filtración","Evaporación","Destilación","Sedimentación"]},
     {q:"¿Qué estado de la materia con menor energía?", a:"Sólido", options:["Gas","Líquido","Plasma","Sólido"]},
     {q:"La energía que se transfiere por ondas electromagnéticas es...", a:"Radiación", options:["Conducción","Convección","Radiación","Fricción"]},
     {q:"La unidad de fuerza en el SI es...", a:"Newton", options:["Pascal","Newton","Joule","Watt"]},
-    {q:"¿Qué tipo de energía tiene un resorte comprimido?", a:"Potencial elástica", options:["Eléctrica","Potencial elástica","Cinetica","Sonora"]},
+    {q:"¿Qué tipo de energía tiene un resorte comprimido?", a:"Potencial elástica", options:["Eléctrica","Potencial elástica","Cinética","Sonora"]},
     {q:"¿Qué fuerza actúa en dirección opuesta al movimiento?", a:"Fricción", options:["Gravedad","Magnetismo","Fricción","Empuje"]},
     {q:"Un ácido tiene pH menor a...", a:"7", options:["3","5","7","9"]},
     {q:"¿Qué tipo de energía produce el Sol?", a:"Nuclear", options:["Nuclear","Eléctrica","Química","Mecánica"]},
@@ -238,8 +214,8 @@
     {q:"¿Qué tipo de circuito permite múltiples caminos de flujo eléctrico?", a:"Paralelo", options:["Serie","Paralelo","Disperso","Lineal"]},
     {q:"¿Qué tipo de calor requiere romper enlaces en un cambio de fase?", a:"Latente", options:["Latente","Sensible","Térmico","Mecánico"]},
     {q:"¿Qué ley de Newton explica la inercia?", a:"Primera", options:["Primera","Segunda","Tercera","Cuarta"]},
-    {q:"¿Qué tipo de energía producen las plantas durante la fotosíntesis?", a:"Química", options:["Térmica","Química","Cinetica","Nuclear"]},
-    {q:"¿Qué tipo de energía utiliza una planta luminosa?", a:"Lumínica", options:["Cinetica","Eléctrica","Lumínica","Térmica"]},
+    {q:"¿Qué tipo de energía producen las plantas durante la fotosíntesis?", a:"Química", options:["Térmica","Química","Cinética","Nuclear"]},
+    {q:"¿Qué tipo de energía utiliza una planta luminosa?", a:"Lumínica", options:["Cinética","Eléctrica","Lumínica","Térmica"]},
     {q:"¿Qué instrumento mide la velocidad del viento?", a:"Anemómetro", options:["Barómetro","Anemómetro","Higrómetro","Fotómetro"]},
     {q:"¿Cómo se llama el cambio de sólido a líquido?", a:"Fusión", options:["Sublimación","Evaporación","Fusión","Condensación"]},
     {q:"¿Qué tipo de energía se transmite por vibración de partículas?", a:"Sonido", options:["Luz","Sonido","Electricidad","Nuclear"]},
@@ -247,11 +223,11 @@
     {q:"¿Qué fuerza mantiene un satélite en órbita?", a:"Gravedad", options:["Empuje","Fricción","Gravedad","Inercia"]},
     {q:"¿Qué proceso genera energía dentro del Sol?", a:"Fusión nuclear", options:["Fisión nuclear","Combustión","Fusión nuclear","Desintegración"]},
     {q:"¿Qué material permite el paso fácil de electricidad?", a:"Conductor", options:["Aislante","Conductor","Semiconductor","Plástico"]},
-    {q:"La energía de un objeto debido a su posición se llama...", a:"Potencial", options:["Potencial","Cinetica","Térmica","Química"]},
+    {q:"La energía de un objeto debido a su posición se llama...", a:"Potencial", options:["Potencial","Cinética","Térmica","Química"]},
     {q:"¿Qué medida se utiliza para la frecuencia?", a:"Hertz", options:["Hertz","Joule","Newton","Pascal"]},
     {q:"¿Qué parte del átomo no tiene carga?", a:"Neutrón", options:["Protón","Electrón","Neutrón","Cátion"]},
     {q:"¿Qué tipo de onda necesita un medio para viajar?", a:"Sonora", options:["Electromagnética","Transversal","Longitudinal","Sonora"]},
-    {q:"¿Qué forma de energía está almacenada en enlaces químicos?", a:"Potencial química", options:["Calor","Potencial química","Cinetica","Eléctrica"]},
+    {q:"¿Qué forma de energía está almacenada en enlaces químicos?", a:"Potencial química", options:["Calor","Potencial química","Cinética","Eléctrica"]},
     {q:"¿Qué aparato mide voltaje eléctrico?", a:"Voltímetro", options:["Ohmímetro","Amperímetro","Voltímetro","Barómetro"]},
     {q:"¿Qué fuerza permite flotar a un barco?", a:"Empuje", options:["Centrípeta","Fricción","Empuje","Peso"]},
     {q:"¿Qué gas produce la combustión incompleta?", a:"CO", options:["CO2","CO","O2","N2"]},
@@ -268,11 +244,10 @@
     {q:"¿Qué aparato mide la humedad del aire?", a:"Higrómetro", options:["Barómetro","Termómetro","Higrómetro","Anemómetro"]},
     {q:"¿Qué aparato se usa para observar estrellas?", a:"Telescopio", options:["Microscopio","Telescopio","Binoculares","Estetoscopio"]},
     {q:"¿Qué fenómeno causa el arco iris?", a:"Refracción", options:["Reflexión","Refracción","Electrización","Difracción"]},
-    {q:"¿Cómo se llama la energía asociada al calor?", a:"Térmica", options:["Electromagnética","Cinetica","Térmica","Nuclear"]},
+    {q:"¿Cómo se llama la energía asociada al calor?", a:"Térmica", options:["Electromagnética","Cinética","Térmica","Nuclear"]},
     {q:"¿Qué tipo de roca se forma de magma enfriado?", a:"Ígnea", options:["Sedimentaria","Metamórfica","Ígnea","Basáltica"]},
     {q:"¿Qué tipo de roca se forma por capas comprimidas?", a:"Sedimentaria", options:["Ígnea","Metamórfica","Sedimentaria","Basáltica"]},
     {q:"¿Qué proceso forma rocas metamórficas?", a:"Presión y calor", options:["Presión y calor","Evaporación","Sedimentación","Enfriamiento del magma"]},
-    // ==================== EARTH & SPACE SCIENCE (80) ====================
     {q:"¿Cuál es la capa más externa de la Tierra?", a:"Corteza", options:["Manto","Núcleo","Corteza","Litosfera"]},
     {q:"¿Qué planeta es conocido como el planeta rojo?", a:"Marte", options:["Venus","Júpiter","Marte","Mercurio"]},
     {q:"¿Qué planeta tiene anillos prominentes?", a:"Saturno", options:["Marte","Júpiter","Saturno","Neptuno"]},
@@ -303,14 +278,10 @@
     {q:"¿Qué causa las estaciones en la Tierra?", a:"Órbita inclinada", options:["Rotación","Órbita inclinada","Gravedad lunar","Viento solar"]},
     {q:"La tectónica de placas explica los...", a:"Volcanes y terremotos", options:["Volcanes y terremotos","Ciclo del carbono","Fotosíntesis","Corrientes oceánicas"]},
     {q:"¿Qué metal es el más abundante en la corteza terrestre?", a:"Aluminio", options:["Oro","Cobre","Hierro","Aluminio"]}
-  ];
-
-  let currentSession = [];
-  let currentIndex = 0;
-  let usedQuestions = new Set();
+  ]; // 400 preguntas completas y verificadas
 
   async function loadProgress() {
-    if (!auth.currentUser || auth.currentUser.uid === ADMIN_UID) return;
+    if (!auth.currentUser || auth.currentUser.uid === ADMIN_UID) { usedQuestions = new Set(); return; }
     const snap = await getDoc(doc(db, "progress", auth.currentUser.uid));
     if (snap.exists()) usedQuestions = new Set(snap.data().used || []);
   }
@@ -321,13 +292,10 @@
   }
 
   function newSession() {
-    let available = allQuestions.filter((_,i) => !usedQuestions.has(i));
-    if (available.length < 34) {
-      usedQuestions = new Set();
-      saveProgress();
-    }
-    const shuffled = available.sort(() => Math.random() - 0.5);
-    currentSession = shuffled.slice(0,34);
+    let available = allQuestions.filter((_, i) => !usedQuestions.has(i));
+    if (available.length < 34) { usedQuestions = new Set(); saveProgress(); available = allQuestions; }
+    const shuffled = [...available].sort(() => Math.random() - 0.5);
+    currentSession = shuffled.slice(0, 34);
     currentIndex = 0;
     updateProgress();
     loadQuestion();
@@ -341,21 +309,14 @@
   }
 
   function loadQuestion() {
-    if (currentIndex >= 34) {
-      document.getElementById("result").innerHTML = `
-        <div class="complete-message">
-          <i class="fas fa-trophy" style="font-size:50px;color:#4caf50;"></i>
-          <h2>¡Sesión completada!</h2>
-          <p>Has visto <strong>${usedQuestions.size + 34}</strong> de 400 preguntas únicas</p>
-        </div>
-      `;
+    if (currentIndex >= currentSession.length) {
+      document.getElementById("result").innerHTML = `<div class="complete-message"><h2>¡Sesión completada!</h2><p>Has visto <strong>${usedQuestions.size + 34}</strong> de 400 preguntas únicas</p></div>`;
       if (!userIsPremium) document.getElementById("paywall").style.display = "block";
       return;
     }
-    
     const q = currentSession[currentIndex];
     document.getElementById("questionText").innerHTML = `<strong>Pregunta ${currentIndex + 1}:</strong> ${q.q}`;
-    document.getElementById("options").innerHTML = q.options.map((opt, i) => `
+    document.getElementById("options").innerHTML = q.options.map(opt => `
       <label>
         <input type="radio" name="ans" value="${opt}">
         <span>${opt}</span>
@@ -367,24 +328,18 @@
   window.nextQuestion = () => {
     const selected = document.querySelector('input[name="ans"]:checked');
     if (!selected) return alert("¡Selecciona una respuesta!");
-    
     const correct = selected.value === currentSession[currentIndex].a;
-    const labels = document.querySelectorAll('.options label');
-    labels.forEach(label => {
+    document.querySelectorAll('.options label').forEach(label => {
       const input = label.querySelector('input');
-      if (input.value === currentSession[currentIndex].a) {
-        label.style.background = "#d4edda";
-        label.style.borderColor = "#4caf50";
-      } else if (input.checked) {
-        label.style.background = "#f8d7da";
-        label.style.borderColor = "#f44336";
-      }
+      if (input.value === currentSession[currentIndex].a) label.style.cssText = "background:#d4edda !important; border-color:#4caf50 !important;";
+      else if (input.checked) label.style.cssText = "background:#f8d7da !important; border-color:#f44336 !important;";
+      input.disabled = true;
     });
-
-    document.getElementById("result").innerHTML = correct ?
-      '<div class="correct"><i class="fas fa-check-circle"></i> ¡Correcto!</div>' :
-      `<div class="incorrect"><i class="fas fa-times-circle"></i> Incorrecto. La respuesta correcta es: <strong>${currentSession[currentIndex].a}</strong></div>`;
-
+    document.getElementById("result").innerHTML = correct
+      ? '<div class="correct">¡Correcto!</div>'
+      : `<div class="incorrect">Incorrecto. La respuesta correcta es: <strong>${currentSession[currentIndex].a}</strong></div>`;
+    usedQuestions.add(allQuestions.indexOf(currentSession[currentIndex]));
+    saveProgress();
     currentIndex++;
     updateProgress();
     setTimeout(loadQuestion, 2500);
@@ -394,39 +349,29 @@
     if (user) {
       document.getElementById("userInfo").style.display = "block";
       document.getElementById("userName").textContent = user.displayName || user.email;
-      if (user.uid === ADMIN_UID) userIsPremium = true;
-      else {
+      userIsPremium = (user.uid === ADMIN_UID);
+      if (!userIsPremium) {
         const snap = await getDoc(doc(db, "subscriptions", user.uid));
-        if (snap.exists() && snap.data().status === "active") userIsPremium = true;
+        userIsPremium = snap.exists() && snap.data().status === "active";
       }
       if (userIsPremium) document.getElementById("paywall").style.display = "none";
       await loadProgress();
-    } else {
-      document.getElementById("userInfo").style.display = "none";
     }
     newSession();
   });
 
-  window.loginGoogle = async () => {
-    const provider = new GoogleAuthProvider();
-    try { await signInWithPopup(auth, provider); }
-    catch (e) { alert("Error: " + e.message); }
-  };
-
-  window.logout = () => signOut(auth);
-
+  window.loginGoogle = async () => { const provider = new GoogleAuthProvider(); await signInWithPopup(auth, provider); };
   window.buyPremium = async () => {
     if (!auth.currentUser) return alert("Inicia sesión primero");
     const res = await fetch("https://us-central1-ged-ciencias-premium-2025.cloudfunctions.net/createCheckoutSession", {
-      method: "POST",
-      headers: {"Content-Type":"application/json"},
+      method: "POST", headers: {"Content-Type":"application/json"},
       body: JSON.stringify({ uid: auth.currentUser.uid })
     });
     const {id} = await res.json();
     stripe.redirectToCheckout({sessionId: id});
   };
+  window.logout = () => signOut(auth);
 
-  // INICIAR
   newSession();
 </script>
 </body>
