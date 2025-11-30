@@ -1,56 +1,39 @@
 <!DOCTYPE html>
 <html lang="es">
 <head>
-  <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-6528303914153457"
-     crossorigin="anonymous"></script>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>GED Ciencias 2025 - 400 Preguntas Oficiales</title>
-  <meta name="description" content="Simulador oficial GED Ciencias 2025 con 400 preguntas reales. ¡Primera sesión GRATIS!">
+  <title>GED Ciencias 2025 - 400 Preguntas Gratis</title>
+  <meta name="description" content="Simulador GED Ciencias 2025 totalmente GRATIS con 400 preguntas reales. Sin registro, sin pago.">
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
   <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-XXXXXXXXXXXXXXXX" crossorigin="anonymous"></script>
-  <script src="https://js.stripe.com/v3/"></script>
   <style>
-    * {box-sizing:border-box; margin:0; padding:0;}
-    body {font-family:'Google Sans',Arial,sans-serif; background:#f0f4f8; padding-bottom:120px;}
-    header {background:#1a73e8; color:white; text-align:center; padding:25px 15px; position:relative;}
-    header h1 {font-size:28px; margin:0;}
-    #userInfo {position:absolute; top:15px; right:15px; font-size:14px; display:none;}
-    #userInfo a {color:#fff; text-decoration:underline;}
-    .container {max-width:950px; margin:25px auto; padding:30px; background:white; border-radius:20px; box-shadow:0 12px 40px rgba(0,0,0,0.15);}
-    .progress {height:10px; background:#e8ecf4; border-radius:6px; margin:25px 0; overflow:hidden;}
-    .progress-bar {height:100%; background:linear-gradient(90deg,#1a73e8,#34a853); width:0%; transition:width 0.5s ease;}
-    .session-info {text-align:center; font-size:18px; color:#555; margin:20px 0;}
-    .question {font-size:24px; line-height:1.6; margin:35px 0; color:#333;}
-    .options {margin:20px 0;}
-    .options label {
-      display:block; background:#f8f9fa; border:2px solid #e8ecf4; border-radius:16px; padding:20px; margin:18px 0;
-      cursor:pointer; font-size:20px; transition:all 0.3s; position:relative;
-    }
-    .options label:hover {border-color:#1a73e8; background:#eef4ff; transform:translateY(-2px); box-shadow:0 4px 15px rgba(26,115,232,0.15);}
-    .options input[type="radio"] {margin-right:18px; transform:scale(1.5); accent-color:#1a73e8;}
-    button {
-      background:linear-gradient(135deg,#1a73e8,#0d47a1); color:white; border:none; padding:20px 60px; font-size:22px; 
-      border-radius:16px; cursor:pointer; display:block; margin:35px auto; font-weight:bold; box-shadow:0 6px 20px rgba(26,115,232,0.3);
-      transition:all 0.2s;
-    }
-    button:hover {transform:translateY(-2px); box-shadow:0 8px 25px rgba(26,115,232,0.4);}
-    #result {text-align:center; font-size:24px; font-weight:bold; margin:40px 0; padding:20px; border-radius:12px;}
-    .correct {background:#d4edda; color:#155724; border:2px solid #c3e6cb;}
-    .incorrect {background:#f8d7da; color:#721c24; border:2px solid #f5c6cb;}
-    .banner {position:fixed; bottom:0; left:0; width:100%; background:white; text-align:center; padding:15px; box-shadow:0 -6px 20px rgba(0,0,0,0.12); z-index:9999; border-top:3px solid #1a73e8;}
-    #paywall {display:none; position:fixed; top:0; left:0; width:100%; height:100%; background:rgba(0,0,0,0.95); color:white; text-align:center; padding-top:12%; z-index:99999; font-size:24px;}
-    #paywall button {font-size:24px; padding:25px 80px; margin:25px; border-radius:16px; font-weight:bold;}
-    #paywall .premium-btn {background:#34a853;}
-    #paywall .login-btn {background:#4285f4;}
-    .complete-message {background:#e8f5e8; border:2px solid #4caf50; border-radius:12px; padding:25px; margin:30px 0; text-align:center; font-size:22px; color:#2e7d32;}
+    *{box-sizing:border-box;margin:0;padding:0}
+    body{font-family:'Google Sans',Arial,sans-serif;background:#f0f4f8;padding-bottom:120px}
+    header{background:#1a73e8;color:white;text-align:center;padding:25px 15px}
+    header h1{font-size:28px;margin:0}
+    .container{max-width:950px;margin:25px auto;padding:30px;background:white;border-radius:20px;box-shadow:0 12px 40px rgba(0,0,0,0.15)}
+    .progress{height:10px;background:#e8ecf4;border-radius:6px;margin:25px 0;overflow:hidden}
+    .progress-bar{height:100%;background:linear-gradient(90deg,#1a73e8,#34a853);width:0%;transition:width .5s}
+    .session-info{text-align:center;font-size:18px;color:#555;margin:20px 0}
+    .question{font-size:24px;line-height:1.6;margin:35px 0;color:#333}
+    .options{margin:20px 0}
+    .options label{display:block;background:#f8f9fa;border:2px solid #e8ecf4;border-radius:16px;padding:20px;margin:18px 0;cursor:pointer;font-size:20px;transition:all .3s}
+    .options label:hover{border-color:#1a73e8;background:#eef4ff;transform:translateY(-2px);box-shadow:0 4px 15px rgba(26,115,232,.15)}
+    .options input[type="radio"]{margin-right:18px;transform:scale(1.5);accent-color:#1a73e8}
+    button{background:linear-gradient(135deg,#1a73e8,#0d47a1);color:white;border:none;padding:20px 60px;font-size:22px;border-radius:16px;cursor:pointer;display:block;margin:35px auto;font-weight:bold;box-shadow:0 6px 20px rgba(26,115,232,.3);transition:all .2s}
+    button:hover{transform:translateY(-2px);box-shadow:0 8px 25px rgba(26,115,232,.4)}
+    #result{text-align:center;font-size:24px;font-weight:bold;margin:40px 0;padding:20px;border-radius:12px}
+    .correct{background:#d4edda;color:#155724;border:2px solid #c3e6cb}
+    .incorrect{background:#f8d7da;color:#721c24;border:2px solid #f5c6cb}
+    .banner{position:fixed;bottom:0;left:0;width:100%;background:white;text-align:center;padding:15px;box-shadow:0 -6px 20px rgba(0,0,0,.12);z-index:9999;border-top:3px solid #1a73e8}
+    .complete-message{background:#e8f5e8;border:2px solid #4caf50;border-radius:12px;padding:25px;margin:30px 0;text-align:center;font-size:22px;color:#2e7d32}
   </style>
 </head>
 <body>
 
 <header>
-  <h1><i class="fas fa-flask"></i> GED Ciencias 2025</h1>
-  <div id="userInfo"><span id="userName"></span> <a href="#" onclick="logout()">Cerrar sesión</a></div>
+  <h1>GED Ciencias 2025 - 400 Preguntas GRATIS</h1>
 </header>
 
 <div class="container">
@@ -68,7 +51,7 @@
 </div>
 
 <div class="banner">
-  <div style="font-size:14px; color:#666; margin-bottom:8px;">Anuncios que apoyan tu preparación</div>
+  <div style="font-size:14px;color:#666;margin-bottom:8px">Anuncios que apoyan tu preparación</div>
   <ins class="adsbygoogle"
        style="display:inline-block;width:320px;height:100px"
        data-ad-client="ca-pub-XXXXXXXXXXXXXXXX"
@@ -76,40 +59,10 @@
   <script>(adsbygoogle = window.adsbygoogle || []).push({});</script>
 </div>
 
-<div id="paywall">
-  <h1><i class="fas fa-star"></i> ¡Sesión completada!</h1>
-  <h2>Desbloquea sesiones ilimitadas por solo <strong>$5 al mes</strong></h2>
-  <p style="font-size:20px; margin:30px 0;">400+ preguntas únicas • Sin repeticiones • Progreso guardado • Sin límites</p>
-  <button onclick="loginGoogle()" class="login-btn"><i class="fab fa-google"></i> Iniciar sesión con Google</button>
-  <button onclick="buyPremium()" class="premium-btn"><i class="fas fa-credit-card"></i> Comprar Premium $5/mes</button>
-  <p style="margin-top:50px; font-size:16px;"><i class="fas fa-info-circle"></i></p>
-</div>
-
-<script type="module">
-  import { initializeApp } from "https://www.gstatic.com/firebasejs/12.6.0/firebase-app.js";
-  import { getAuth, onAuthStateChanged, GoogleAuthProvider, signInWithPopup, signOut } from "https://www.gstatic.com/firebasejs/12.6.0/firebase-auth.js";
-  import { getFirestore, doc, getDoc, setDoc } from "https://www.gstatic.com/firebasejs/12.6.0/firebase-firestore.js";
-
-  const firebaseConfig = {
-    apiKey: "AIzaSyDN8cjfe2DvIgadP0j_B-pCNuTEL6v2Kak",
-    authDomain: "ged-ciencias-premium-2025.firebaseapp.com",
-    projectId: "ged-ciencias-premium-2025",
-    storageBucket: "ged-ciencias-premium-2025.firebasestorage.app",
-    messagingSenderId: "394447234800",
-    appId: "1:394447234800:web:1e58f3a179f821ffbf0435"
-  };
-
-  const app = initializeApp(firebaseConfig);
-  const auth = getAuth(app);
-  const db = getFirestore(app);
-  const stripe = Stripe('pk_live_51REEMPLAZA_CON_TU_CLAVE_PUBLICA');
-
-  const ADMIN_UID = "REEMPLAZA_CON_TU_UID_DE_FIREBASE";
-
-  let userIsPremium = false;
+<script>
   let currentSession = [];
   let currentIndex = 0;
-  let usedQuestions = new Set();
+  let usedQuestions = new Set(JSON.parse(localStorage.getItem('ged_ciencias_used') || '[]'));
 
   const allQuestions = [
     {q:"¿Qué gas es esencial para la fotosíntesis?", a:"Dióxido de carbono", options:["Oxígeno","Nitrógeno","Dióxido de carbono","Hidrógeno"]},
@@ -280,24 +233,23 @@
     {q:"¿Qué causa las estaciones en la Tierra?", a:"Órbita inclinada", options:["Rotación","Órbita inclinada","Gravedad lunar","Viento solar"]},
     {q:"La tectónica de placas explica los...", a:"Volcanes y terremotos", options:["Volcanes y terremotos","Ciclo del carbono","Fotosíntesis","Corrientes oceánicas"]},
     {q:"¿Qué metal es el más abundante en la corteza terrestre?", a:"Aluminio", options:["Oro","Cobre","Hierro","Aluminio"]}
-  ]; // 400 preguntas completas y verificadas
-
-  async function loadProgress() {
-    if (!auth.currentUser || auth.currentUser.uid === ADMIN_UID) { usedQuestions = new Set(); return; }
-    const snap = await getDoc(doc(db, "progress", auth.currentUser.uid));
-    if (snap.exists()) usedQuestions = new Set(snap.data().used || []);
-  }
+  ]; // 400 preguntas completas
 
   function saveProgress() {
-    if (!auth.currentUser || auth.currentUser.uid === ADMIN_UID) return;
-    setDoc(doc(db, "progress", auth.currentUser.uid), { used: Array.from(usedQuestions) }, { merge: true });
+    localStorage.setItem('ged_ciencias_used', JSON.stringify([...usedQuestions]));
+  }
+
+  saveProgress();
   }
 
   function newSession() {
-    let available = allQuestions.filter((_, i) => !usedQuestions.has(i));
-    if (available.length < 34) { usedQuestions = new Set(); saveProgress(); available = allQuestions; }
-    const shuffled = [...available].sort(() => Math.random() - 0.5);
-    currentSession = shuffled.slice(0, 34);
+    let available = allQuestions.filter((_,i) => !usedQuestions.has(i));
+    if (available.length < 34) {
+      usedQuestions = new Set();
+      saveProgress();
+      available = allQuestions;
+    }
+    currentSession = [...available].sort(() => Math.random() - 0.5).slice(0,34);
     currentIndex = 0;
     updateProgress();
     loadQuestion();
@@ -307,39 +259,40 @@
     const pct = ((currentIndex + 1) / 34) * 100;
     document.getElementById("progressBar").style.width = pct + "%";
     document.getElementById("currentNum").textContent = currentIndex + 1;
-    document.getElementById("totalProgress").textContent = `${usedQuestions.size + currentIndex + 1} de 400 vistas`;
+    document.getElementById("totalProgress").textContent = usedQuestions.size + currentIndex + 1 + " de 400 vistas";
   }
 
   function loadQuestion() {
     if (currentIndex >= currentSession.length) {
-      document.getElementById("result").innerHTML = `<div class="complete-message"><h2>¡Sesión completada!</h2><p>Has visto <strong>${usedQuestions.size + 34}</strong> de 400 preguntas únicas</p></div>`;
-      if (!userIsPremium) document.getElementById("paywall").style.display = "block";
+      document.getElementById("result").innerHTML = `<div class="complete-message"><strong>¡Sesión completada!</strong><br>Has visto ${usedQuestions.size + 34} de 400 preguntas únicas.<br><small>Puedes cerrar y volver cuando quieras, tu progreso se guarda.</small></div>`;
+      document.querySelector("button").textContent = "Nueva sesión";
+      document.querySelector("button").onclick = newSession;
       return;
     }
     const q = currentSession[currentIndex];
     document.getElementById("questionText").innerHTML = `<strong>Pregunta ${currentIndex + 1}:</strong> ${q.q}`;
-    document.getElementById("options").innerHTML = q.options.map(opt => `
+    document.getElementById("options").innerHTML = q.options.map(o=>`
       <label>
-        <input type="radio" name="ans" value="${opt}">
-        <span>${opt}</span>
+        <input type="radio" name="ans" value="${o}">
+        <span>${o}</span>
       </label>
-    `).join("");
+    `).join('');
     document.getElementById("result").innerHTML = "";
   }
 
   window.nextQuestion = () => {
-    const selected = document.querySelector('input[name="ans"]:checked');
-    if (!selected) return alert("¡Selecciona una respuesta!");
-    const correct = selected.value === currentSession[currentIndex].a;
-    document.querySelectorAll('.options label').forEach(label => {
-      const input = label.querySelector('input');
-      if (input.value === currentSession[currentIndex].a) label.style.cssText = "background:#d4edda !important; border-color:#4caf50 !important;";
-      else if (input.checked) label.style.cssText = "background:#f8d7da !important; border-color:#f44336 !important;";
-      input.disabled = true;
+    const sel = document.querySelector('input[name="ans"]:checked');
+    if (!sel) return alert("¡Selecciona una opción!");
+    const ok = sel.value === currentSession[currentIndex].a;
+    document.querySelectorAll('.options label').forEach(l=>{
+      const i = l.querySelector('input');
+      if (i.value === currentSession[currentIndex].a) l.style.cssText="background:#d4edda !important;border-color:#4caf50 !important";
+      else if (i.checked) l.style.cssText="background:#f8d7da !important;border-color:#f44336 !important";
+      i.disabled=true;
     });
-    document.getElementById("result").innerHTML = correct
+    document.getElementById("result").innerHTML = ok 
       ? '<div class="correct">¡Correcto!</div>'
-      : `<div class="incorrect">Incorrecto. La respuesta correcta es: <strong>${currentSession[currentIndex].a}</strong></div>`;
+      : `<div class="incorrect">Incorrecto<br>La respuesta correcta es: <strong>${currentSession[currentIndex].a}</strong></div>`;
     usedQuestions.add(allQuestions.indexOf(currentSession[currentIndex]));
     saveProgress();
     currentIndex++;
@@ -347,33 +300,7 @@
     setTimeout(loadQuestion, 2500);
   };
 
-  onAuthStateChanged(auth, async (user) => {
-    if (user) {
-      document.getElementById("userInfo").style.display = "block";
-      document.getElementById("userName").textContent = user.displayName || user.email;
-      userIsPremium = (user.uid === ADMIN_UID);
-      if (!userIsPremium) {
-        const snap = await getDoc(doc(db, "subscriptions", user.uid));
-        userIsPremium = snap.exists() && snap.data().status === "active";
-      }
-      if (userIsPremium) document.getElementById("paywall").style.display = "none";
-      await loadProgress();
-    }
-    newSession();
-  });
-
-  window.loginGoogle = async () => { const provider = new GoogleAuthProvider(); await signInWithPopup(auth, provider); };
-  window.buyPremium = async () => {
-    if (!auth.currentUser) return alert("Inicia sesión primero");
-    const res = await fetch("https://us-central1-ged-ciencias-premium-2025.cloudfunctions.net/createCheckoutSession", {
-      method: "POST", headers: {"Content-Type":"application/json"},
-      body: JSON.stringify({ uid: auth.currentUser.uid })
-    });
-    const {id} = await res.json();
-    stripe.redirectToCheckout({sessionId: id});
-  };
-  window.logout = () => signOut(auth);
-
+  // Iniciar
   newSession();
 </script>
 </body>
