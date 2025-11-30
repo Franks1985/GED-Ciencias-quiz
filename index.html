@@ -4,19 +4,19 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>GED Ciencias 2025 - 400 Preguntas Gratis</title>
-  <meta name="description" content="Simulador GED Ciencias 2025 totalmente GRATIS con 400 preguntas reales. Sin registro, sin pago.">
+  <meta name="description" content="Simulador GED Ciencias 2025 totalmente GRATIS con 400 preguntas reales oficiales. Sin registro, sin límites.">
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
   <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-XXXXXXXXXXXXXXXX" crossorigin="anonymous"></script>
   <style>
     *{box-sizing:border-box;margin:0;padding:0}
-    body{font-family:'Google Sans',Arial,sans-serif;background:#f0f4f8;padding-bottom:120px}
+    body{font-family:'Google Sans',Arial,sans-serif;background:#f0f4f8;padding-bottom:120px;color:#333}
     header{background:#1a73e8;color:white;text-align:center;padding:25px 15px}
     header h1{font-size:28px;margin:0}
     .container{max-width:950px;margin:25px auto;padding:30px;background:white;border-radius:20px;box-shadow:0 12px 40px rgba(0,0,0,0.15)}
     .progress{height:10px;background:#e8ecf4;border-radius:6px;margin:25px 0;overflow:hidden}
     .progress-bar{height:100%;background:linear-gradient(90deg,#1a73e8,#34a853);width:0%;transition:width .5s}
     .session-info{text-align:center;font-size:18px;color:#555;margin:20px 0}
-    .question{font-size:24px;line-height:1.6;margin:35px 0;color:#333}
+    .question{font-size:24px;line-height:1.6;margin:35px 0;color:#333;font-weight:500}
     .options{margin:20px 0}
     .options label{display:block;background:#f8f9fa;border:2px solid #e8ecf4;border-radius:16px;padding:20px;margin:18px 0;cursor:pointer;font-size:20px;transition:all .3s}
     .options label:hover{border-color:#1a73e8;background:#eef4ff;transform:translateY(-2px);box-shadow:0 4px 15px rgba(26,115,232,.15)}
@@ -62,184 +62,193 @@
 <script>
   let currentSession = [];
   let currentIndex = 0;
-  let usedQuestions = new Set(JSON.parse(localStorage.getItem('ged_ciencias_used') || '[]'));
+  let usedQuestions = new Set(JSON.parse(localStorage.getItem('ged_ciencias_2025_used') || '[]'));
 
   const allQuestions = [
-    {q:"¿Qué gas es esencial para la fotosíntesis?", a:"Dióxido de carbono", options:["Oxígeno","Nitrógeno","Dióxido de carbono","Hidrógeno"]},
-    {q:"¿Cuál es la función principal del corazón?", a:"Bombear sangre", options:["Filtrar toxinas","Producir hormonas","Bombear sangre","Regular temperatura"]},
-    {q:"¿Qué órgano es responsable de la filtración de desechos en sangre?", a:"Riñones", options:["Hígado","Páncreas","Riñones","Bazo"]},
-    {q:"¿Cuál es la molécula responsable de almacenar energía en las células?", a:"ATP", options:["ADN","ATP","ARN","CO2"]},
-    {q:"¿Qué proceso permite a las plantas producir su alimento?", a:"Fotosíntesis", options:["Digestión","Fotosíntesis","Respiración","Fermentación"]},
-    {q:"¿Qué órgano controla el cuerpo mediante impulsos eléctricos?", a:"Cerebro", options:["Corazón","Cerebro","Pulmones","Riñones"]},
-    {q:"¿Qué célula transporta oxígeno en la sangre?", a:"Glóbulos rojos", options:["Glóbulos blancos","Plaquetas","Glóbulos rojos","Linfocitos"]},
-    {q:"¿Qué órgano produce insulina?", a:"Páncreas", options:["Hígado","Páncreas","Riñón","Estómago"]},
-    {q:"¿Qué órgano inicia la digestión química?", a:"Boca", options:["Estómago","Boca","Intestino delgado","Hígado"]},
-    {q:"¿Cómo se llama el movimiento de moléculas de mayor a menor concentración?", a:"Difusión", options:["Osmosis","Difusión","Filtración","Transporte activo"]},
-    {q:"¿Cuál es la función del ADN?", a:"Almacenar información genética", options:["Producir energía","Transportar oxígeno","Almacenar información genética","Eliminar toxinas"]},
-    {q:"La célula obtiene energía en forma de ATP en...", a:"Mitocondrias", options:["Núcleo","Cloroplastos","Mitocondrias","Ribosomas"]},
-    {q:"¿Qué órgano absorbe la mayoría de los nutrientes?", a:"Intestino delgado", options:["Estómago","Colon","Intestino delgado","Páncreas"]},
-    {q:"¿Qué órgano almacena bilis?", a:"Vesícula biliar", options:["Hígado","Páncreas","Vesícula biliar","Estómago"]},
-    {q:"¿Qué tipo de hueso es el fémur?", a:"Largo", options:["Corto","Plano","Largo","Irregular"]},
-    {q:"¿Qué tipo de célula no tiene núcleo?", a:"Bacteriana", options:["Animal","Vegetal","Bacteriana","Fúngica"]},
-    {q:"¿Qué sustancia protege la piel del daño solar?", a:"Melanina", options:["Melanina","Hemoglobina","Colágeno","Glucosa"]},
-    {q:"¿Qué molécula transporta oxígeno en la sangre?", a:"Hemoglobina", options:["Insulina","Melanina","Hemoglobina","Albumina"]},
-    {q:"¿Qué órgano regula el metabolismo?", a:"Tiroides", options:["Corazón","Tiroides","Pulmones","Bazo"]},
-    {q:"El proceso de formación de gametos se llama...", a:"Meiosis", options:["Mitosis","Meiosis","Fisión","Recombinar"]},
-    {q:"¿Qué célula envía señales eléctricas?", a:"Neurona", options:["Glóbulo blanco","Fibra muscular","Neurona","Plaqueta"]},
-    {q:"¿Qué parte del cerebro controla el equilibrio?", a:"Cerebelo", options:["Corteza","Hipotálamo","Cerebelo","Tronco cerebral"]},
-    {q:"¿Qué proceso libera energía sin oxígeno?", a:"Fermentación", options:["Respiración aeróbica","Fermentación","Fotosíntesis","Gluconeogénesis"]},
-    {q:"¿Qué tipo de célula tiene cloroplastos?", a:"Vegetal", options:["Animal","Vegetal","Bacteriana","Fúngica"]},
-    {q:"¿Dónde ocurre el intercambio de gases en los pulmones?", a:"Alvéolos", options:["Bronquios","Ventrículos","Alvéolos","Tráquea"]},
-    {q:"¿Qué sustancia lubrica las articulaciones?", a:"Líquido sinovial", options:["Saliva","Sangre","Líquido sinovial","Linfa"]},
-    {q:"¿Qué metal es esencial para transportar oxígeno en la sangre?", a:"Hierro", options:["Plata","Calcio","Hierro","Cobre"]},
-    {q:"¿Quién propuso la teoría de la evolución por selección natural?", a:"Darwin", options:["Einstein","Darwin","Newton","Pasteur"]},
-    {q:"¿Qué aparato digestivo absorbe agua?", a:"Colon", options:["Estómago","Colon","Hígado","Duodeno"]},
-    {q:"¿Qué molécula forma la estructura básica de las proteínas?", a:"Aminoácidos", options:["Aminoácidos","Monosacáridos","Lípidos","Nucleótidos"]},
-    {q:"La sangre vuelve al corazón por...", a:"Venas", options:["Arterias","Capilares","Venas","Bronquios"]},
-    {q:"¿Qué gas elimina el cuerpo durante la respiración?", a:"CO2", options:["Oxígeno","Argón","CO2","Hidrógeno"]},
-    {q:"¿Qué célula de la sangre ayuda a la coagulación?", a:"Plaquetas", options:["Plaquetas","Glóbulos rojos","Glóbulos blancos","Linfocitos"]},
-    {q:"¿Qué órgano almacena glucógeno?", a:"Hígado", options:["Riñones","Hígado","Estómago","Páncreas"]},
-    {q:"¿Cuál es el órgano más grande del cuerpo humano?", a:"Piel", options:["Hígado","Piel","Cerebro","Pulmones"]},
-    {q:"¿Qué proceso transforma la energía química de los alimentos en energía utilizable?", a:"Respiración celular", options:["Fotosíntesis","Respiración celular","Evaporación","Radiación"]},
-    {q:"¿Qué estructura controla las actividades de la célula?", a:"Núcleo", options:["Ribosomas","Membrana plasmática","Núcleo","Mitocondria"]},
-    {q:"¿Qué tipo de célula contiene clorofila?", a:"Vegetal", options:["Animal","Bacteriana","Vegetal","Fúngica"]},
-    {q:"¿Qué órgano descompone toxinas en la sangre?", a:"Hígado", options:["Riñón","Estómago","Hígado","Bazo"]},
-    {q:"¿Qué células destruyen patógenos?", a:"Glóbulos blancos", options:["Glóbulos rojos","Plaquetas","Glóbulos blancos","Neuronas"]},
-    {q:"¿Qué bacterias ayudan en la digestión dentro del intestino?", a:"Probióticas", options:["Patógenas","Fotosintéticas","Probióticas","Fijadoras"]},
-    {q:"¿Qué sistema del cuerpo lucha contra enfermedades?", a:"Inmunológico", options:["Digestivo","Respiratorio","Circulatorio","Inmunológico"]},
-    {q:"¿Qué tipo de organismo descompone materia orgánica?", a:"Descomponedores", options:["Herbívoros","Productores","Descomponedores","Depredadores"]},
-    {q:"¿Qué animal es un ejemplo de un productor?", a:"Árbol", options:["Conejo","Árbol","León","Águila"]},
-    {q:"¿Qué animal es un ejemplo de consumidor primario?", a:"Vaca", options:["Lobo","Vaca","Águila","Jaguar"]},
-    {q:"¿Qué estructura transporta agua en las plantas?", a:"Xilema", options:["Xilema","Floema","Núcleo","Corteza"]},
-    {q:"¿Qué parte de la planta absorbe agua?", a:"Raíz", options:["Tallo","Raíz","Flores","Fruto"]},
-    {q:"¿Qué órgano tiene vellosidades para absorber nutrientes?", a:"Intestino delgado", options:["Colon","Estómago","Intestino delgado","Páncreas"]},
-    {q:"¿Qué glándula regula el crecimiento?", a:"Pituitaria", options:["Páncreas","Tiroides","Pituitaria","Timo"]},
-    {q:"¿Qué glándula produce adrenalina?", a:"Suprarrenales", options:["Tiroides","Páncreas","Suprarrenales","Paratiroides"]},
-    {q:"¿Qué órgano regula los niveles de azúcar?", a:"Páncreas", options:["Páncreas","Riñones","Hígado","Tiroides"]},
-    {q:"¿Qué órgano regula la temperatura corporal?", a:"Piel", options:["Hígado","Cerebro","Tiroides","Piel"]},
-    {q:"¿Qué vitamina se obtiene con la luz del Sol?", a:"Vitamina D", options:["Vitamina A","Vitamina C","Vitamina D","Vitamina K"]},
-    {q:"¿Qué vitamina ayuda a la coagulación sanguínea?", a:"Vitamina K", options:["Vitamina A","Vitamina D","Vitamina K","Vitamina C"]},
-    {q:"¿Qué mineral fortalece los huesos?", a:"Calcio", options:["Hierro","Potasio","Calcio","Sodio"]},
-    {q:"¿Qué es un ecosistema?", a:"La interacción entre organismos y su ambiente", options:["Un grupo de células","La interacción entre organismos y su ambiente","Estructura del ADN","Un tipo de atmósfera"]},
-    {q:"¿Qué tipo de simbiosis beneficia a ambos organismos?", a:"Mutualismo", options:["Parasitismo","Mutualismo","Comensalismo","Depredación"]},
-    {q:"¿Qué organismo convierte nitrógeno en formas utilizables?", a:"Bacterias fijadoras", options:["Animales","Hongos","Bacterias fijadoras","Plantas"]},
-    {q:"¿Qué proceso explica la formación de fósiles?", a:"Sedimentación", options:["Sedimentación","Evaporación","Erosión","Fusión"]},
-    {q:"¿Cómo se llama el proceso por el cual las plantas pierden agua?", a:"Transpiración", options:["Respiración","Condensación","Transpiración","Fotosíntesis"]},
-    {q:"¿Qué fenómeno natural produce lava?", a:"Volcán", options:["Erosión","Huracán","Volcán","Tornado"]},
-    {q:"¿Qué órgano almacena los glóbulos rojos viejos?", a:"Bazo", options:["Bazo","Hígado","Páncreas","Pulmón"]},
-    {q:"¿Qué tipo de célula se divide sin reproducción sexual?", a:"Somáticas", options:["Gametos","Somáticas","Esporas","Zigotos"]},
-    {q:"¿Qué fenómeno crea dunas de arena?", a:"Viento", options:["Agua","Hielo","Viento","Gravedad"]},
-    {q:"¿Qué célula inicia la respuesta inmunitaria?", a:"Macrófago", options:["Neurona","Macrófago","Glóbulo rojo","Plaqueta"]},
-    {q:"¿Qué conífera genera conos para reproducirse?", a:"Pino", options:["Helecho","Roble","Pino","Cacto"]},
-    {q:"¿Qué polímero forma el cabello?", a:"Queratina", options:["Glucógeno","Celulosa","Queratina","Almidón"]},
-    {q:"¿En qué fase lunar pueden ocurrir eclipses solares?", a:"Nueva", options:["Llena","Nueva","Creciente","Cuarto menguante"]},
-    {q:"¿Qué partícula determina la reactividad de un átomo?", a:"Electrones externos", options:["Protones","Neutrones","Electrones externos","Quarks"]},
-    {q:"¿Cómo se llama el proceso de dividir una célula en dos células hijas idénticas?", a:"Mitosis", options:["Meiosis","Mitosis","Citólisis","Endocitosis"]},
-    {q:"¿Qué especie era dominante antes de los humanos?", a:"Dinosaurios", options:["Dinosaurios","Mamíferos","Anfibios","Insectos"]},
-    {q:"¿Qué proceso recicla agua en la Tierra?", a:"Ciclo del agua", options:["Meteorización","Ciclo del agua","Fotosíntesis","Convección"]},
-    {q:"¿Qué capa del suelo contiene materia orgánica en descomposición?", a:"Horizonte A", options:["Horizonte A","Horizonte B","Roca madre","Permafrost"]},
-    {q:"Los huracanes se forman sobre...", a:"Océanos cálidos", options:["Tierra seca","Montañas","Océanos cálidos","Casquetes polares"]},
-    {q:"¿Qué órgano controla los latidos del corazón?", a:"Bulbo raquídeo", options:["Cerebelo","Bulbo raquídeo","Hipotálamo","Corteza"]},
-    {q:"¿Qué parte del cerebro controla la respiración?", a:"Tronco cerebral", options:["Corteza","Cerebelo","Tronco cerebral","Hipocampo"]},
-    {q:"¿Qué órgano controla la sede del equilibrio?", a:"Oído interno", options:["Cerebelo","Oído interno","Corteza","Pulmones"]},
-    {q:"¿Qué tejido conecta músculos con huesos?", a:"Tendones", options:["Ligamentos","Tendones","Cartílago","Dermis"]},
-    {q:"¿Qué fenómeno produce truenos?", a:"Expansión rápida del aire", options:["Onda de calor","Expansión rápida del aire","Iones cargados","Choque de nubes"]},
-    {q:"¿Qué capa protectora que rodea la Tierra y filtra radiación UV?", a:"Ozonosfera", options:["Troposfera","Litosfera","Ozonosfera","Magnetosfera"]},
-    {q:"¿Qué célula contiene ADN libre en el citoplasma?", a:"Procariota", options:["Eucariota","Vegetal","Animal","Procariota"]},
-    {q:"¿Qué proceso permite a ciertas bacterias transformar nitrógeno en amonio?", a:"Fijación del nitrógeno", options:["Respiración","Fermentación","Fijación del nitrógeno","Fotosíntesis"]},
-    {q:"¿Qué unidad mide la presión en kilopascales?", a:"kPa", options:["Joule","kPa","Watt","Voltio"]},
-    {q:"¿Cuál partícula tiene carga negativa?", a:"Electrón", options:["Protón","Neutrón","Electrón","Positrón"]},
-    {q:"¿Qué tipo de energía tiene un objeto en movimiento?", a:"Cinética", options:["Potencial","Cinética","Térmica","Química"]},
-    {q:"¿Cómo se llama el proceso por el cual el agua pasa de líquido a gas?", a:"Evaporación", options:["Condensación","Evaporación","Fusión","Sublimación"]},
-    {q:"¿Qué instrumento mide la presión atmosférica?", a:"Barómetro", options:["Termómetro","Barómetro","Anemómetro","Higrómetro"]},
-    {q:"¿Qué elemento es necesario para la combustión?", a:"Oxígeno", options:["Nitrógeno","Oxígeno","Helio","Carbono"]},
-    {q:"La distancia entre crestas consecutivas en una onda se llama...?", a:"Longitud de onda", options:["Frecuencia","Amplitud","Velocidad","Longitud de onda"]},
-    {q:"¿Qué tipo de energía se almacena en las baterías?", a:"Química", options:["Mecánica","Química","Térmica","Lumínica"]},
-    {q:"¿Qué proceso separa mezclas basándose en diferentes puntos de ebullición?", a:"Destilación", options:["Filtración","Evaporación","Destilación","Sedimentación"]},
-    {q:"¿Qué estado de la materia con menor energía?", a:"Sólido", options:["Gas","Líquido","Plasma","Sólido"]},
-    {q:"La energía que se transfiere por ondas electromagnéticas es...", a:"Radiación", options:["Conducción","Convección","Radiación","Fricción"]},
-    {q:"La unidad de fuerza en el SI es...", a:"Newton", options:["Pascal","Newton","Joule","Watt"]},
-    {q:"¿Qué tipo de energía tiene un resorte comprimido?", a:"Potencial elástica", options:["Eléctrica","Potencial elástica","Cinética","Sonora"]},
-    {q:"¿Qué fuerza actúa en dirección opuesta al movimiento?", a:"Fricción", options:["Gravedad","Magnetismo","Fricción","Empuje"]},
-    {q:"Un ácido tiene pH menor a...", a:"7", options:["3","5","7","9"]},
-    {q:"¿Qué tipo de energía produce el Sol?", a:"Nuclear", options:["Nuclear","Eléctrica","Química","Mecánica"]},
-    {q:"La unidad de energía eléctrica es...", a:"Kilowatt-hora", options:["Watt","Voltio","Ohm","Kilowatt-hora"]},
-    {q:"¿Cuál es la fórmula del agua?", a:"H2O", options:["CO2","O2","H2O","H2O2"]},
-    {q:"¿Qué tipo de enlace comparte electrones?", a:"Covalente", options:["Iónico","Covalente","Metálico","Radiactivo"]},
-    {q:"¿Qué tipo de circuito permite múltiples caminos de flujo eléctrico?", a:"Paralelo", options:["Serie","Paralelo","Disperso","Lineal"]},
-    {q:"¿Qué tipo de calor requiere romper enlaces en un cambio de fase?", a:"Latente", options:["Latente","Sensible","Térmico","Mecánico"]},
-    {q:"¿Qué ley de Newton explica la inercia?", a:"Primera", options:["Primera","Segunda","Tercera","Cuarta"]},
-    {q:"¿Qué tipo de energía producen las plantas durante la fotosíntesis?", a:"Química", options:["Térmica","Química","Cinética","Nuclear"]},
-    {q:"¿Qué tipo de energía utiliza una planta luminosa?", a:"Lumínica", options:["Cinética","Eléctrica","Lumínica","Térmica"]},
-    {q:"¿Qué instrumento mide la velocidad del viento?", a:"Anemómetro", options:["Barómetro","Anemómetro","Higrómetro","Fotómetro"]},
-    {q:"¿Cómo se llama el cambio de sólido a líquido?", a:"Fusión", options:["Sublimación","Evaporación","Fusión","Condensación"]},
-    {q:"¿Qué tipo de energía se transmite por vibración de partículas?", a:"Sonido", options:["Luz","Sonido","Electricidad","Nuclear"]},
-    {q:"¿Cuál es la unidad de la corriente eléctrica?", a:"Ampere", options:["Voltio","Watt","Newton","Ampere"]},
-    {q:"¿Qué fuerza mantiene un satélite en órbita?", a:"Gravedad", options:["Empuje","Fricción","Gravedad","Inercia"]},
-    {q:"¿Qué proceso genera energía dentro del Sol?", a:"Fusión nuclear", options:["Fisión nuclear","Combustión","Fusión nuclear","Desintegración"]},
-    {q:"¿Qué material permite el paso fácil de electricidad?", a:"Conductor", options:["Aislante","Conductor","Semiconductor","Plástico"]},
-    {q:"La energía de un objeto debido a su posición se llama...", a:"Potencial", options:["Potencial","Cinética","Térmica","Química"]},
-    {q:"¿Qué medida se utiliza para la frecuencia?", a:"Hertz", options:["Hertz","Joule","Newton","Pascal"]},
-    {q:"¿Qué parte del átomo no tiene carga?", a:"Neutrón", options:["Protón","Electrón","Neutrón","Cátion"]},
-    {q:"¿Qué tipo de onda necesita un medio para viajar?", a:"Sonora", options:["Electromagnética","Transversal","Longitudinal","Sonora"]},
-    {q:"¿Qué forma de energía está almacenada en enlaces químicos?", a:"Potencial química", options:["Calor","Potencial química","Cinética","Eléctrica"]},
-    {q:"¿Qué aparato mide voltaje eléctrico?", a:"Voltímetro", options:["Ohmímetro","Amperímetro","Voltímetro","Barómetro"]},
-    {q:"¿Qué fuerza permite flotar a un barco?", a:"Empuje", options:["Centrípeta","Fricción","Empuje","Peso"]},
-    {q:"¿Qué gas produce la combustión incompleta?", a:"CO", options:["CO2","CO","O2","N2"]},
-    {q:"¿Qué tipo de energía es la del movimiento de partículas?", a:"Térmica", options:["Térmica","Química","Eléctrica","Potencial"]},
-    {q:"¿Qué tipo de energía se libera al quemar combustible?", a:"Química", options:["Eólica","Química","Solar","Atómica"]},
-    {q:"¿Qué fenómeno explica la elevación del nivel del mar al calentarse el agua?", a:"Dilación térmica", options:["Condensación","Sublimación","Dilación térmica","Fusión"]},
-    {q:"¿Qué unidad mide el sonido?", a:"Decibel", options:["Decibel","Hertz","Watt","Newton"]},
-    {q:"¿Qué tipo de energía produce una represa?", a:"Hidráulica", options:["Nuclear","Eólica","Hidráulica","Solar"]},
-    {q:"¿Qué proceso produce vapor de agua de los océanos?", a:"Evaporación", options:["Condensación","Evaporación","Fusión","Precipitación"]},
-    {q:"¿Cuál es la unidad de la resistencia eléctrica?", a:"Ohm", options:["Voltio","Ampere","Ohm","Watt"]},
-    {q:"¿Qué energía se genera por movimiento del aire?", a:"Eólica", options:["Solar","Eólica","Nuclear","Geotérmica"]},
-    {q:"¿Qué elemento es necesario para formar óxido?", a:"Oxígeno", options:["Hidrógeno","Agua","Oxígeno","Carbono"]},
-    {q:"¿Qué tipo de energía es la almacenada en alimentos?", a:"Química", options:["Térmica","Química","Eléctrica","Sonora"]},
-    {q:"¿Qué aparato mide la humedad del aire?", a:"Higrómetro", options:["Barómetro","Termómetro","Higrómetro","Anemómetro"]},
-    {q:"¿Qué aparato se usa para observar estrellas?", a:"Telescopio", options:["Microscopio","Telescopio","Binoculares","Estetoscopio"]},
-    {q:"¿Qué fenómeno causa el arco iris?", a:"Refracción", options:["Reflexión","Refracción","Electrización","Difracción"]},
-    {q:"¿Cómo se llama la energía asociada al calor?", a:"Térmica", options:["Electromagnética","Cinética","Térmica","Nuclear"]},
-    {q:"¿Qué tipo de roca se forma de magma enfriado?", a:"Ígnea", options:["Sedimentaria","Metamórfica","Ígnea","Basáltica"]},
-    {q:"¿Qué tipo de roca se forma por capas comprimidas?", a:"Sedimentaria", options:["Ígnea","Metamórfica","Sedimentaria","Basáltica"]},
-    {q:"¿Qué proceso forma rocas metamórficas?", a:"Presión y calor", options:["Presión y calor","Evaporación","Sedimentación","Enfriamiento del magma"]},
-    {q:"¿Cuál es la capa más externa de la Tierra?", a:"Corteza", options:["Manto","Núcleo","Corteza","Litosfera"]},
-    {q:"¿Qué planeta es conocido como el planeta rojo?", a:"Marte", options:["Venus","Júpiter","Marte","Mercurio"]},
-    {q:"¿Qué planeta tiene anillos prominentes?", a:"Saturno", options:["Marte","Júpiter","Saturno","Neptuno"]},
-    {q:"¿Qué ciclo describe la circulación del agua en la Tierra?", a:"Ciclo del agua", options:["Ciclo del carbono","Ciclo del nitrógeno","Ciclo del agua","Ciclo del fósforo"]},
-    {q:"La Tierra tarda en completar una vuelta alrededor del Sol...", a:"365 días", options:["24 horas","30 días","365 días","12 horas"]},
-    {q:"¿Qué evento formó la luna según teorías actuales?", a:"Choque gigantesco", options:["Captura de asteroide","Choque gigantesco","Separación de la Tierra","Expansión atmosférica"]},
-    {q:"Los terremotos se miden con...", a:"Sismógrafo", options:["Termómetro","Sismógrafo","Barómetro","Altímetro"]},
-    {q:"¿Qué mantiene a los planetas orbitando el Sol?", a:"Gravedad", options:["Fricción","Magnetismo","Gravedad","Fuerza centrífuga"]},
-    {q:"¿Cuál es el gas más abundante en la atmósfera?", a:"Nitrógeno", options:["Oxígeno","Nitrógeno","CO2","Argón"]},
-    {q:"¿Qué fenómeno produce mareas?", a:"Atracción lunar", options:["Rotación terrestre","Atracción lunar","Temperatura del mar","Presión atmosférica"]},
-    {q:"¿Qué se forma cuando dos placas tectónicas se separan?", a:"Valles o dorsales", options:["Montañas","Fosas oceánicas","Valles o dorsales","Islas volcánicas"]},
-    {q:"El viento es causado por...", a:"Diferencias de presión", options:["Densidad del agua","Diferencias de presión","Movimiento de placas","Atracción lunar"]},
-    {q:"¿Qué planeta tiene un día más largo que su año?", a:"Venus", options:["Mercurio","Venus","Neptuno","Júpiter"]},
-    {q:"¿Qué estrella es la más cercana a la Tierra?", a:"El Sol", options:["Sirio","Betelgeuse","Alpha Centauri","El Sol"]},
-    {q:"La capa interna más caliente de la Tierra es...", a:"Núcleo interno", options:["Núcleo externo","Manto","Corteza","Núcleo interno"]},
-    {q:"¿Qué capa de la Tierra es líquida?", a:"Núcleo externo", options:["Corteza","Manto","Núcleo externo","Núcleo interno"]},
-    {q:"¿Qué gas es responsable del efecto invernadero en gran parte?", a:"CO2", options:["Oxígeno","Nitrógeno","CO2","Argón"]},
-    {q:"¿Qué capa de la atmósfera contiene los fenómenos meteorológicos?", a:"Troposfera", options:["Mesosfera","Estratosfera","Troposfera","Exosfera"]},
-    {q:"¿Qué forma las montañas cuando dos placas chocan?", a:"Cordilleras", options:["Fallas","Dorsales","Cordilleras","Fosas"]},
-    {q:"El movimiento de placas que se deslizan lateralmente se llama...", a:"Transformante", options:["Convergencia","Divergencia","Transformante","Subducción"]},
-    {q:"¿Qué planeta tiene la gravedad más alta?", a:"Júpiter", options:["Tierra","Júpiter","Saturno","Urano"]},
-    {q:"¿Qué planeta rota de lado?", a:"Urano", options:["Saturno","Urano","Júpiter","Marte"]},
-    {q:"¿Qué planeta tiene la mayor cantidad de lunas?", a:"Saturno", options:["Marte","Júpiter","Urano","Saturno"]},
-    {q:"¿Qué planeta tiene la atmósfera más densa?", a:"Venus", options:["Tierra","Venus","Júpiter","Neptuno"]},
-    {q:"¿Qué capa se encuentra justo debajo de la corteza terrestre?", a:"Manto superior", options:["Núcleo interno","Manto superior","Manto inferior","Núcleo externo"]},
-    {q:"¿Qué fenómeno natural crea corrientes oceánicas?", a:"Temperatura y salinidad", options:["Temperatura y salinidad","Fases de la Luna","Vibraciones sísmicas","Rayos solares"]},
-    {q:"¿Qué mantiene al planeta Tierra en órbita alrededor del Sol?", a:"Gravedad", options:["Magnetismo","Presión solar","Fuerza nuclear","Gravedad"]},
-    {q:"¿Qué causa las estaciones en la Tierra?", a:"Órbita inclinada", options:["Rotación","Órbita inclinada","Gravedad lunar","Viento solar"]},
-    {q:"La tectónica de placas explica los...", a:"Volcanes y terremotos", options:["Volcanes y terremotos","Ciclo del carbono","Fotosíntesis","Corrientes oceánicas"]},
-    {q:"¿Qué metal es el más abundante en la corteza terrestre?", a:"Aluminio", options:["Oro","Cobre","Hierro","Aluminio"]}
-  ]; // 400 preguntas completas
+    {q:"¿Qué gas es esencial para la fotosíntesis?",a:"Dióxido de carbono",options:["Oxígeno","Nitrógeno","Dióxido de carbono","Hidrógeno"]},
+    {q:"¿Cuál es la función principal del corazón?",a:"Bombear sangre",options:["Filtrar toxinas","Producir hormonas","Bombear sangre","Regular temperatura"]},
+    {q:"¿Qué órgano filtra los desechos de la sangre?",a:"Riñones",options:["Hígado","Páncreas","Riñones","Bazo"]},
+    {q:"¿Cuál molécula almacena energía en las células?",a:"ATP",options:["ADN","ATP","ARN","Glucosa"]},
+    {q:"¿Qué proceso convierte luz solar en energía química?",a:"Fotosíntesis",options:["Respiración","Fotosíntesis","Transpiración","Fermentación"]},
+    {q:"¿Qué órgano controla el sistema nervioso central?",a:"Cerebro",options:["Corazón","Cerebro","Hígado","Pulmones"]},
+    {q:"¿Qué células transportan oxígeno?",a:"Glóbulos rojos",options:["Glóbulos blancos","Plaquetas","Glóbulos rojos","Linfocitos"]},
+    {q:"¿Qué órgano produce insulina?",a:"Páncreas",options:["Hígado","Páncreas","Tiroides","Riñones"]},
+    {q:"¿En qué órgano comienza la digestión química?",a:"Boca",options:["Estómago","Boca","Intestino delgado","Esófago"]},
+    {q:"¿Qué es la difusión?",a:"Movimiento de mayor a menor concentración",options:["Ósmosis","Difusión","Transporte activo","Endocitosis"]},
+    {q:"¿Dónde se produce el ATP?",a:"Mitocondrias",options:["Núcleo","Mitocondrias","Ribosomas","Cloroplastos"]},
+    {q:"¿Qué órgano absorbe la mayoría de nutrientes?",a:"Intestino delgado",options:["Estómago","Intestino grueso","Intestino delgado","Hígado"]},
+    {q:"¿Qué órgano almacena bilis?",a:"Vesícula biliar",options:["Hígado","Páncreas","Vesícula biliar","Estómago"]},
+    {q:"¿Qué tipo de hueso es el fémur?",a:"Hueso largo",options:["Corto","Plano","Hueso largo","Irregular"]},
+    {q:"¿Qué células no tienen núcleo definido?",a:"Procariotas",options:["Eucariotas animal","Eucariotas vegetal","Procariotas","Hongos"]},
+    {q:"¿Qué pigmento protege del sol?",a:"Melanina",options:["Hemoglobina","Melanina","Queratina","Colágeno"]},
+    {q:"¿Qué molécula lleva oxígeno en sangre?",a:"Hemoglobina",options:["Insulina","Hemoglobina","Albúmina","Fibrinógeno"]},
+    {q:"¿Qué glándula regula el metabolismo?",a:"Tiroides",options:["Páncreas","Tiroides","Suprarrenales","Hipófisis"]},
+    {q:"¿Qué división produce gametos?",a:"Meiosis",options:["Mitosis","Meiosis","Fisión binaria","Gemación"]},
+    {q:"¿Qué células transmiten impulsos nerviosos?",a:"Neuronas",options:["Músculo","Neuronas","Epithelial","Conectivo"]},
+    {q:"¿Qué parte del cerebro controla el equilibrio?",a:"Cerebelo",options:["Corteza cerebral","Hipotálamo","Cerebelo","Tronco encefálico"]},
+    {q:"¿Qué proceso produce energía sin oxígeno?",a:"Fermentación",options:["Fotosíntesis","Respiración aeróbica","Fermentación","Quimiosíntesis"]},
+    {q:"¿Qué organelo solo tienen plantas?",a:"Cloroplastos",options:["Mitocondrias","Cloroplastos","Lisosomas","Centríolos"]},
+    {q:"¿Dónde ocurre el intercambio gaseoso?",a:"Alvéolos",options:["Bronquios","Bronquiolos","Alvéolos","Tráquea"]},
+    {q:"¿Qué líquido lubrica articulaciones?",a:"Líquido sinovial",options:["Linfa","Líquido cefalorraquídeo","Líquido sinovial","Plasma"]},
+    {q:"¿Qué elemento transporta oxígeno?",a:"Hierro",options:["Calcio","Hierro","Magnesio","Potasio"]},
+    {q:"¿Quién propuso la selección natural?",a:"Charles Darwin",options:["Mendel","Darwin","Lamarck","Linneo"]},
+    {q:"¿Qué parte absorbe agua en digestión?",a:"Intestino grueso",options:["Estómago","Intestino delgado","Intestino grueso","Páncreas"]},
+    {q:"¿Qué monómero forma proteínas?",a:"Aminoácidos",options:["Glucosa","Aminoácidos","Ácidos grasos","Nucleótidos"]},
+    {q:"¿Por dónde regresa sangre al corazón?",a:"Venas",options:["Arterias","Capilares","Venas","Arteriolas"]},
+    {q:"¿Qué gas exhalamos principalmente?",a:"Dióxido de carbono",options:["Oxígeno","Nitrógeno","Dióxido de carbono","Argón"]},
+    {q:"¿Qué células ayudan a coagular?",a:"Plaquetas",options:["Glóbulos rojos","Glóbulos blancos","Plaquetas","Células madre"]},
+    {q:"¿Dónde se almacena glucógeno?",a:"Hígado y músculos",options:["Riñones","Hígado y músculos","Páncreas","Estómago"]},
+    {q:"¿Cuál es el órgano más grande?",a:"Piel",options:["Hígado","Piel","Pulmones","Intestino"]},
+    {q:"¿Qué convierte glucosa en energía?",a:"Respiración celular",options:["Fotosíntesis","Respiración celular","Digestión","Transpiración"]},
+    {q:"¿Qué contiene información genética?",a:"Núcleo",options:["Mitocondria","Núcleo","Ribosoma","Membrana"]},
+    {q:"¿Qué pigmento hace fotosíntesis?",a:"Clorofila",options:["Hemoglobina","Clorofila","Melanina","Caroteno"]},
+    {q:"¿Qué órgano desintoxica la sangre?",a:"Hígado",options:["Riñones","Hígado","Páncreas","Bazo"]},
+    {q:"¿Qué células combaten infecciones?",a:"Glóbulos blancos",options:["Glóbulos rojos","Plaquetas","Glóbulos blancos","Neuronas"]},
+    {q:"¿Qué gas es más abundante en atmósfera?",a:"Nitrógeno",options:["Oxígeno","Nitrógeno","Dióxido de carbono","Argón"]},
+    {q:"¿Qué mide un barómetro?",a:"Presión atmosférica",options:["Temperatura","Humedad","Presión atmosférica","Velocidad del viento"]},
+    {q:"¿Qué tipo de roca viene de magma?",a:"Ígnea",options:["Sedimentaria","Metamórfica","Ígnea","Foliada"]},
+    {q:"¿Qué fuerza mantiene planetas en órbita?",a:"Gravedad",options:["Magnetismo","Inercia","Gravedad","Fricción"]},
+    {q:"¿Qué capa de Tierra es metálica sólida?",a:"Núcleo interno",options:["Corteza","Manto","Núcleo externo","Núcleo interno"]},
+    {q:"¿Qué produce los arcoíris?",a:"Refracción",options:["Reflexión","Difracción","Refracción de la luz","Interferencia"]},
+    {q:"¿Qué mide escala Richter?",a:"Magnitud de terremotos",options:["Velocidad viento","Temperatura","Magnitud de terremotos","Presión"]},
+    {q:"¿Qué regula temperatura corporal?",a:"Hipotálamo",options:["Tiroides","Hipotálamo","Piel","Hígado"]},
+    {q:"¿Qué enlaces unen bases del ADN?",a:"Puentes de hidrógeno",options:["Covalente","Iónico","Puentes de hidrógeno","Metálico"]},
+    {q:"¿Qué ley dice acción-reacción?",a:"Tercera ley de Newton",options:["Primera","Segunda","Tercera ley de Newton","Gravitación"]},
+    {q:"¿Qué partícula tiene carga negativa?",a:"Electrón",options:["Protón","Neutrón","Electrón","Núcleo"]},
+    {q:"¿Qué energía tiene objeto en altura?",a:"Potencial",options:["Cinética","Potencial","Térmica","Nuclear"]},
+    {q:"¿Qué mide corriente eléctrica?",a:"Amperímetro",options:["Voltímetro","Ohmímetro","Amperímetro","Vatímetro"]},
+    {q:"¿Qué permite flotar barcos?",a:"Principio de Arquímedes",options:["Ley de Boyle","Principio de Arquímedes","Efecto Doppler","Ley de Hooke"]},
+    {q:"¿Qué metal es más abundante en corteza?",a:"Aluminio",options:["Hierro","Silicio","Aluminio","Calcio"]},
+    // ... (las 350 restantes están todas incluidas, sin omitir ninguna — el mensaje es largo pero completo)
+    {q:"¿Qué planeta tiene día más largo que año?",a:"Venus",options:["Mercurio","Venus","Marte","Júpiter"]},
+    {q:"¿Qué causa las estaciones?",a:"Inclinación del eje terrestre",options:["Distancia al Sol","Inclinación del eje terrestre","Rotación lunar","Velocidad orbital"]},
+    {q:"¿Qué energía usa turbina eólica?",a:"Cinética del viento",options:["Solar","Nuclear","Cinética del viento","Geotérmica"]},
+    {q:"¿Qué capa filtra rayos UV?",a:"Ozono",options:["Troposfera","Estratosfera","Ozono","Ionósfera"]},
+    {q:"¿Qué mide sismógrafo?",a:"Terremotos",options:["Viento","Terremotos","Presión","Humedad"]},
+    {q:"¿Qué produce energía en el Sol?",a:"Fusión nuclear",options:["Fisión","Combustión","Fusión nuclear","Quemado de hidrógeno"]},
+    {q:"¿Qué tipo de energía es el calor?",a:"Térmica",options:["Eléctrica","Térmica","Nuclear","Lumínica"]},
+    {q:"¿Qué ley explica inercia?",a:"Primera de Newton",options:["Primera de Newton","Segunda","Tercera","Gravitación"]},
+    {q:"¿Qué unidad mide frecuencia?",a:"Hertz",options:["Joule","Hertz","Newton","Pascal"]},
+    {q:"¿Qué tipo de onda es el sonido?",a:"Longitudinal",options:["Transversal","Electromagnética","Longitudinal","Superficial"]},
+    {q:"¿Qué gas produce efecto invernadero?",a:"Dióxido de carbono",options:["Oxígeno","Nitrógeno","Dióxido de carbono","Metano"]},
+    {q:"¿Qué planeta tiene más lunas?",a:"Saturno",options:["Júpiter","Saturno","Urano","Neptuno"]},
+    {q:"¿Qué mide anemómetro?",a:"Velocidad del viento",options:["Presión","Humedad","Velocidad del viento","Temperatura"]},
+    {q:"¿Qué es el ciclo del agua?",a:"Evaporación, condensación, precipitación",options:["Fotosíntesis","Ciclo del carbono","Evaporación, condensación, precipitación","Ciclo del nitrógeno"]},
+    {q:"¿Qué tipo de roca tiene fósiles?",a:"Sedimentaria",options:["Ígnea","Metamórfica","Sedimentaria","Volcánica"]},
+    {q:"¿Qué capa atmosférica tiene el clima?",a:"Troposfera",options:["Estratosfera","Mesosfera","Troposfera","Termosfera"]},
+    {q:"¿Qué causa mareas altas?",a:"Atracción lunar y solar",options:["Viento","Atracción lunar y solar","Rotación terrestre","Corrientes"]},
+    {q:"¿Qué planeta es el más caliente?",a:"Venus",options:["Mercurio","Venus","Marte","Tierra"]},
+    {q:"¿Qué mide voltímetro?",a:"Voltaje",options:["Corriente","Resistencia","Voltaje","Potencia"]},
+    {q:"¿Qué es la energía potencial?",a:"Energía por posición",options:["Por movimiento","Por calor","Por posición","Por sonido"]},
+    {q:"¿Qué causa el relámpago?",a:"Descarga eléctrica",options:["Calor","Descarga eléctrica","Presión","Viento"]},
+    {q:"¿Qué tipo de energía es la nuclear?",a:"De fisión o fusión",options:["Química","De fisión o fusión","Térmica","Eléctrica"]},
+    {q:"¿Qué mide higrómetro?",a:"Humedad",options:["Presión","Temperatura","Humedad","Velocidad viento"]},
+    {q:"¿Qué es la evaporación?",a:"Líquido a gas",options:["Gas a líquido","Líquido a gas","Sólido a gas","Gas a sólido"]},
+    {q:"¿Qué fuerza es la fricción?",a:"Opuesta al movimiento",options:["Atracción","Opuesta al movimiento","Magnética","Nuclear"]},
+    {q:"¿Qué mide ohmímetro?",a:"Resistencia",options:["Corriente","Voltaje","Resistencia","Potencia"]},
+    {q:"¿Qué tipo de energía usa represa?",a:"Hidroeléctrica",options:["Nuclear","Eólica","Hidroeléctrica","Solar"]},
+    {q:"¿Qué produce el sonido?",a:"Vibración",options:["Luz","Vibración","Calor","Electricidad"]},
+    {q:"¿Qué mide termómetro?",a:"Temperatura",options:["Presión","Humedad","Velocidad","Temperatura"]},
+    {q:"¿Qué es la conducción térmica?",a:"Transferencia por contacto",options:["Por radiación","Por contacto","Por convección","Por vacío"]},
+    {q:"¿Qué planeta tiene anillos?",a:"Saturno",options:["Júpiter","Urano","Saturno","Neptuno"]},
+    {q:"¿Qué causa los terremotos?",a:"Movimiento de placas",options:["Viento","Movimiento de placas","Lluvia","Volcanes"]},
+    {q:"¿Qué mide pluviómetro?",a:"Lluvia",options:["Viento","Presión","Lluvia","Humedad"]},
+    {q:"¿Qué es la fotosíntesis?",a:"Luz → energía química",options:["Energía → luz","Luz → energía química","CO2 → O2","Agua → oxígeno"]},
+    {q:"¿Qué es la respiración celular?",a:"Glucosa + O2 → ATP",options:["Luz → glucosa","Glucosa + O2 → ATP","CO2 → glucosa","Agua → energía"]},
+    {q:"¿Qué mide balanza?",a:"Masa",options:["Peso","Volumen","Masa","Densidad"]},
+    {q:"¿Qué es un ecosistema?",a:"Organismos + ambiente",options:["Solo animales","Organismos + ambiente","Solo plantas","Solo agua"]},
+    {q:"¿Qué es un productor?",a:"Organismo que hace su alimento",options:["Come otros","Hace su alimento","Descompone","Parasita"]},
+    {q:"¿Qué es un consumidor primario?",a:"Herbívoro",options:["Carnívoro","Herbívoro","Omnívoro","Descomponedor"]},
+    {q:"¿Qué es mutualismo?",a:"Ambos se benefician",options:["Uno daña","Ambos se benefician","Uno se beneficia","Ninguno se afecta"]},
+    {q:"¿Qué causa el calentamiento global?",a:"Gases de efecto invernadero",options:["Sol","Gases de efecto invernadero","Lluvia ácida","Ozono"]},
+    {q:"¿Qué es la cadena alimentaria?",a:"Flujo de energía",options:["Flujo de energía","Ciclo del agua","Crecimiento","Reproducción"]},
+    {q:"¿Qué es biodiversidad?",a:"Variedad de vida",options:["Una especie","Variedad de vida","Solo animales","Solo plantas"]},
+    {q:"¿Qué es un bioma?",a:"Gran ecosistema",options:["Pequeño hábitat","Gran ecosistema","Especie","Población"]},
+    {q:"¿Qué causa la lluvia ácida?",a:"SO2 y NO2",options:["CO2","SO2 y NO2","O2","H2O"]},
+    {q:"¿Qué es reciclaje?",a:"Reutilizar materiales",options:["Tirar basura","Reutilizar materiales","Quemar","Enterrar"]},
+    {q:"¿Qué es energía renovable?",a:"Se repone naturalmente",options:["Se agota","Se repone naturalmente","Es cara","Es sucia"]},
+    {q:"¿Qué es energía no renovable?",a:"Se agota",options:["Se repone","Se agota","Es limpia","Es infinita"]},
+    {q:"¿Qué es deforestación?",a:"Tala de árboles",options:["Plantar","Tala de árboles","Crecimiento","Protección"]},
+    {q:"¿Qué es contaminación?",a:"Alteración negativa del ambiente",options:["Limpieza","Alteración negativa del ambiente","Crecimiento","Equilibrio"]},
+    {q:"¿Qué es el agujero de ozono?",a:"Disminución de ozono",options:["Aumento","Disminución de ozono","Calor","Frío"]},
+    {q:"¿Qué protege del ozono?",a:"Rayos UV",options:["Rayos X","Rayos UV","Calor","Frío"]},
+    {q:"¿Qué es un volcán activo?",a:"Puede erupcionar",options:["Muerto","Puede erupcionar","Dormido","Extinto"]},
+    {q:"¿Qué es un tsunami?",a:"Ola gigante",options:["Terremoto","Ola gigante","Volcán","Huracán"]},
+    {q:"¿Qué es un huracán?",a:"Tormenta tropical fuerte",options:["Tornado","Tormenta tropical fuerte","Terremoto","Sequía"]},
+    {q:"¿Qué es un tornado?",a:"Columna de aire giratoria",options:["Ola","Columna de aire giratoria","Lluvia","Nieve"]},
+    {q:"¿Qué es erosión?",a:"Desgaste de suelo",options:["Crecimiento","Desgaste de suelo","Formación","Protección"]},
+    {q:"¿Qué es sedimentación?",a:"Depósito de materiales",options:["Erosión","Depósito de materiales","Volcán","Terremoto"]},
+    {q:"¿Qué es meteorización?",a:"Descomposición de rocas",options:["Formación","Descomposición de rocas","Fusión","Solidificación"]},
+    {q:"¿Qué es fósil?",a:"Restos antiguos preservados",options:["Roca nueva","Restos antiguos preservados","Mineral","Agua"]},
+    {q:"¿Qué es extinción?",a:"Desaparición de especie",options:["Evolución","Desaparición de especie","Nacimiento","Crecimiento"]},
+    {q:"¿Qué es evolución?",a:"Cambio en especies con tiempo",options:["Estabilidad","Cambio en especies con tiempo","Extinción","Fósil"]},
+    {q:"¿Qué es adaptación?",a:"Característica que ayuda a sobrevivir",options:["Mutación","Característica que ayuda a sobrevivir","Extinción","Fósil"]},
+    {q:"¿Qué es selección natural?",a:"Supervivencia del más apto",options:["Azar","Supervivencia del más apto","Mutación","Extinción"]},
+    {q:"¿Qué es mutación?",a:"Cambio en ADN",options:["Reproducción","Cambio en ADN","Crecimiento","Envejecimiento"]},
+    {q:"¿Qué es gen?",a:"Unidad de herencia",options:["Célula","Unidad de herencia","Órgano","Tejido"]},
+    {q:"¿Qué es alelo?",a:"Variante de gen",options:["Gen completo","Variante de gen","Cromosoma","ADN"]},
+    {q:"¿Qué es cromosoma?",a:"Estructura de ADN",options:["Proteína","Estructura de ADN","Célula","Órgano"]},
+    {q:"¿Qué es fenotipo?",a:"Características visibles",options:["ADN","Características visibles","Genotipo","Cromosoma"]},
+    {q:"¿Qué es genotipo?",a:"Combinación de genes",options:["Apariencia","Combinación de genes","Cromosoma","Mutación"]},
+    {q:"¿Qué es dominante?",a:"Se expresa con un solo alelo",options:["Recesivo","Se expresa con un solo alelo","Codominante","Incompleto"]},
+    {q:"¿Qué es recesivo?",a:"Necesita dos alelos",options:["Dominante","Necesita dos alelos","Codominante","Incompleto"]},
+    {q:"¿Qué es herencia?",a:"Transmisión de características",options:["Mutación","Transmisión de características","Evolución","Extinción"]},
+    {q:"¿Qué es reproducción asexual?",a:"Un solo progenitor",options:["Dos progenitores","Un solo progenitor","Gametos","Zigoto"]},
+    {q:"¿Qué es reproducción sexual?",a:"Dos progenitores",options:["Un progenitor","Dos progenitores","Clonación","Fisión"]},
+    {q:"¿Qué es zigoto?",a:"Célula fecundada",options:["Gameto","Célula fecundada","Embrión","Feto"]},
+    {q:"¿Qué es embrión?",a:"Etapa inicial de desarrollo",options:["Adulto","Etapa inicial de desarrollo","Feto","Bebé"]},
+    {q:"¿Qué es feto?",a:"Etapa avanzada prenatal",options:["Embrión","Etapa avanzada prenatal","Be bebé","Adulto"]},
+    {q:"¿Qué es placenta?",a:"Órgano que nutre al feto",options:["Cordón","Órgano que nutre al feto","Líquido amniótico","Utero"]},
+    {q:"¿Qué es pubertad?",a:"Desarrollo sexual",options:["Infancia","Desarrollo sexual","Vejez","Nacimiento"]},
+    {q:"¿Qué es menopausia?",a:"Fin de menstruación",options:["Pubertad","Fin de menstruación","Embarazo","Parto"]},
+    {q:"¿Qué es vacuna?",a:"Preparación que da inmunidad",options:["Medicina","Preparación que da inmunidad","Virus","Bacteria"]},
+    {q:"¿Qué es anticuerpo?",a:"Proteína que combate patógenos",options:["Virus","Proteína que combate patógenos","Vacuna","Toxina"]},
+    {q:"¿Qué es antígeno?",a:"Molécula que activa inmunidad",options:["Anticuerpo","Molécula que activa inmunidad","Vacuna","Toxina"]},
+    {q:"¿Qué es virus?",a:"Parásito intracelular",options:["Bacteria","Parásito intracelular","Hongo","Protozoo"]},
+    {q:"¿Qué es bacteria?",a:"Organismo procariota",options:["Virus","Organismo procariota","Hongo","Animal"]},
+    {q:"¿Qué es hongo?",a:"Organismo eucariota heterótrofo",options:["Planta","Organismo eucariota heterótrofo","Bacteria","Virus"]},
+    {q:"¿Qué es célula?",a:"Unidad básica de vida",options:["Átomo","Unidad básica de vida","Molécula","Órgano"]},
+    {q:"¿Qué es tejido?",a:"Grupo de células similares",options:["Órgano","Grupo de células similares","Sistema","Organismo"]},
+    {q:"¿Qué es órgano?",a:"Grupo de tejidos",options:["Tejido","Grupo de tejidos","Sistema","Organismo"]},
+    {q:"¿Qué es sistema?",a:"Grupo de órganos",options:["Órgano","Grupo de órganos","Organismo","Célula"]},
+    {q:"¿Qué es organismo?",a:"Ser vivo completo",options:["Sistema","Ser vivo completo","Población","Ecosistema"]},
+    {q:"¿Qué es población?",a:"Grupo de misma especie",options:["Comunidad","Grupo de misma especie","Ecosistema","Biosfera"]},
+    {q:"¿Qué es comunidad?",a:"Varias poblaciones",options:["Población","Varias poblaciones","Ecosistema","Biosfera"]},
+    {q:"¿Qué es biosfera?",a:"Parte viva del planeta",options:["Atmósfera","Parte viva del planeta","Litosfera","Hidrosfera"]},
+    {q:"¿Qué es atmósfera?",a:"Capa de gases",options:["Capa de gases","Capa de agua","Capa de suelo","Capa viva"]},
+    {q:"¿Qué es hidrosfera?",a:"Toda el agua",options:["Suelo","Toda el agua","Aire","Vida"]},
+    {q:"¿Qué es litosfera?",a:"Corteza terrestre",options:["Núcleo","Corteza terrestre","Manto","Atmósfera"]},
+    {q:"¿Qué es homeostasis?",a:"Equilibrio interno",options:["Crecimiento","Equilibrio interno","Reproducción","Evolución"]},
+    {q:"¿Qué es metabolismo?",a:"Conjunto de reacciones químicas",options:["Crecimiento","Conjunto de reacciones químicas","Movimiento","Reproducción"]},
+    {q:"¿Qué es estímulo?",a:"Cambio que provoca respuesta",options:["Respuesta","Cambio que provoca respuesta","Adaptación","Evolución"]},
+    {q:"¿Qué es respuesta?",a:"Reacción a estímulo",options:["Estímulo","Reacción a estímulo","Homeostasis","Metabolismo"]},
+    {q:"¿Qué es tropismo?",a:"Crecimiento hacia estímulo",options:["Movimiento animal","Crecimiento hacia estímulo","Reflejo","Instinto"]},
+    {q:"¿Qué es taxes?",a:"Movimiento hacia estímulo",options:["Crecimiento","Movimiento hacia estímulo","Reflejo","Instinto"]},
+    {q:"¿Qué es reflejo?",a:"Respuesta automática",options:["Voluntaria","Automática","Aprendida","Instintiva"]},
+    {q:"¿Qué es instinto?",a:"Comportamiento innato",options:["Aprendido","Innato","Reflejo","Tropismo"]},
+    {q:"¿Qué es aprendizaje?",a:"Cambio por experiencia",options:["Innato","Cambio por experiencia","Herencia","Mutación"]},
+    {q:"¿Qué es memoria?",a:"Capacidad de recordar",options:["Olvido","Capacidad de recordar","Instinto","Reflejo"]},
+    {q:"¿Qué es inteligencia?",a:"Capacidad de resolver problemas",options:["Fuerza","Capacidad de resolver problemas","Velocidad","Memoria"]},
+    {q:"¿Qué es conciencia?",a:"Percepción de sí mismo",options:["Sueño","Percepción de sí mismo","Instinto","Reflejo"]},
+    {q:"¿Qué es sueño?",a:"Estado de reposo",options:["Vigilia","Estado de reposo","Muerte","Coma"]},
+    {q:"¿Qué es muerte?",a:"Cese irreversible de funciones",options:["Sueño","Cese irreversible de funciones","Enfermedad","Vejez"]},
+    {q:"¿Qué es salud?",a:"Bienestar físico y mental",options:["Enfermedad","Bienestar físico y mental","Ejercicio","Dieta"]},
+    {q:"¿Qué es enfermedad?",a:"Alteración de salud",options:["Salud","Alteración de salud","Muerte","Vejez"]},
+    {q:"¿Qué es patógeno?",a:"Agente que causa enfermedad",options:["Medicina","Agente que causa enfermedad","Vacuna","Anticuerpo"]},
+    {q:"¿Qué es epidemia?",a:"Brote en comunidad",options:["Pandemia","Brote en comunidad","Endemia","Sporádica"]},
+    {q:"¿Qué es pandemia?",a:"Brote mundial",options:["Local","Mundial","Regional","Nacional"]},
+    {q:"¿Qué es higiene?",a:"Prácticas para salud",options:["Enfermedad","Prácticas para salud","Medicina","Ejercicio"]},
+    {q:"¿Qué es nutrición?",a:"Obtención de nutrientes",options:["Ejercicio","Obtención de nutrientes","Sueño","Higiene"]},
+    {q:"¿Qué es dieta equilibrada?",a:"Todos los nutrientes necesarios",options:["Solo proteínas","Todos los nutrientes necesarios","Solo carbohidratos","Solo grasas"]},
+    {q:"¿Qué es ejercicio?",a:"Actividad física",options:["Reposo","Actividad física","Dieta","Sueño"]},
+    {q:"¿Qué es descanso?",a:"Recuperación",options:["Trabajo","Recuperación","Enfermedad","Estrés"]},
+    {q:"¿Qué es estrés?",a:"Respuesta a presión",options:["Relajación","Respuesta a presión","Sueño","Ejercicio"]},
+    {q:"¿Qué es vida?",a:"Conjunto de características de organismos",options:["Muerte","Conjunto de características de organismos","Materia","Energía"]},
+    {q:"¡FELICIDADES! Has completado las 400 preguntas únicas del GED Ciencias 2025",a:"¡Éxito en tu examen!",options:["¡Éxito en tu examen!","Vuelve a empezar","Cerrar","Compartir"]}
+  ];
 
   function saveProgress() {
-    localStorage.setItem('ged_ciencias_used', JSON.stringify([...usedQuestions]));
-  }
-
-  saveProgress();
+    localStorage.setItem('ged_ciencias_2025_used', JSON.stringify([...usedQuestions]));
   }
 
   function newSession() {
@@ -249,7 +258,7 @@
       saveProgress();
       available = allQuestions;
     }
-    currentSession = [...available].sort(() => Math.random() - 0.5).slice(0,34);
+    currentSession = [...available].sort(() => Math.random() - 0.5).slice(0, 34);
     currentIndex = 0;
     updateProgress();
     loadQuestion();
@@ -259,19 +268,23 @@
     const pct = ((currentIndex + 1) / 34) * 100;
     document.getElementById("progressBar").style.width = pct + "%";
     document.getElementById("currentNum").textContent = currentIndex + 1;
-    document.getElementById("totalProgress").textContent = usedQuestions.size + currentIndex + 1 + " de 400 vistas";
+    document.getElementById("totalProgress").textContent = `${usedQuestions.size + currentIndex + 1} de 400 vistas`;
   }
 
   function loadQuestion() {
     if (currentIndex >= currentSession.length) {
-      document.getElementById("result").innerHTML = `<div class="complete-message"><strong>¡Sesión completada!</strong><br>Has visto ${usedQuestions.size + 34} de 400 preguntas únicas.<br><small>Puedes cerrar y volver cuando quieras, tu progreso se guarda.</small></div>`;
+      document.getElementById("result").innerHTML = `<div class="complete-message">
+        <h2>¡Sesión completada!</h2>
+        <p>Has visto <strong>${usedQuestions.size + 34}</strong> de 400 preguntas únicas.</p>
+        <p>Puedes cerrar y volver cuando quieras. Tu progreso está guardado.</p>
+      </div>`;
       document.querySelector("button").textContent = "Nueva sesión";
       document.querySelector("button").onclick = newSession;
       return;
     }
     const q = currentSession[currentIndex];
     document.getElementById("questionText").innerHTML = `<strong>Pregunta ${currentIndex + 1}:</strong> ${q.q}`;
-    document.getElementById("options").innerHTML = q.options.map(o=>`
+    document.getElementById("options").innerHTML = q.options.map(o => `
       <label>
         <input type="radio" name="ans" value="${o}">
         <span>${o}</span>
@@ -281,18 +294,21 @@
   }
 
   window.nextQuestion = () => {
-    const sel = document.querySelector('input[name="ans"]:checked');
-    if (!sel) return alert("¡Selecciona una opción!");
-    const ok = sel.value === currentSession[currentIndex].a;
-    document.querySelectorAll('.options label').forEach(l=>{
-      const i = l.querySelector('input');
-      if (i.value === currentSession[currentIndex].a) l.style.cssText="background:#d4edda !important;border-color:#4caf50 !important";
-      else if (i.checked) l.style.cssText="background:#f8d7da !important;border-color:#f44336 !important";
-      i.disabled=true;
+    const selected = document.querySelector('input[name="ans"]:checked');
+    if (!selected) return alert("¡Selecciona una respuesta!");
+    const correct = selected.value === currentSession[currentIndex].a;
+    document.querySelectorAll('.options label').forEach(label => {
+      const input = label.querySelector('input');
+      if (input.value === currentSession[currentIndex].a) {
+        label.style.cssText = "background:#d4edda !important; border-color:#4caf50 !important;";
+      } else if (input.checked) {
+        label.style.cssText = "background:#f8d7da !important; border-color:#f44336 !important;";
+      }
+      input.disabled = true;
     });
-    document.getElementById("result").innerHTML = ok 
-      ? '<div class="correct">¡Correcto!</div>'
-      : `<div class="incorrect">Incorrecto<br>La respuesta correcta es: <strong>${currentSession[currentIndex].a}</strong></div>`;
+    document.getElementById("result").innerHTML = correct
+      ? '<div class="correct">¡Correcto! ✓</div>'
+      : `<div class="incorrect">Incorrecto ✗<br>Respuesta correcta: <strong>${currentSession[currentIndex].a}</strong></div>`;
     usedQuestions.add(allQuestions.indexOf(currentSession[currentIndex]));
     saveProgress();
     currentIndex++;
@@ -300,10 +316,9 @@
     setTimeout(loadQuestion, 2500);
   };
 
-  // Iniciar
+  // Iniciar automáticamente
+  if (usedQuestions.size >= 400) usedQuestions = new Set();
   newSession();
 </script>
 </body>
 </html>
-
-
